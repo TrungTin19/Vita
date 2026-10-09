@@ -7,6 +7,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
@@ -18,6 +19,7 @@ import java.util.Locale;
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.models.User;
+import vn.edu.tdmu.vita.utils.BmiUtils;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -30,6 +32,9 @@ public class ProfileActivity extends AppCompatActivity {
     private TextView tvHeight;
     private TextView tvBaseWeight;
     private TextView tvWaterGoal;
+    private TextView tvBmiValue;
+    private TextView tvBmiCategory;
+    private TextView tvHealthyWeight;
     private RadioGroup rgBmiStandard;
     private RadioButton rbAsian;
     private RadioButton rbWho;
@@ -67,6 +72,9 @@ public class ProfileActivity extends AppCompatActivity {
         tvHeight = findViewById(R.id.tv_profile_height);
         tvBaseWeight = findViewById(R.id.tv_profile_base_weight);
         tvWaterGoal = findViewById(R.id.tv_profile_water_goal);
+        tvBmiValue = findViewById(R.id.tv_profile_bmi_value);
+        tvBmiCategory = findViewById(R.id.tv_profile_bmi_category);
+        tvHealthyWeight = findViewById(R.id.tv_profile_healthy_weight);
         rgBmiStandard = findViewById(R.id.rg_bmi_standard);
         rbAsian = findViewById(R.id.rb_bmi_asian);
         rbWho = findViewById(R.id.rb_bmi_who);
@@ -80,9 +88,13 @@ public class ProfileActivity extends AppCompatActivity {
             if (isInitialCheck || currentUser == null) {
                 return;
             }
-            String selectedStandard = (checkedId == R.id.rb_bmi_who) ? "WHO" : "ASIAN";
+            String selectedStandard = (checkedId == R.id.rb_bmi_who)
+                    ? BmiUtils.STANDARD_WHO
+                    : BmiUtils.STANDARD_ASIAN;
             userDao.updateBmiStandard(currentUser.getId(), selectedStandard);
             currentUser.setBmiStandard(selectedStandard);
+
+            renderBmiCard(selectedStandard);
 
             String message = (checkedId == R.id.rb_bmi_who)
                     ? "Đã đổi sang Chuẩn Quốc tế (WHO)"
@@ -117,23 +129,58 @@ public class ProfileActivity extends AppCompatActivity {
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int age = currentYear - currentUser.getBirthYear();
         if (currentUser.getBirthYear() > 0 && age >= 0 && age <= 120) {
-            tvBirthYear.setText(String.format(Locale.getDefault(), "• Năm sinh: %d (%d tuổi)", currentUser.getBirthYear(), age));
+            tvBirthYear.setText(String.format(Locale.getDefault(), "%d (%d tuổi)", currentUser.getBirthYear(), age));
         } else {
-            tvBirthYear.setText("• Năm sinh: Chưa cập nhật");
+            tvBirthYear.setText("Chưa cập nhật");
         }
 
-        tvGender.setText("• Giới tính: " + (currentUser.getGender() != null ? currentUser.getGender() : "Chưa rõ"));
-        tvHeight.setText(String.format(Locale.getDefault(), "• Chiều cao: %.1f cm", currentUser.getHeightCm()));
-        tvBaseWeight.setText(String.format(Locale.getDefault(), "• Cân nặng ban đầu: %.1f kg", currentUser.getBaseWeightKg()));
-        tvWaterGoal.setText(String.format(Locale.getDefault(), "• Mục tiêu nước: %,d ml/ngày", currentUser.getWaterGoalMl()));
+        tvGender.setText(currentUser.getGender() != null ? currentUser.getGender() : "Chưa rõ");
+        tvHeight.setText(String.format(Locale.getDefault(), "%.1f cm", currentUser.getHeightCm()));
+        tvBaseWeight.setText(String.format(Locale.getDefault(), "%.1f kg", currentUser.getBaseWeightKg()));
+        tvWaterGoal.setText(String.format(Locale.getDefault(), "%,d ml / ngày", currentUser.getWaterGoalMl()));
+
+        String standard = (currentUser.getBmiStandard() != null && !currentUser.getBmiStandard().trim().isEmpty())
+                ? currentUser.getBmiStandard() : BmiUtils.STANDARD_ASIAN;
+
+        // Render BMI Card
+        renderBmiCard(standard);
 
         // BMI Standard radio selection
         isInitialCheck = true;
-        if ("WHO".equalsIgnoreCase(currentUser.getBmiStandard())) {
+        if (BmiUtils.STANDARD_WHO.equalsIgnoreCase(standard)) {
             rbWho.setChecked(true);
         } else {
             rbAsian.setChecked(true);
         }
         isInitialCheck = false;
     }
+
+    private void renderBmiCard(String standard) {
+        if (currentUser == null) {
+            return;
+        }
+
+        double heightCm = currentUser.getHeightCm();
+        double weightKg = currentUser.getBaseWeightKg();
+
+        if (heightCm > 0 && weightKg > 0) {
+            double bmi = BmiUtils.calculateBmi(heightCm, weightKg);
+            tvBmiValue.setText(String.format(Locale.getDefault(), "%.1f", bmi));
+
+            String category = BmiUtils.classifyBmi(bmi, standard);
+            tvBmiCategory.setText(category);
+            int colorRes = BmiUtils.getStatusColorRes(bmi, standard);
+            tvBmiCategory.setTextColor(ContextCompat.getColor(this, colorRes));
+
+            double[] healthyRange = BmiUtils.getHealthyWeightRange(heightCm, standard);
+            tvHealthyWeight.setText(String.format(Locale.getDefault(),
+                    "Khoảng cân nặng lý tưởng nên duy trì: %.1f kg – %.1f kg", healthyRange[0], healthyRange[1]));
+        } else {
+            tvBmiValue.setText("--");
+            tvBmiCategory.setText("Chưa có số đo");
+            tvBmiCategory.setTextColor(ContextCompat.getColor(this, R.color.vita_text_secondary));
+            tvHealthyWeight.setText("Vui lòng cập nhật chiều cao và cân nặng để tính BMI.");
+        }
+    }
 }
+

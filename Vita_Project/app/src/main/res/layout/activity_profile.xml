@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/vita_bg"
@@ -35,18 +36,18 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="12dp"
-                android:paddingBottom="24dp">
+                android:paddingTop="8dp"
+                android:paddingBottom="20dp">
 
                 <ImageView
                     android:id="@+id/iv_profile_avatar"
-                    android:layout_width="84dp"
-                    android:layout_height="84dp"
-                    android:background="@drawable/spinner_border"
-                    android:contentDescription="Ảnh đại diện"
-                    android:padding="16dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/vita_logo_art" />
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:background="@drawable/bg_avatar_circle"
+                    android:contentDescription="Ảnh đại diện tài khoản"
+                    android:padding="18dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_profile_user" />
 
                 <TextView
                     android:id="@+id/tv_profile_fullname"
@@ -62,13 +63,13 @@
                     android:id="@+id/tv_profile_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="2dp"
                     android:text="@username"
                     android:textColor="@color/vita_text_secondary"
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- Card 1: Body Physical Stats -->
+            <!-- Card 1: Body Physical Stats (Label-Value Grid) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_profile_stats"
                 style="@style/Widget.Vita.Card"
@@ -90,59 +91,178 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="THÔNG SỐ CƠ THỂ"
+                        android:layout_marginBottom="14dp"
+                        android:text="THÔNG SỐ THỂ CHẤT"
                         android:textColor="@color/vita_teal"
                         android:textSize="13sp"
                         android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_profile_birth_year"
-                        android:layout_width="wrap_content"
+                    <!-- Row 1: Birth Year and Gender -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="• Năm sinh: Đang cập nhật"
-                        android:textColor="@color/vita_text_primary"
-                        android:textSize="15sp" />
+                        android:layout_marginBottom="12dp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/tv_profile_gender"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="• Giới tính: Nam"
-                        android:textColor="@color/vita_text_primary"
-                        android:textSize="15sp" />
+                        <!-- Item Birth Year -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tv_profile_height"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="• Chiều cao: -- cm"
-                        android:textColor="@color/vita_text_primary"
-                        android:textSize="15sp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="NĂM SINH"
+                                android:textColor="@color/vita_text_secondary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_profile_base_weight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="• Cân nặng ban đầu: -- kg"
-                        android:textColor="@color/vita_text_primary"
-                        android:textSize="15sp" />
+                            <TextView
+                                android:id="@+id/tv_profile_birth_year"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="--"
+                                android:textColor="@color/vita_text_primary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tv_profile_water_goal"
-                        android:layout_width="wrap_content"
+                        <!-- Item Gender -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="GIỚI TÍNH"
+                                android:textColor="@color/vita_text_secondary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_profile_gender"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="--"
+                                android:textColor="@color/vita_text_primary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@color/vita_divider" />
+
+                    <!-- Row 2: Height and Base Weight -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="• Mục tiêu nước: 2,000 ml/ngày"
-                        android:textColor="@color/vita_text_primary"
-                        android:textSize="15sp" />
+                        android:layout_marginBottom="12dp"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <!-- Item Height -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="CHIỀU CAO"
+                                android:textColor="@color/vita_text_secondary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_profile_height"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="-- cm"
+                                android:textColor="@color/vita_text_primary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Item Weight -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="CÂN NẶNG BAN ĐẦU"
+                                android:textColor="@color/vita_text_secondary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tv_profile_base_weight"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="-- kg"
+                                android:textColor="@color/vita_text_primary"
+                                android:textSize="16sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@color/vita_divider" />
+
+                    <!-- Row 3: Water Goal -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MỤC TIÊU NƯỚC UỐNG HẰNG NGÀY"
+                            android:textColor="@color/vita_text_secondary"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_profile_water_goal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="2,000 ml / ngày"
+                            android:textColor="@color/vita_water"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card 2: BMI Standard Selection -->
+            <!-- Card 2: BMI Analysis & Standard Selection -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_profile_bmi_config"
                 style="@style/Widget.Vita.Card"
@@ -164,10 +284,84 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:text="CHUẨN PHÂN LOẠI BMI"
+                        android:layout_marginBottom="12dp"
+                        android:text="CHỈ SỐ KHỐI CƠ THỂ (BMI)"
                         android:textColor="@color/vita_teal"
                         android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <!-- Visual BMI Status Section -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/vita_bg"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="BMI Hiện Tại"
+                                android:textColor="@color/vita_text_secondary"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tv_profile_bmi_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="--"
+                                android:textColor="@color/vita_text_primary"
+                                android:textSize="28sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <!-- Category Badge -->
+                        <TextView
+                            android:id="@+id/tv_profile_bmi_category"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_badge_rounded"
+                            android:paddingStart="12dp"
+                            android:paddingTop="6dp"
+                            android:paddingEnd="12dp"
+                            android:paddingBottom="6dp"
+                            android:text="Chưa xác định"
+                            android:textColor="@color/vita_teal"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <!-- Healthy Target Weight Hint -->
+                    <TextView
+                        android:id="@+id/tv_profile_healthy_weight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="14dp"
+                        android:text="Khoảng cân nặng hợp lý: --"
+                        android:textColor="@color/vita_text_secondary"
+                        android:textSize="13sp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@color/vita_divider" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="TIÊU CHUẨN ĐÁNH GIÁ"
+                        android:textColor="@color/vita_text_secondary"
+                        android:textSize="11sp"
                         android:textStyle="bold" />
 
                     <RadioGroup
@@ -183,20 +377,20 @@
                             android:checked="true"
                             android:paddingStart="8dp"
                             android:paddingEnd="0dp"
-                            android:text="Chuẩn Châu Á (IDI &amp; WPRO)\nKhuyến nghị cho người Việt Nam"
+                            android:text="Chuẩn Châu Á (IDI &amp; WPRO)\nKhuyến nghị cho người Việt Nam (bình thường: 18.5 – 22.9)"
                             android:textColor="@color/vita_text_primary"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
 
                         <RadioButton
                             android:id="@+id/rb_bmi_who"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="6dp"
                             android:paddingStart="8dp"
                             android:paddingEnd="0dp"
-                            android:text="Chuẩn Quốc tế (WHO)\nÁp dụng đa chủng tộc toàn cầu"
+                            android:text="Chuẩn Quốc tế (WHO)\nÁp dụng đa chủng tộc toàn cầu (bình thường: 18.5 – 24.9)"
                             android:textColor="@color/vita_text_primary"
-                            android:textSize="14sp" />
+                            android:textSize="13sp" />
                     </RadioGroup>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
