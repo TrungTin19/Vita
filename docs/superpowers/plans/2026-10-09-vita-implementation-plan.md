@@ -37,6 +37,7 @@
 3. **Security:** Mật khẩu bắt buộc băm `SHA-256` kết hợp chuỗi ngẫu nhiên (`salt` 16 bytes). Không bao giờ lưu mật khẩu dạng chuỗi thô.
 4. **Accessibility:** Vùng chạm cảm ứng tối thiểu $\ge 48$dp × 48dp, khoảng cách giữa các nút $\ge 8$dp, chữ số Display 32sp, tương phản WCAG AAA / AA, hỗ trợ phóng to font `sp`.
 5. **Data Integrity:** Đảm bảo tính đúng đắn của dữ liệu: tính thời lượng ngủ qua đêm chính xác, mặt nạ bit 7 ngày chuẩn xác, khôi phục báo thức sau khi khởi động lại máy (`BootReceiver`).
+6. **Material Symbols Icons (Google Fonts):** Thống nhất 100% icon đồ họa trong toàn bộ ứng dụng Vita sử dụng nguồn Google Fonts Material Symbols dưới dạng Android Vector Drawable XML (chuẩn 24dp, viewport 24x24). Tuyệt đối KHÔNG sử dụng icon lỗi thời từ Android SDK (`@android:drawable/...`) hoặc icon png/bitmap rời rạc.
 
 ---
 

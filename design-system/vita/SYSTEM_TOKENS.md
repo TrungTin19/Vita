@@ -254,3 +254,31 @@ Bộ mã nguồn sau được đóng gói sẵn để sao chép trực tiếp v�
 | **Kích thước chữ lớn** | `android:textSize="@dimen/text_display"` | `tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 32)` |
 | **Khoảng cách lề chuẩn** | `android:padding="@dimen/spacing_md"` | `getResources().getDimensionPixelSize(R.dimen.spacing_md)` |
 | **Vùng đệm đáy chống che** | `android:paddingBottom="@dimen/spacing_scroll_pad"` | Đặt cố định `80dp` cho RecyclerView |
+
+---
+
+## 5. TIÊU CHUẨN ĐỒ HỌA BIỂU TƯỢNG (GOOGLE FONTS MATERIAL SYMBOLS)
+
+Toàn bộ ứng dụng Vita thống nhất sử dụng thư viện **Material Symbols từ Google Fonts** (`fonts.google.com/icons`) dưới dạng **Android Vector Drawable XML (`<vector>`)**:
+
+| Tên Icon Vector | Tên Material Symbol gốc | Kích thước | Mục đích sử dụng |
+| :--- | :--- | :--- | :--- |
+| `ic_arrow_back.xml` | `arrow_back` | 24dp × 24dp | Điều hướng quay lại trên Toolbar |
+| `ic_person.xml` | `person` | 24dp × 24dp | Nhập tên đăng nhập & Tab hồ sơ |
+| `ic_lock.xml` | `lock` | 24dp × 24dp | Nhập mật khẩu |
+| `ic_profile_user.xml`| `account_circle` / `person` | 48dp × 48dp | Avatar đại diện tài khoản người dùng |
+| `ic_nav_home.xml` | `home` | 24dp × 24dp | Tab Trang chủ (Bottom Navigation) |
+| `ic_nav_vitals.xml` | `monitor_heart` | 24dp × 24dp | Tab Chỉ số sức khỏe & BMI |
+| `ic_nav_medicines.xml`| `medication` | 24dp × 24dp | Tab Lịch nhắc uống thuốc |
+| `ic_water_drop.xml` | `water_drop` | 24dp × 24dp | Nhật ký lượng nước uống |
+| `ic_bedtime.xml` | `bedtime` | 24dp × 24dp | Nhật ký theo dõi giấc ngủ |
+| `ic_notifications.xml`| `notifications` | 24dp × 24dp | Thông báo nhắc nhở & chuông báo thức |
+| `ic_add.xml` | `add` | 24dp × 24dp | Nút FAB / Thêm cữ thuốc / Thêm số đo |
+| `ic_check.xml` | `check` | 24dp × 24dp | Xác nhận đã uống thuốc / Hoàn tất |
+| `ic_calendar.xml` | `calendar_today` | 24dp × 24dp | Lịch trình & Chọn ngày tháng |
+
+**Quy tắc bất di bất dịch:**
+- Viewport chuẩn: `viewportWidth="24"`, `viewportHeight="24"`.
+- Kích thước mặc định: `width="24dp"`, `height="24dp"` (trừ avatar lớn 48dp).
+- Không hardcode màu tĩnh bên trong vector path nếu icon cần đổi trạng thái tint; dùng `android:tint="?attr/colorControlNormal"` hoặc tô màu ngữ nghĩa qua XML layout.
+- Tuyệt đối không dùng icon của Android SDK cũ (`@android:drawable/...`).
