@@ -114,6 +114,27 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        etBirthYear.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilBirthYear.setError(null);
+            }
+        });
+
+        etHeight.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilHeight.setError(null);
+            }
+        });
+
+        etWeight.addTextChangedListener(new SimpleTextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                tilWeight.setError(null);
+            }
+        });
+
         btnSubmit.setOnClickListener(v -> handleRegister());
 
         tvGotoLogin.setOnClickListener(v -> finish());
@@ -147,7 +168,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (password.isEmpty()) {
             tilPassword.setError("Vui lòng nhập mật khẩu");
             hasError = true;
-        } else if (password.length() < 6) {
+        } else if (!vn.edu.tdmu.vita.utils.InputValidator.isValidPassword(password)) {
             tilPassword.setError("Mật khẩu phải có tối thiểu 6 ký tự");
             hasError = true;
         }
@@ -169,8 +190,9 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             try {
                 height = Float.parseFloat(heightStr);
-                if (height < 50 || height > 250) {
-                    tilHeight.setError("Chiều cao từ 50cm đến 250cm");
+                if (!vn.edu.tdmu.vita.utils.InputValidator.isValidHeight(height)) {
+                    tilHeight.setError(String.format("Chiều cao hợp lệ từ %.0fcm đến %.0fcm",
+                            vn.edu.tdmu.vita.utils.InputValidator.MIN_HEIGHT_CM, vn.edu.tdmu.vita.utils.InputValidator.MAX_HEIGHT_CM));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
@@ -187,8 +209,9 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             try {
                 weight = Float.parseFloat(weightStr);
-                if (weight < 20 || weight > 300) {
-                    tilWeight.setError("Cân nặng từ 20kg đến 300kg");
+                if (!vn.edu.tdmu.vita.utils.InputValidator.isValidWeight(weight)) {
+                    tilWeight.setError(String.format("Cân nặng hợp lệ từ %.0fkg đến %.0fkg",
+                            vn.edu.tdmu.vita.utils.InputValidator.MIN_WEIGHT_KG, vn.edu.tdmu.vita.utils.InputValidator.MAX_WEIGHT_KG));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
@@ -203,7 +226,7 @@ public class RegisterActivity extends AppCompatActivity {
             try {
                 birthYear = Integer.parseInt(birthYearStr);
                 int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-                if (birthYear < 1900 || birthYear > currentYear) {
+                if (!vn.edu.tdmu.vita.utils.InputValidator.isValidBirthYear(birthYear)) {
                     tilBirthYear.setError("Năm sinh từ 1900 đến " + currentYear);
                     hasError = true;
                 }

@@ -203,6 +203,7 @@
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusTopStart="8dp"
                     app:boxStrokeColor="@color/vita_teal"
+                    app:helperText="Ví dụ: 2000"
                     app:hintTextColor="@color/vita_teal">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -268,6 +269,7 @@
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusTopStart="8dp"
                     app:boxStrokeColor="@color/vita_teal"
+                    app:helperText="50 – 250 cm"
                     app:hintTextColor="@color/vita_teal"
                     app:suffixText="cm">
 
@@ -296,6 +298,7 @@
                     app:boxCornerRadiusTopEnd="8dp"
                     app:boxCornerRadiusTopStart="8dp"
                     app:boxStrokeColor="@color/vita_teal"
+                    app:helperText="20 – 300 kg"
                     app:hintTextColor="@color/vita_teal"
                     app:suffixText="kg">
 

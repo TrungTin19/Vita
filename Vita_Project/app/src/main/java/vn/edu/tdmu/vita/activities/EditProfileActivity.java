@@ -2,6 +2,8 @@ package vn.edu.tdmu.vita.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -19,6 +21,7 @@ import java.util.Calendar;
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.models.User;
+import vn.edu.tdmu.vita.utils.InputValidator;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class EditProfileActivity extends AppCompatActivity {
@@ -124,8 +127,13 @@ public class EditProfileActivity extends AppCompatActivity {
     private void setupListeners() {
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        btnSave.setOnClickListener(v -> handleSave());
+        // Clear errors automatically as user types
+        etBirthYear.addTextChangedListener(new SimpleTextWatcher(() -> tilBirthYear.setError(null)));
+        etHeight.addTextChangedListener(new SimpleTextWatcher(() -> tilHeight.setError(null)));
+        etWeight.addTextChangedListener(new SimpleTextWatcher(() -> tilWeight.setError(null)));
+        etWaterGoal.addTextChangedListener(new SimpleTextWatcher(() -> tilWaterGoal.setError(null)));
 
+        btnSave.setOnClickListener(v -> handleSave());
         btnLogout.setOnClickListener(v -> showLogoutConfirmDialog());
     }
 
@@ -147,8 +155,9 @@ public class EditProfileActivity extends AppCompatActivity {
         } else {
             try {
                 height = Float.parseFloat(heightStr);
-                if (height < 50 || height > 250) {
-                    tilHeight.setError("Chiều cao từ 50cm đến 250cm");
+                if (!InputValidator.isValidHeight(height)) {
+                    tilHeight.setError(String.format("Chiều cao hợp lệ từ %.0fcm đến %.0fcm",
+                            InputValidator.MIN_HEIGHT_CM, InputValidator.MAX_HEIGHT_CM));
                     hasError = true;
                 } else {
                     tilHeight.setError(null);
@@ -167,8 +176,9 @@ public class EditProfileActivity extends AppCompatActivity {
         } else {
             try {
                 weight = Float.parseFloat(weightStr);
-                if (weight < 20 || weight > 300) {
-                    tilWeight.setError("Cân nặng từ 20kg đến 300kg");
+                if (!InputValidator.isValidWeight(weight)) {
+                    tilWeight.setError(String.format("Cân nặng hợp lệ từ %.0fkg đến %.0fkg",
+                            InputValidator.MIN_WEIGHT_KG, InputValidator.MAX_WEIGHT_KG));
                     hasError = true;
                 } else {
                     tilWeight.setError(null);
@@ -185,7 +195,7 @@ public class EditProfileActivity extends AppCompatActivity {
             try {
                 birthYear = Integer.parseInt(birthYearStr);
                 int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-                if (birthYear < 1900 || birthYear > currentYear) {
+                if (!InputValidator.isValidBirthYear(birthYear)) {
                     tilBirthYear.setError("Năm sinh từ 1900 đến " + currentYear);
                     hasError = true;
                 } else {
@@ -202,8 +212,9 @@ public class EditProfileActivity extends AppCompatActivity {
         if (!waterGoalStr.isEmpty()) {
             try {
                 waterGoal = Integer.parseInt(waterGoalStr);
-                if (waterGoal < 500 || waterGoal > 10000) {
-                    tilWaterGoal.setError("Mục tiêu nước từ 500 đến 10,000 ml");
+                if (!InputValidator.isValidWaterGoal(waterGoal)) {
+                    tilWaterGoal.setError(String.format("Mục tiêu nước từ %,d đến %,d ml / ngày",
+                            InputValidator.MIN_WATER_GOAL_ML, InputValidator.MAX_WATER_GOAL_ML));
                     hasError = true;
                 } else {
                     tilWaterGoal.setError(null);
@@ -249,5 +260,26 @@ public class EditProfileActivity extends AppCompatActivity {
                 })
                 .setNegativeButton("Hủy bỏ", (dialog, which) -> dialog.dismiss())
                 .show();
+    }
+
+    private static class SimpleTextWatcher implements TextWatcher {
+        private final Runnable onTextChanged;
+
+        SimpleTextWatcher(Runnable onTextChanged) {
+            this.onTextChanged = onTextChanged;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (onTextChanged != null) {
+                onTextChanged.run();
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {}
     }
 }
