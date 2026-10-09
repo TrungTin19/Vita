@@ -36,7 +36,8 @@ local.properties
 Thumbs.db
 
 # Agent scratch and internal logs
-.agents/
-.superpowers/
-superpowers/
-ponytail/
+/.agents/
+/.superpowers/
+/superpowers/
+/ponytail/
+
