@@ -13,7 +13,8 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/vita_surface"
         android:elevation="2dp"
-        app:navigationIcon="@android:drawable/ic_menu_revert"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationIconTint="@color/vita_text_primary"
         app:title="Hồ sơ cá nhân"
         app:titleTextColor="@color/vita_text_primary" />
 

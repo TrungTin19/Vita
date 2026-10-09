@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scroll_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,7 +48,7 @@
             android:textColor="@color/vita_text_secondary"
             android:textSize="14sp" />
 
-        <!-- Username Field -->
+        <!-- Username Field with Material Symbols person icon -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_login_username"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -55,13 +56,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:hint="Tên đăng nhập"
+            app:boxBackgroundMode="outline"
             app:boxCornerRadiusBottomEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
             app:boxCornerRadiusTopStart="8dp"
             app:boxStrokeColor="@color/vita_teal"
             app:hintTextColor="@color/vita_teal"
-            app:startIconDrawable="@android:drawable/ic_menu_myplaces"
+            app:startIconDrawable="@drawable/ic_person"
             app:startIconTint="@color/vita_teal">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -72,10 +74,11 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:textColor="@color/vita_text_primary"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:hint="Nhập tên đăng nhập" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Password Field -->
+        <!-- Password Field with Material Symbols lock icon -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_login_password"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -83,6 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:hint="Mật khẩu"
+            app:boxBackgroundMode="outline"
             app:boxCornerRadiusBottomEnd="8dp"
             app:boxCornerRadiusBottomStart="8dp"
             app:boxCornerRadiusTopEnd="8dp"
@@ -91,7 +95,7 @@
             app:hintTextColor="@color/vita_teal"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="@color/vita_text_secondary"
-            app:startIconDrawable="@android:drawable/ic_lock_idle_lock"
+            app:startIconDrawable="@drawable/ic_lock"
             app:startIconTint="@color/vita_teal">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -102,7 +106,8 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:textColor="@color/vita_text_primary"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:hint="••••••••" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Submit Button -->
