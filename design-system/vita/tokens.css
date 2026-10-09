@@ -1,0 +1,127 @@
+/* Design Tokens - Auto-generated */
+/* Do not edit directly - modify tokens.json instead */
+
+/* === PRIMITIVES === */
+:root {
+  --primitive-color-teal-50: #E0F2F1;
+  --primitive-color-teal-100: #B2DFDB;
+  --primitive-color-teal-200: #80CBC4;
+  --primitive-color-teal-400: #4EBAAA;
+  --primitive-color-teal-600: #00897B;
+  --primitive-color-teal-700: #00796B;
+  --primitive-color-teal-800: #005B4F;
+  --primitive-color-teal-900: #004D40;
+  --primitive-color-aqua-50: #E0F7FA;
+  --primitive-color-aqua-100: #B2EBF2;
+  --primitive-color-aqua-300: #4DD0E1;
+  --primitive-color-aqua-500: #00ACC1;
+  --primitive-color-aqua-700: #007C91;
+  --primitive-color-neutral-bg: #F8F9FA;
+  --primitive-color-neutral-surface: #FFFFFF;
+  --primitive-color-neutral-divider: #E0E0E0;
+  --primitive-color-neutral-slate: #1C1B1F;
+  --primitive-color-neutral-gray: #616161;
+  --primitive-color-neutral-lightGray: #9E9E9E;
+  --primitive-color-status-good: #2E7D32;
+  --primitive-color-status-warning: #F57C00;
+  --primitive-color-status-danger: #D32F2F;
+  --primitive-color-status-water: #1976D2;
+  --primitive-color-status-sleep: #512DA8;
+  --primitive-spacing-xs: 4dp;
+  --primitive-spacing-sm: 8dp;
+  --primitive-spacing-md: 16dp;
+  --primitive-spacing-lg: 24dp;
+  --primitive-spacing-xl: 32dp;
+  --primitive-spacing-2xl: 48dp;
+  --primitive-spacing-scrollPad: 80dp;
+  --primitive-fontSize-caption: 12sp;
+  --primitive-fontSize-body: 14sp;
+  --primitive-fontSize-bodyLg: 16sp;
+  --primitive-fontSize-h2: 18sp;
+  --primitive-fontSize-h1: 22sp;
+  --primitive-fontSize-display: 32sp;
+  --primitive-radius-none: 0dp;
+  --primitive-radius-sm: 4dp;
+  --primitive-radius-button: 8dp;
+  --primitive-radius-input: 8dp;
+  --primitive-radius-card: 12dp;
+  --primitive-radius-pill: 16dp;
+  --primitive-radius-full: 9999dp;
+  --primitive-elevation-flat: 0dp;
+  --primitive-elevation-cardResting: 2dp;
+  --primitive-elevation-cardPressed: 4dp;
+  --primitive-elevation-toolbar: 2dp;
+  --primitive-elevation-fab: 6dp;
+  --primitive-elevation-bottomNav: 8dp;
+  --primitive-elevation-fabPressed: 12dp;
+  --primitive-duration-ripple: 120ms;
+  --primitive-duration-fast: 150ms;
+  --primitive-duration-standard: 250ms;
+  --primitive-duration-animChart: 800ms;
+}
+
+/* === SEMANTIC === */
+:root {
+  --color-primary: #00897B;
+  --color-primaryVariant: #005B4F;
+  --color-primaryContainer: #4EBAAA;
+  --color-secondary: #00ACC1;
+  --color-secondaryVariant: #007C91;
+  --color-secondaryContainer: #E0F7FA;
+  --color-background: #F8F9FA;
+  --color-surface: #FFFFFF;
+  --color-textPrimary: #1C1B1F;
+  --color-textSecondary: #616161;
+  --color-divider: #E0E0E0;
+  --color-statusGood: #2E7D32;
+  --color-statusWarning: #F57C00;
+  --color-statusDanger: #D32F2F;
+  --color-water: #1976D2;
+  --color-sleep: #512DA8;
+  --spacing-screenPadding: 16dp;
+  --spacing-cardPadding: 16dp;
+  --spacing-itemGap: 8dp;
+  --spacing-sectionGap: 24dp;
+  --spacing-bottomScrollClearance: 80dp;
+  --typography-display: 32sp;
+  --typography-toolbarTitle: 22sp;
+  --typography-sectionTitle: 18sp;
+  --typography-bodyLarge: 16sp;
+  --typography-body: 14sp;
+  --typography-caption: 12sp;
+}
+
+/* === COMPONENTS === */
+:root {
+  --button-primaryBg: #00897B;
+  --button-primaryFg: #FFFFFF;
+  --button-primaryHeight: 48dp;
+  --button-primaryRadius: 8dp;
+  --button-secondaryBorder: #00897B;
+  --button-secondaryFg: #00897B;
+  --button-dangerFg: #D32F2F;
+  --button-fabBg: #00ACC1;
+  --button-fabFg: #FFFFFF;
+  --button-fabSize: 56dp;
+  --button-fabElevation: 6dp;
+  --card-bg: #FFFFFF;
+  --card-radius: 12dp;
+  --card-elevation: 2dp;
+  --card-padding: 16dp;
+  --card-stroke: #E0E0E0;
+  --input-radius: 8dp;
+  --input-strokeDefault: #E0E0E0;
+  --input-strokeFocus: #00897B;
+  --input-strokeError: #D32F2F;
+  --input-minHeight: 48dp;
+  --bottomNav-height: 56dp;
+  --bottomNav-bg: #FFFFFF;
+  --bottomNav-elevation: 8dp;
+  --bottomNav-colorActive: #00897B;
+  --bottomNav-colorInactive: #616161;
+  --bottomNav-topBorder: #E0E0E0;
+  --notification-channelId: vita_medicine_channel;
+  --notification-primaryColor: #00897B;
+  --notification-actionTakenColor: #2E7D32;
+  --notification-actionSkippedColor: #D32F2F;
+}

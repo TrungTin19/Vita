@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_splash"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vita_bg">
+
+    <!-- Center Content: Logo, Title, Slogan -->
+    <LinearLayout
+        android:id="@+id/ll_splash_brand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/pb_splash_loading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <ImageView
+            android:id="@+id/iv_splash_logo"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:contentDescription="Biểu tượng ứng dụng quản lý sức khỏe Vita"
+            android:scaleType="fitCenter"
+            android:src="@drawable/vita_logo_art" />
+
+        <TextView
+            android:id="@+id/tv_splash_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Vita"
+            android:textColor="@color/vita_teal"
+            android:textSize="32sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_splash_slogan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Sức sống mỗi ngày, an tâm tại nhà"
+            android:textColor="@color/vita_text_secondary"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Bottom Indicator & Version -->
+    <ProgressBar
+        android:id="@+id/pb_splash_loading"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginBottom="24dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/vita_aqua"
+        app:layout_constraintBottom_toTopOf="@+id/tv_splash_version"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_splash_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="Phiên bản 1.0 - ĐH Thủ Dầu Một"
+        android:textColor="@color/vita_text_secondary"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,23 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+    <!-- Background Circle -->
+    <path
+        android:fillColor="#E0F2F1"
+        android:pathData="M60,10 A50,50 0 1,0 60,110 A50,50 0 1,0 60,10 Z" />
+
+    <!-- Stylized Heart & V Shape in Vita Teal -->
+    <path
+        android:fillColor="#00897B"
+        android:pathData="M60,92 C56,88 30,68 30,46 C30,34 39,26 50,26 C56,26 60,30 60,30 C60,30 64,26 70,26 C81,26 90,34 90,46 C90,68 64,88 60,92 Z" />
+
+    <!-- Pulse ECG Line in White -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M38,50 L48,50 L52,40 L58,62 L64,44 L68,54 L72,50 L82,50" />
+</vector>
