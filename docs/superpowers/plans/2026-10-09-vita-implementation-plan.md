@@ -546,13 +546,13 @@
 - Consumes: `BMICalculator`, `HealthDao.getLatestWeight()`, `UserDao`, `WeatherClient`
 - Produces: Lời chào cá nhân; Thẻ BMI tự động; Spinner chọn thành phố (Zero-GPS); Thẻ Thời tiết & AQI; Thẻ Lời khuyên Heuristic (nhiệt độ $\ge 33^\circ C$ gợi ý bù 300ml nước).
 
-- [ ] **Step 1: Dựng layout `fragment_home.xml`**
+- [x] **Step 1: Dựng layout `fragment_home.xml`**
   Bố cục theo chuẩn `05_home.md`: Thẻ BMI, Thẻ Khí tượng & AQI, Thẻ Gợi ý chăm sóc, Spinner chọn 5 tỉnh thành phố lớn.
-- [ ] **Step 2: Hiện thực logic nạp dữ liệu trong `HomeFragment.java`**
+- [x] **Step 2: Hiện thực logic nạp dữ liệu trong `HomeFragment.java`**
   Đọc cân nặng mới nhất tính BMI; gọi `WeatherClient` lấy thời tiết; nếu nhiệt độ cao hiển thị thông điệp khích lệ bù nước; nếu mất mạng lấy cache từ SharedPreferences hiện nhãn "Ngoại tuyến".
-- [ ] **Step 3: Kiểm thử chế độ Máy bay (Airplane Mode)**
+- [x] **Step 3: Kiểm thử chế độ Máy bay (Airplane Mode)**
   Bật chế độ máy bay, mở app, xác nhận HomeFragment vẫn hiển thị dữ liệu cache an toàn không bị dừng đột ngột.
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
   `git commit -m "feat: implement HomeFragment with BMI summary, weather AQI and heuristic advice"`
 
 ---
