@@ -5,6 +5,7 @@
         <item name="colorPrimary">@color/vita_teal</item>
         <item name="colorPrimaryVariant">@color/vita_teal_dark</item>
         <item name="colorSecondary">@color/vita_aqua</item>
+        <item name="colorSecondaryContainer">@color/vita_teal_50</item>
         <item name="android:statusBarColor">@color/vita_teal_dark</item>
         <item name="android:windowBackground">@color/vita_bg</item>
     </style>
@@ -51,5 +52,10 @@
         <item name="strokeColor">@color/card_stroke</item>
         <item name="strokeWidth">1dp</item>
         <item name="contentPadding">@dimen/spacing_md</item>
+    </style>
+    <!-- Style: BottomNav Active Indicator (teal thay tím mặc định M3) -->
+    <style name="Widget.Vita.BottomNav.ActiveIndicator"
+        parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:background">@color/vita_teal_50</item>
     </style>
 </resources>

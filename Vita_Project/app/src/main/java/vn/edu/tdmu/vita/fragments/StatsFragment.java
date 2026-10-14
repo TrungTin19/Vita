@@ -320,6 +320,7 @@ public class StatsFragment extends Fragment {
         chart.getDescription().setEnabled(false);
         chart.setPinchZoom(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setNoDataTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
         chart.getAxisRight().setEnabled(false);
         chart.getAxisLeft().setTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
         chart.getAxisLeft().setTextSize(10f);
@@ -335,6 +336,7 @@ public class StatsFragment extends Fragment {
         chart.getDescription().setEnabled(false);
         chart.setPinchZoom(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setNoDataTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
         chart.getAxisRight().setEnabled(false);
         chart.getAxisLeft().setAxisMinimum(0f);
         chart.getAxisLeft().setTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));

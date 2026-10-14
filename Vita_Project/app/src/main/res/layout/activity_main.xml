@@ -40,6 +40,7 @@
             android:elevation="@dimen/elevation_bottom_nav"
             app:itemIconTint="@color/bottom_nav_color"
             app:itemTextColor="@color/bottom_nav_color"
+            app:itemActiveIndicatorStyle="@style/Widget.Vita.BottomNav.ActiveIndicator"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_nav_menu" />
     </LinearLayout>

@@ -103,7 +103,6 @@ public class ReminderFragment extends Fragment {
         initViews(view);
         setupRecyclerView();
         setupListeners();
-        requestNotificationPermissionIfNeeded();
         vn.edu.tdmu.vita.receivers.WaterReminderReceiver.schedule(requireContext());
         loadWaterProgress(false);
         loadMedicines();
@@ -155,6 +154,7 @@ public class ReminderFragment extends Fragment {
     private void setupListeners() {
         btnQuickAddWater.setOnClickListener(v -> handleQuickAddWater());
         fabAddMedicine.setOnClickListener(v -> {
+            requestNotificationPermissionIfNeeded();
             Intent intent = new Intent(requireContext(), AddMedicineActivity.class);
             medicineFormLauncher.launch(intent);
         });
