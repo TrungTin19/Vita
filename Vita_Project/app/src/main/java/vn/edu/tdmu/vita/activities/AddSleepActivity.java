@@ -28,6 +28,8 @@ import vn.edu.tdmu.vita.utils.SleepEvaluator;
 
 public class AddSleepActivity extends AppCompatActivity {
 
+    public static final String EXTRA_SLEEP_LOG_ID = "extra_sleep_log_id";
+
     private MaterialToolbar toolbar;
     private TextInputLayout tilDate;
     private TextInputEditText etDate;
@@ -43,6 +45,7 @@ public class AddSleepActivity extends AppCompatActivity {
     private SleepDao sleepDao;
     private SessionManager sessionManager;
 
+    private long sleepLogId = -1;
     private String selectedDate;
     private String sleepTime = "23:00";
     private String wakeTime = "06:30";
@@ -62,12 +65,7 @@ public class AddSleepActivity extends AppCompatActivity {
 
         initViews();
         setupListeners();
-
-        selectedDate = DateTimeUtils.getTodayDate();
-        etDate.setText(DateTimeUtils.formatDisplayDate(selectedDate));
-        etSleepTime.setText(sleepTime);
-        etWakeTime.setText(wakeTime);
-        updateDurationCard();
+        loadIntentData();
     }
 
     private void initViews() {
@@ -82,6 +80,29 @@ public class AddSleepActivity extends AppCompatActivity {
         tvBadge = findViewById(R.id.tv_sleep_badge);
         tvAdvice = findViewById(R.id.tv_sleep_advice);
         btnSave = findViewById(R.id.btn_sleep_save);
+    }
+
+    private void loadIntentData() {
+        sleepLogId = getIntent().getLongExtra(EXTRA_SLEEP_LOG_ID, -1);
+
+        if (sleepLogId > 0) {
+            toolbar.setTitle(getString(R.string.add_sleep_title_edit));
+            SleepLog log = sleepDao.getById(sleepLogId);
+            if (log != null) {
+                selectedDate = log.getDate();
+                sleepTime = log.getSleepTime();
+                wakeTime = log.getWakeTime();
+            } else {
+                selectedDate = DateTimeUtils.getTodayDate();
+            }
+        } else {
+            toolbar.setTitle(getString(R.string.add_sleep_title));
+            selectedDate = DateTimeUtils.getTodayDate();
+        }
+        etDate.setText(DateTimeUtils.formatDisplayDate(selectedDate));
+        etSleepTime.setText(sleepTime);
+        etWakeTime.setText(wakeTime);
+        updateDurationCard();
     }
 
     private void setupListeners() {
@@ -182,6 +203,27 @@ public class AddSleepActivity extends AppCompatActivity {
         }
         float hours = DateTimeUtils.calculateSleepDuration(sleepTime, wakeTime);
         long userId = sessionManager.getUserId();
+
+        if (sleepLogId > 0) {
+            SleepLog log = sleepDao.getById(sleepLogId);
+            if (log == null) {
+                Toast.makeText(this, getString(R.string.add_sleep_error_update), Toast.LENGTH_SHORT).show();
+                return;
+            }
+            log.setDate(selectedDate);
+            log.setSleepTime(sleepTime);
+            log.setWakeTime(wakeTime);
+            log.setDurationH(hours);
+            if (sleepDao.update(log)) {
+                Toast.makeText(this, getString(R.string.add_sleep_success_edit), Toast.LENGTH_SHORT).show();
+                setResult(RESULT_OK);
+                finish();
+            } else {
+                Toast.makeText(this, getString(R.string.add_sleep_error_update), Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
         SleepLog log = new SleepLog(0, userId, selectedDate, sleepTime, wakeTime, hours);
         long id = sleepDao.insert(log);
         if (id > 0) {

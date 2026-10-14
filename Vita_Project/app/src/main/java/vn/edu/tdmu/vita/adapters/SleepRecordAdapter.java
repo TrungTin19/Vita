@@ -1,5 +1,6 @@
 package vn.edu.tdmu.vita.adapters;
 
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,14 @@ import vn.edu.tdmu.vita.utils.SleepEvaluator;
 public class SleepRecordAdapter extends RecyclerView.Adapter<SleepRecordAdapter.ViewHolder> {
 
     private final List<SleepLog> logs;
+    private int contextMenuPosition = -1;
 
     public SleepRecordAdapter(List<SleepLog> logs) {
         this.logs = logs;
+    }
+
+    public int getContextMenuPosition() {
+        return contextMenuPosition;
     }
 
     @NonNull
@@ -45,17 +51,21 @@ public class SleepRecordAdapter extends RecyclerView.Adapter<SleepRecordAdapter.
         return logs.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         private final TextView tvDate;
         private final TextView tvTime;
         private final TextView tvBadge;
+        private final com.google.android.material.card.MaterialCardView cardView;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvDate = itemView.findViewById(R.id.tv_sleep_item_date);
             tvTime = itemView.findViewById(R.id.tv_sleep_item_time);
             tvBadge = itemView.findViewById(R.id.tv_sleep_item_badge);
+            cardView = itemView.findViewById(R.id.cv_sleep_item);
+
+            itemView.setOnCreateContextMenuListener(this);
         }
 
         void bind(SleepLog log) {
@@ -81,6 +91,19 @@ public class SleepRecordAdapter extends RecyclerView.Adapter<SleepRecordAdapter.
             }
             tvBadge.setTextColor(textColor);
             tvBadge.setBackgroundResource(badgeBg);
+
+            cardView.setOnLongClickListener(v -> {
+                contextMenuPosition = getBindingAdapterPosition();
+                return false;
+            });
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v,
+                                         ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle(itemView.getContext().getString(R.string.stats_sleep_menu_title));
+            menu.add(0, R.id.menu_sleep_edit, 0, itemView.getContext().getString(R.string.stats_sleep_menu_edit));
+            menu.add(0, R.id.menu_sleep_delete, 1, itemView.getContext().getString(R.string.stats_sleep_menu_delete));
         }
 
         private String nightBefore(String wakeDate) {

@@ -77,6 +77,17 @@
             android:textSize="@dimen/text_caption"
             tools:text="Lặp lại: T2, T3, T4, T5, T6, T7, CN" />
 
+        <!-- Today status -->
+        <TextView
+            android:id="@+id/tv_med_item_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:textColor="@color/vita_text_secondary"
+            android:textSize="@dimen/text_caption"
+            android:textStyle="bold"
+            tools:text="Hôm nay: chưa xác nhận" />
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

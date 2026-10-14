@@ -26,11 +26,14 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
     }
 
     private final List<Medicine> medicines;
+    private final vn.edu.tdmu.vita.database.MedicineDao medicineDao;
     private OnSwitchChangeListener switchListener;
     private int contextMenuPosition = -1;
 
-    public MedicineAdapter(List<Medicine> medicines) {
+    public MedicineAdapter(List<Medicine> medicines,
+                           vn.edu.tdmu.vita.database.MedicineDao medicineDao) {
         this.medicines = medicines;
+        this.medicineDao = medicineDao;
     }
 
     public void setOnSwitchChangeListener(OnSwitchChangeListener listener) {
@@ -80,6 +83,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         private final MaterialSwitch swActive;
         private final TextView tvTime;
         private final TextView tvDays;
+        private final TextView tvStatus;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -88,6 +92,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
             swActive = itemView.findViewById(R.id.sw_med_active);
             tvTime = itemView.findViewById(R.id.tv_med_item_time);
             tvDays = itemView.findViewById(R.id.tv_med_item_days);
+            tvStatus = itemView.findViewById(R.id.tv_med_item_status);
 
             itemView.setOnCreateContextMenuListener(this);
         }
@@ -103,6 +108,8 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
             tvDays.setText(itemView.getContext().getString(R.string.reminder_med_days_prefix,
                     formatDaysMask(itemView.getContext(), medicine.getDaysMask())));
 
+            bindTodayStatus(medicine);
+
             swActive.setOnCheckedChangeListener(null);
             swActive.setChecked(medicine.isActive());
             swActive.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -115,6 +122,28 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
                 contextMenuPosition = getBindingAdapterPosition();
                 return false;
             });
+        }
+
+        void bindTodayStatus(Medicine medicine) {
+            android.content.Context context = itemView.getContext();
+            vn.edu.tdmu.vita.models.MedicineLog log = medicineDao == null ? null
+                    : medicineDao.getLogForMedicine(medicine.getId(),
+                            vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate());
+            if (log == null) {
+                tvStatus.setText(context.getString(R.string.reminder_med_status_none));
+                tvStatus.setTextColor(androidx.core.content.ContextCompat.getColor(context,
+                        R.color.vita_text_secondary));
+            } else if ("TAKEN".equals(log.getStatus())) {
+                String time = log.getLoggedAt() != null && log.getLoggedAt().length() >= 16
+                        ? log.getLoggedAt().substring(11, 16) : "";
+                tvStatus.setText(context.getString(R.string.reminder_med_status_taken, time));
+                tvStatus.setTextColor(androidx.core.content.ContextCompat.getColor(context,
+                        R.color.vita_status_good));
+            } else {
+                tvStatus.setText(context.getString(R.string.reminder_med_status_skipped));
+                tvStatus.setTextColor(androidx.core.content.ContextCompat.getColor(context,
+                        R.color.vita_status_danger));
+            }
         }
 
         @Override

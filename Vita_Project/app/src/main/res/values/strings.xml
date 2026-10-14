@@ -282,6 +282,19 @@
     <string name="stats_sleep_date_format">Đêm %1$s → Sáng %2$s</string>
     <string name="stats_fab_desc">Ghi nhận giấc ngủ mới</string>
     <string name="stats_not_enough_data">Chưa đủ dữ liệu vẽ đồ thị. Hãy ghi nhận ít nhất 2 ngày để theo dõi xu hướng nhé.</string>
+    <string name="stats_sleep_menu_title">Tùy chọn</string>
+    <string name="stats_sleep_menu_edit">Sửa giấc ngủ này</string>
+    <string name="stats_sleep_menu_delete">Xóa giấc ngủ này</string>
+    <string name="stats_sleep_delete_title">Xác nhận xóa</string>
+    <string name="stats_sleep_delete_msg">Bạn có chắc chắn muốn xóa giấc ngủ đêm %1$s không?</string>
+    <string name="stats_sleep_delete_success">Đã xóa giấc ngủ thành công</string>
+    <string name="stats_sleep_delete_error">Không thể xóa giấc ngủ. Vui lòng thử lại.</string>
+    <string name="add_sleep_title_edit">Chỉnh sửa giấc ngủ</string>
+    <string name="add_sleep_success_edit">Đã cập nhật giấc ngủ thành công!</string>
+    <string name="add_sleep_error_update">Không thể cập nhật giấc ngủ. Vui lòng thử lại.</string>
+    <string name="reminder_med_status_none">Hôm nay: chưa xác nhận</string>
+    <string name="reminder_med_status_taken">Hôm nay: đã uống lúc %1$s</string>
+    <string name="reminder_med_status_skipped">Hôm nay: đã bỏ qua cữ này</string>
 
     <!-- Home Screen -->
     <string name="home_sub_greeting">Chúc bạn một ngày tràn đầy năng lượng.</string>

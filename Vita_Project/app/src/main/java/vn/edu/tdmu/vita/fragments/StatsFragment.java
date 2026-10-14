@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -118,6 +119,7 @@ public class StatsFragment extends Fragment {
         sleepAdapter = new SleepRecordAdapter(sleepLogs);
         rvSleepRecords.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvSleepRecords.setAdapter(sleepAdapter);
+        registerForContextMenu(rvSleepRecords);
 
         toggleRange.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (!isChecked) return;
@@ -364,6 +366,55 @@ public class StatsFragment extends Fragment {
             rvSleepRecords.setVisibility(View.VISIBLE);
             tvSleepEmpty.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        int position = sleepAdapter.getContextMenuPosition();
+        if (position < 0 || position >= sleepLogs.size()) {
+            return super.onContextItemSelected(item);
+        }
+
+        SleepLog log = sleepLogs.get(position);
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.menu_sleep_edit) {
+            Intent intent = new Intent(requireContext(), AddSleepActivity.class);
+            intent.putExtra(AddSleepActivity.EXTRA_SLEEP_LOG_ID, log.getId());
+            addSleepLauncher.launch(intent);
+            return true;
+        } else if (itemId == R.id.menu_sleep_delete) {
+            showDeleteConfirmation(log, position);
+            return true;
+        }
+
+        return super.onContextItemSelected(item);
+    }
+
+    private void showDeleteConfirmation(SleepLog log, int position) {
+        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle(getString(R.string.stats_sleep_delete_title))
+                .setMessage(getString(R.string.stats_sleep_delete_msg,
+                        DateTimeUtils.formatDisplayDate(log.getDate())))
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+                .setPositiveButton(getString(R.string.btn_delete), (dialog, which) -> {
+                    boolean deleted = sleepDao.delete(log.getId());
+                    if (deleted) {
+                        sleepLogs.remove(position);
+                        sleepAdapter.notifyItemRemoved(position);
+                        sleepAdapter.notifyItemRangeChanged(position, sleepLogs.size() - position);
+                        loadSleepList();
+                        loadCharts();
+                        android.widget.Toast.makeText(requireContext(),
+                                getString(R.string.stats_sleep_delete_success),
+                                android.widget.Toast.LENGTH_SHORT).show();
+                    } else {
+                        android.widget.Toast.makeText(requireContext(),
+                                getString(R.string.stats_sleep_delete_error),
+                                android.widget.Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .show();
     }
 
     static class ChartMarker extends MarkerView {

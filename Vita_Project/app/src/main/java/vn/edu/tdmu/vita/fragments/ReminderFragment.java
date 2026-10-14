@@ -144,7 +144,7 @@ public class ReminderFragment extends Fragment {
 
     private void setupRecyclerView() {
         medicines = new ArrayList<>();
-        adapter = new MedicineAdapter(medicines);
+        adapter = new MedicineAdapter(medicines, medicineDao);
         adapter.setOnSwitchChangeListener(this::handleSwitchChanged);
         rvMedicines.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvMedicines.setAdapter(adapter);
