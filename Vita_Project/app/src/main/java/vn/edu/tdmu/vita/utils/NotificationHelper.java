@@ -22,6 +22,9 @@ public final class NotificationHelper {
     public static final String CHANNEL_ID = "vita_medicine_channel";
     private static final String CHANNEL_NAME = "Nhắc nhở uống thuốc Vita";
 
+    public static final String WATER_CHANNEL_ID = "vita_water_channel";
+    private static final String WATER_CHANNEL_NAME = "Nhắc nhở uống nước Vita";
+
     private NotificationHelper() {}
 
     public static void ensureChannel(Context context) {
@@ -71,5 +74,42 @@ public final class NotificationHelper {
         intent.putExtra(NotificationActionReceiver.EXTRA_MEDICINE_ID, medicineId);
         return PendingIntent.getBroadcast(context, requestCode, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    }
+
+    public static void showWaterReminder(Context context, int notificationId) {
+        ensureWaterChannel(context);
+
+        Intent openApp = new Intent(context, vn.edu.tdmu.vita.activities.MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, openApp,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        Intent drinked = new Intent(context,
+                vn.edu.tdmu.vita.receivers.WaterReminderReceiver.class);
+        drinked.setAction(vn.edu.tdmu.vita.receivers.WaterReminderReceiver.ACTION_DRINKED);
+        PendingIntent drinkedIntent = PendingIntent.getBroadcast(context, 9002, drinked,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, WATER_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_water_drop)
+                .setContentTitle(context.getString(R.string.water_reminder_title))
+                .setContentText(context.getString(R.string.water_reminder_text))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
+                .setColor(0xFF00ACC1)
+                .addAction(R.drawable.ic_water_drop,
+                        context.getString(R.string.water_reminder_action), drinkedIntent);
+
+        NotificationManagerCompat.from(context).notify(notificationId, builder.build());
+    }
+
+    private static void ensureWaterChannel(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
+        NotificationManager manager = context.getSystemService(NotificationManager.class);
+        if (manager == null || manager.getNotificationChannel(WATER_CHANNEL_ID) != null) return;
+        NotificationChannel channel = new NotificationChannel(
+                WATER_CHANNEL_ID, WATER_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription("Nhắc uống nước định kỳ mỗi 2 giờ của Vita");
+        manager.createNotificationChannel(channel);
     }
 }

@@ -79,6 +79,9 @@
             android:name=".receivers.NotificationActionReceiver"
             android:exported="false" />
         <receiver
+            android:name=".receivers.WaterReminderReceiver"
+            android:exported="false" />
+        <receiver
             android:name=".receivers.BootReceiver"
             android:exported="true">
             <intent-filter>

@@ -104,6 +104,7 @@ public class ReminderFragment extends Fragment {
         setupRecyclerView();
         setupListeners();
         requestNotificationPermissionIfNeeded();
+        vn.edu.tdmu.vita.receivers.WaterReminderReceiver.schedule(requireContext());
         loadWaterProgress(false);
         loadMedicines();
     }

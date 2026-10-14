@@ -319,4 +319,9 @@
     <string name="nav_stats">Thống kê</string>
     <string name="main_profile_title">Hồ sơ cá nhân</string>
     <string name="main_profile_desc">Mở hồ sơ cá nhân</string>
+
+    <!-- Water Reminder -->
+    <string name="water_reminder_title">Đến giờ uống nước</string>
+    <string name="water_reminder_text">Uống một ly nước để cơ thể tỉnh táo nhé!</string>
+    <string name="water_reminder_action">Đã uống 250 ml</string>
 </resources>

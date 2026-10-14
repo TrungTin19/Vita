@@ -22,5 +22,6 @@ public class BootReceiver extends BroadcastReceiver {
         for (Medicine medicine : active) {
             MedicineAlarmReceiver.schedule(context, medicine);
         }
+        WaterReminderReceiver.schedule(context);
     }
 }
