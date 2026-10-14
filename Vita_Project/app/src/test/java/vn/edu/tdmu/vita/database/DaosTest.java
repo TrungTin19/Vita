@@ -33,4 +33,20 @@ public class DaosTest {
         SleepLog sleepLog = new SleepLog(5L, 10L, "2026-10-09", "23:00", "07:00", 8.0f);
         assertEquals(8.0f, sleepLog.getDurationH(), 0.01f);
     }
+
+    @Test
+    public void testHealthRecord_NullableMetricsHandling() {
+        // User only records blood pressure; weight, heart rate, blood sugar, and note are omitted (null)
+        HealthRecord partialRecord = new HealthRecord(2L, 10L, "2026-10-14", null, 125, 82, null, null, null);
+        assertNotNull(partialRecord.getSystolic());
+        assertEquals(Integer.valueOf(125), partialRecord.getSystolic());
+        assertNotNull(partialRecord.getDiastolic());
+        assertEquals(Integer.valueOf(82), partialRecord.getDiastolic());
+
+        // Nullable fields must be null without NPE
+        assertNull(partialRecord.getWeightKg());
+        assertNull(partialRecord.getHeartRate());
+        assertNull(partialRecord.getBloodSugar());
+        assertNull(partialRecord.getNote());
+    }
 }

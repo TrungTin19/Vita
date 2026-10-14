@@ -63,4 +63,34 @@ public class InputValidatorTest {
         assertTrue(InputValidator.isValidWaterGoal(2000));
         assertTrue(InputValidator.isValidWaterGoal(10000));
     }
+
+    @Test
+    public void testIsValidBloodPressure() {
+        assertFalse(InputValidator.isValidSystolic(49));
+        assertFalse(InputValidator.isValidSystolic(251));
+        assertTrue(InputValidator.isValidSystolic(120));
+
+        assertFalse(InputValidator.isValidDiastolic(29));
+        assertFalse(InputValidator.isValidDiastolic(151));
+        assertTrue(InputValidator.isValidDiastolic(80));
+
+        // Systolic must be strictly greater than Diastolic
+        assertTrue(InputValidator.isValidBloodPressure(120, 80));
+        assertFalse(InputValidator.isValidBloodPressure(80, 120));
+        assertFalse(InputValidator.isValidBloodPressure(100, 100));
+    }
+
+    @Test
+    public void testIsValidHeartRate() {
+        assertFalse(InputValidator.isValidHeartRate(29));
+        assertFalse(InputValidator.isValidHeartRate(251));
+        assertTrue(InputValidator.isValidHeartRate(75));
+    }
+
+    @Test
+    public void testIsValidBloodSugar() {
+        assertFalse(InputValidator.isValidBloodSugar(19.9f));
+        assertFalse(InputValidator.isValidBloodSugar(600.1f));
+        assertTrue(InputValidator.isValidBloodSugar(95.0f));
+    }
 }

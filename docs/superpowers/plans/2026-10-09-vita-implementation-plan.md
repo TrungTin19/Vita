@@ -331,13 +331,13 @@
 - Consumes: `HealthDao.insert()`, `HealthDao.update()`, `HealthDao.getById()`
 - Produces: Form nhập sinh hiệu (chọn ngày qua `DatePickerDialog`), **cho phép bỏ trống trường không đo để lưu NULL vào SQLite**.
 
-- [ ] **Step 1: Dựng layout `activity_add_health.xml`**
+- [x] **Step 1: Dựng layout `activity_add_health.xml`**
   Các trường Tâm thu, Tâm trương, Nhịp tim, Cân nặng, Đường huyết, Ghi chú có `suffixText` rõ ràng.
-- [ ] **Step 2: Hiện thực `AddHealthActivity.java`**
+- [x] **Step 2: Hiện thực `AddHealthActivity.java`**
   Xử lý mở `DatePickerDialog` khi bấm ô ngày; kiểm tra logic tâm thu > tâm trương; parse chuỗi rỗng thành `null` khi ghi vào `HealthRecord`.
-- [ ] **Step 3: Kiểm thử lưu bản ghi khuyết chỉ số**
+- [x] **Step 3: Kiểm thử lưu bản ghi khuyết chỉ số**
   Xác nhận lưu thành công khi chỉ nhập huyết áp, các trường khác để trống lưu NULL trong SQLite.
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
   `git commit -m "feat: implement AddHealthActivity with nullable metric handling"`
 
 ---
