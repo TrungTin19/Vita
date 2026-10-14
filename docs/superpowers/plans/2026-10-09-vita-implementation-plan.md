@@ -498,15 +498,15 @@
 - Consumes: `HealthDao`, `WaterDao`, `SleepDao`, `MPAndroidChart`
 - Produces: LineChart vẽ song song 2 đường Huyết áp (Tâm thu đỏ, Tâm trương xanh), BarChart lượng nước & giấc ngủ, Toggle 7 ngày / 30 ngày.
 
-- [ ] **Step 1: Dựng layout `fragment_stats.xml` và `item_sleep_record.xml`**
+- [x] **Step 1: Dựng layout `fragment_stats.xml` và `item_sleep_record.xml`**
   Thẻ LineChart, Thẻ BarChart, Segmented Button chọn 7/30 ngày, RecyclerView danh sách giấc ngủ.
-- [ ] **Step 2: Hiện thực pipeline nạp dữ liệu từ SQLite vào MPAndroidChart**
+- [x] **Step 2: Hiện thực pipeline nạp dữ liệu từ SQLite vào MPAndroidChart**
   Chuyển đổi Cursor dữ liệu thành `Entry` và `BarEntry`; cài đặt `ValueFormatter` định dạng ngày `dd/MM` trên trục X; bật `animateY(800)`.
-- [ ] **Step 3: Hiện thực `StatsFragment.java`**
+- [x] **Step 3: Hiện thực `StatsFragment.java`**
   Vẽ biểu đồ đường song song huyết áp; hiển thị `MarkerView` khi chạm vào điểm nút; nạp danh sách 7 giấc ngủ gần nhất.
-- [ ] **Step 4: Kiểm thử hiển thị biểu đồ**
+- [x] **Step 4: Kiểm thử hiển thị biểu đồ**
   Nhập dữ liệu 5 ngày liên tiếp, mở tab Thống kê, xác nhận biểu đồ vẽ đủ 5 điểm mượt mà.
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   `git commit -m "feat: implement StatsFragment with MPAndroidChart dual line and bar charts"`
 
 ---
