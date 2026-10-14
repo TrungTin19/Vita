@@ -591,16 +591,16 @@
 **Interfaces:**
 - Produces: Khai báo đầy đủ 10 Activities, 3 Receivers, quyền `INTERNET`, `RECEIVE_BOOT_COMPLETED`, `POST_NOTIFICATIONS` (Android 13+), `SCHEDULE_EXACT_ALARM`.
 
-- [ ] **Step 1: Cấu hình `AndroidManifest.xml`**
+- [x] **Step 1: Cấu hình `AndroidManifest.xml`**
   Khai báo toàn bộ 10 Activity, 3 BroadcastReceiver (`MedicineAlarmReceiver`, `NotificationActionReceiver`, `BootReceiver`), App Icon mipmap, và các permissions tối thiểu.
-- [ ] **Step 2: Viết test kịch bản tích hợp hệ thống (Integration Test)**
+- [x] **Step 2: Viết test kịch bản tích hợp hệ thống (Integration Test)**
   Kiểm thử chuỗi luồng người dùng: Đăng ký -> Đăng nhập -> Thêm chỉ số sức khỏe -> Đặt lịch thuốc -> Nạp nước -> Kiểm tra biểu đồ.
-- [ ] **Step 3: Chạy toàn bộ bộ kiểm thử Ma trận (Test Matrix)**
+- [x] **Step 3: Chạy toàn bộ bộ kiểm thử Ma trận (Test Matrix)**
   Xác nhận 10 kịch bản kiểm thử trong bảng Test Matrix đều đạt trạng thái **PASS**.
-- [ ] **Step 4: Đóng gói và kiểm tra file APK**
+- [x] **Step 4: Đóng gói và kiểm tra file APK**
   Run: `./gradlew assembleDebug`
   Expected: BUILD SUCCESSFUL, sinh tệp `app-debug.apk` sẵn sàng cài đặt trên thiết bị thật.
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   `git commit -m "feat: finalize AndroidManifest and verify comprehensive test matrix"`
 
 ---
