@@ -1,10 +1,10 @@
 package vn.edu.tdmu.vita.activities;
 
 import android.app.TimePickerDialog;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +36,7 @@ public class AddMedicineActivity extends AppCompatActivity {
     private TextInputEditText etDosage;
     private TextInputLayout tilTime;
     private TextInputEditText etTime;
-    private android.widget.TextView[] dayButtons;
+    private TextView[] dayButtons;
     private MaterialCheckBox cbAllDays;
     private MaterialButton btnSave;
 
@@ -73,7 +73,7 @@ public class AddMedicineActivity extends AppCompatActivity {
         etDosage = findViewById(R.id.et_med_dosage);
         tilTime = findViewById(R.id.til_med_time);
         etTime = findViewById(R.id.et_med_time);
-        dayButtons = new android.widget.TextView[]{
+        dayButtons = new TextView[]{
                 findViewById(R.id.btn_day_mon),
                 findViewById(R.id.btn_day_tue),
                 findViewById(R.id.btn_day_wed),
@@ -162,7 +162,7 @@ public class AddMedicineActivity extends AppCompatActivity {
     private void refreshDayButtons() {
         for (int i = 0; i < dayButtons.length; i++) {
             boolean selected = (daysMask & (1 << i)) != 0;
-            android.widget.TextView btn = dayButtons[i];
+            TextView btn = dayButtons[i];
             if (selected) {
                 btn.setBackgroundResource(R.drawable.bg_day_selected);
                 btn.setTextColor(ContextCompat.getColor(this, android.R.color.white));
@@ -170,6 +170,10 @@ public class AddMedicineActivity extends AppCompatActivity {
                 btn.setBackgroundResource(R.drawable.bg_day_unselected);
                 btn.setTextColor(ContextCompat.getColor(this, R.color.vita_teal));
             }
+            btn.setSelected(selected);
+            btn.setContentDescription(btn.getText()
+                    + (selected ? getString(R.string.add_med_day_on)
+                                : getString(R.string.add_med_day_off)));
         }
         cbAllDays.setOnCheckedChangeListener(null);
         cbAllDays.setChecked(daysMask == 127);

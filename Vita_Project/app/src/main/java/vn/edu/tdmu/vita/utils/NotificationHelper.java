@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
@@ -21,6 +22,9 @@ public final class NotificationHelper {
 
     public static final String CHANNEL_ID = "vita_medicine_channel";
     private static final String CHANNEL_NAME = "Nhắc nhở uống thuốc Vita";
+    private static final String PREFS_CHANNEL = "vita_channels";
+    private static final String KEY_MED_CHANNEL_V = "med_channel_v";
+    private static final int MED_CHANNEL_VERSION = 2;
 
     public static final String WATER_CHANNEL_ID = "vita_water_channel";
     private static final String WATER_CHANNEL_NAME = "Nhắc nhở uống nước Vita";
@@ -30,7 +34,14 @@ public final class NotificationHelper {
     public static void ensureChannel(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return;
         NotificationManager manager = context.getSystemService(NotificationManager.class);
-        if (manager == null || manager.getNotificationChannel(CHANNEL_ID) != null) return;
+        if (manager == null) return;
+        SharedPreferences prefs = context.getSharedPreferences(PREFS_CHANNEL, Context.MODE_PRIVATE);
+        if (prefs.getInt(KEY_MED_CHANNEL_V, 0) < MED_CHANNEL_VERSION) {
+            // ponytail: channel tạo 1 lần và hệ thống giữ mãi; xóa để bản cũ nhận cấu hình mới.
+            manager.deleteNotificationChannel(CHANNEL_ID);
+            prefs.edit().putInt(KEY_MED_CHANNEL_V, MED_CHANNEL_VERSION).apply();
+        }
+        if (manager.getNotificationChannel(CHANNEL_ID) != null) return;
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
         channel.setDescription("Báo thức nhắc uống thuốc đúng giờ của Vita");

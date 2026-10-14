@@ -66,6 +66,7 @@ public class ReminderFragment extends Fragment {
     private MedicineAdapter adapter;
 
     private int waterGoalMl = 2000;
+    private static boolean exactAlarmPromptShown = false;
 
     private ActivityResultLauncher<Intent> medicineFormLauncher;
     private ActivityResultLauncher<String> notificationPermissionLauncher;
@@ -117,11 +118,13 @@ public class ReminderFragment extends Fragment {
     }
 
     private void promptExactAlarmIfNeeded() {
+        if (exactAlarmPromptShown) return;
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) return;
         android.app.AlarmManager alarmManager = requireContext()
                 .getSystemService(android.app.AlarmManager.class);
         if (alarmManager != null && !alarmManager.canScheduleExactAlarms()
                 && getView() != null) {
+            exactAlarmPromptShown = true;
             Snackbar.make(getView(), getString(R.string.exact_alarm_needed),
                             Snackbar.LENGTH_LONG)
                     .setAction(getString(R.string.exact_alarm_open_settings), v -> {
@@ -144,7 +147,7 @@ public class ReminderFragment extends Fragment {
 
     private void setupRecyclerView() {
         medicines = new ArrayList<>();
-        adapter = new MedicineAdapter(medicines, medicineDao);
+        adapter = new MedicineAdapter(medicines);
         adapter.setOnSwitchChangeListener(this::handleSwitchChanged);
         rvMedicines.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvMedicines.setAdapter(adapter);
@@ -217,6 +220,14 @@ public class ReminderFragment extends Fragment {
 
         medicines.clear();
         medicines.addAll(medicineDao.getAllByUserId(userId));
+        java.util.Map<Long, vn.edu.tdmu.vita.models.MedicineLog> logs = new java.util.HashMap<>();
+        String today = vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate();
+        for (Medicine medicine : medicines) {
+            vn.edu.tdmu.vita.models.MedicineLog log =
+                    medicineDao.getLogForMedicine(medicine.getId(), today);
+            if (log != null) logs.put(medicine.getId(), log);
+        }
+        adapter.setTodayLogs(logs);
         adapter.notifyDataSetChanged();
 
         if (medicines.isEmpty()) {

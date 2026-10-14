@@ -400,9 +400,6 @@ public class StatsFragment extends Fragment {
                 .setPositiveButton(getString(R.string.btn_delete), (dialog, which) -> {
                     boolean deleted = sleepDao.delete(log.getId());
                     if (deleted) {
-                        sleepLogs.remove(position);
-                        sleepAdapter.notifyItemRemoved(position);
-                        sleepAdapter.notifyItemRangeChanged(position, sleepLogs.size() - position);
                         loadSleepList();
                         loadCharts();
                         android.widget.Toast.makeText(requireContext(),

@@ -26,14 +26,16 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
     }
 
     private final List<Medicine> medicines;
-    private final vn.edu.tdmu.vita.database.MedicineDao medicineDao;
+    private java.util.Map<Long, vn.edu.tdmu.vita.models.MedicineLog> todayLogs;
     private OnSwitchChangeListener switchListener;
     private int contextMenuPosition = -1;
 
-    public MedicineAdapter(List<Medicine> medicines,
-                           vn.edu.tdmu.vita.database.MedicineDao medicineDao) {
+    public MedicineAdapter(List<Medicine> medicines) {
         this.medicines = medicines;
-        this.medicineDao = medicineDao;
+    }
+
+    public void setTodayLogs(java.util.Map<Long, vn.edu.tdmu.vita.models.MedicineLog> todayLogs) {
+        this.todayLogs = todayLogs;
     }
 
     public void setOnSwitchChangeListener(OnSwitchChangeListener listener) {
@@ -126,9 +128,8 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
 
         void bindTodayStatus(Medicine medicine) {
             android.content.Context context = itemView.getContext();
-            vn.edu.tdmu.vita.models.MedicineLog log = medicineDao == null ? null
-                    : medicineDao.getLogForMedicine(medicine.getId(),
-                            vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate());
+            vn.edu.tdmu.vita.models.MedicineLog log =
+                    todayLogs == null ? null : todayLogs.get(medicine.getId());
             if (log == null) {
                 tvStatus.setText(context.getString(R.string.reminder_med_status_none));
                 tvStatus.setTextColor(androidx.core.content.ContextCompat.getColor(context,
@@ -149,6 +150,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v,
                                          ContextMenu.ContextMenuInfo menuInfo) {
+            contextMenuPosition = getBindingAdapterPosition();
             menu.setHeaderTitle(itemView.getContext().getString(R.string.reminder_context_menu_title));
             menu.add(0, R.id.menu_medicine_edit, 0, itemView.getContext().getString(R.string.reminder_context_menu_edit));
             menu.add(0, R.id.menu_medicine_delete, 1, itemView.getContext().getString(R.string.reminder_context_menu_delete));

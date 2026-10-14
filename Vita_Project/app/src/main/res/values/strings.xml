@@ -213,6 +213,8 @@
     <string name="add_med_day_sat">T7</string>
     <string name="add_med_day_sun">CN</string>
     <string name="add_med_all_days">Chọn tất cả các ngày (Hằng ngày)</string>
+    <string name="add_med_day_on">, đã chọn</string>
+    <string name="add_med_day_off">, chưa chọn</string>
     <string name="add_med_btn_save">Lưu lịch uống thuốc</string>
     <string name="add_med_error_empty_name">Vui lòng nhập tên thuốc</string>
     <string name="add_med_error_no_days">Vui lòng chọn ít nhất một ngày trong tuần để báo thức hoạt động</string>

@@ -101,6 +101,7 @@ public class SleepRecordAdapter extends RecyclerView.Adapter<SleepRecordAdapter.
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v,
                                          ContextMenu.ContextMenuInfo menuInfo) {
+            contextMenuPosition = getBindingAdapterPosition();
             menu.setHeaderTitle(itemView.getContext().getString(R.string.stats_sleep_menu_title));
             menu.add(0, R.id.menu_sleep_edit, 0, itemView.getContext().getString(R.string.stats_sleep_menu_edit));
             menu.add(0, R.id.menu_sleep_delete, 1, itemView.getContext().getString(R.string.stats_sleep_menu_delete));

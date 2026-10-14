@@ -88,13 +88,14 @@ public class AddSleepActivity extends AppCompatActivity {
         if (sleepLogId > 0) {
             toolbar.setTitle(getString(R.string.add_sleep_title_edit));
             SleepLog log = sleepDao.getById(sleepLogId);
-            if (log != null) {
-                selectedDate = log.getDate();
-                sleepTime = log.getSleepTime();
-                wakeTime = log.getWakeTime();
-            } else {
-                selectedDate = DateTimeUtils.getTodayDate();
+            if (log == null || log.getUserId() != sessionManager.getUserId()) {
+                Toast.makeText(this, getString(R.string.add_sleep_error_update), Toast.LENGTH_SHORT).show();
+                finish();
+                return;
             }
+            selectedDate = log.getDate();
+            sleepTime = log.getSleepTime();
+            wakeTime = log.getWakeTime();
         } else {
             toolbar.setTitle(getString(R.string.add_sleep_title));
             selectedDate = DateTimeUtils.getTodayDate();

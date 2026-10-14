@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
             // ponytail: setSelectedItemId không bắn listener khi item đã checked sẵn
             // -> gọi transaction trực tiếp thay vì trông chờ callback.
             onTabSelected(bottomNav.getMenu().findItem(R.id.nav_home));
-            bottomNav.setSelectedItemId(R.id.nav_home);
         }
     }
 
