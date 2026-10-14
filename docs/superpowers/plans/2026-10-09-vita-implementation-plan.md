@@ -450,15 +450,15 @@
 - Consumes: `MedicineDao`, `WaterDao.addWater()`, `WaterDao.getDailyTotal()`
 - Produces: Switch gạt bật/tắt báo thức trực tiếp; Nút nạp nhanh "+250 ml" cập nhật ProgressBar tức thì.
 
-- [ ] **Step 1: Dựng layout `item_medicine.xml` và `fragment_reminder.xml`**
+- [x] **Step 1: Dựng layout `item_medicine.xml` và `fragment_reminder.xml`**
   Thẻ tiến độ nước bo tròn (ProgressBar), nút nạp nước 48dp, danh sách RecyclerView thuốc kèm Switch.
-- [ ] **Step 2: Hiện thực `MedicineAdapter.java`**
+- [x] **Step 2: Hiện thực `MedicineAdapter.java`**
   Hiển thị danh sách thuốc; gán sự kiện cho `MaterialSwitch` để bật/tắt báo thức trong CSDL và hệ thống; gán Context Menu Sửa/Xóa.
-- [ ] **Step 3: Hiện thực `ReminderFragment.java`**
+- [x] **Step 3: Hiện thực `ReminderFragment.java`**
   Xử lý nút "+250 ml" gọi `WaterDao.addWater()`, cập nhật thanh tiến độ có hoạt ảnh `ObjectAnimator`.
-- [ ] **Step 4: Kiểm thử nạp nước và Switch thuốc**
+- [x] **Step 4: Kiểm thử nạp nước và Switch thuốc**
   Bấm nút nạp nước, xác nhận thanh tiến độ dâng lên và lưu đúng vào bảng `water_logs`.
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   `git commit -m "feat: implement ReminderFragment with medicine switch and quick water tracking"`
 
 ---
