@@ -521,17 +521,17 @@
 **Interfaces:**
 - Produces: `WeatherClient.fetchWeather(double lat, double lon, Callback callback)` chạy trên Worker Thread (`ExecutorService`), trả kết quả về Main UI Thread qua `Handler(Looper.getMainLooper())`.
 
-- [ ] **Step 1: Write unit test bóc tách chuỗi JSON Open-Meteo**
+- [x] **Step 1: Write unit test bóc tách chuỗi JSON Open-Meteo**
   Kiểm tra hàm parse JSON trích xuất đúng nhiệt độ, độ ẩm và US AQI từ response mẫu.
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
   Run: `./gradlew testDebugUnitTest --tests "vn.edu.tdmu.vita.network.WeatherClientTest"`
   Expected: FAIL.
-- [ ] **Step 3: Hiện thực `WeatherClient.java`**
+- [x] **Step 3: Hiện thực `WeatherClient.java`**
   Sử dụng `HttpURLConnection` với timeout 5000ms; phân tích `JSONObject`; cơ chế lưu đệm JSON vào `SharedPreferences` khi thành công để phục vụ chế độ Offline.
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
   Run: `./gradlew testDebugUnitTest --tests "vn.edu.tdmu.vita.network.WeatherClientTest"`
   Expected: PASS.
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   `git commit -m "feat: implement WeatherClient with ExecutorService and offline caching"`
 
 ---
