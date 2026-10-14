@@ -138,95 +138,116 @@
                 android:layout_marginBottom="@dimen/spacing_sm"
                 android:orientation="horizontal">
 
-                <com.google.android.material.button.MaterialButton
+                <TextView
                     android:id="@+id/btn_day_mon"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/min_touch_target"
-                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
-                    android:insetLeft="0dp"
-                    android:insetRight="0dp"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:background="@drawable/bg_day_selected"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
                     android:text="@string/add_med_day_mon"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="@dimen/radius_pill" />
+                    android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
+                <TextView
                     android:id="@+id/btn_day_tue"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/min_touch_target"
-                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
-                    android:insetLeft="0dp"
-                    android:insetRight="0dp"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:background="@drawable/bg_day_selected"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
                     android:text="@string/add_med_day_tue"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="@dimen/radius_pill" />
+                    android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
+                <TextView
                     android:id="@+id/btn_day_wed"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/min_touch_target"
-                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
-                    android:insetLeft="0dp"
-                    android:insetRight="0dp"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:background="@drawable/bg_day_selected"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
                     android:text="@string/add_med_day_wed"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="@dimen/radius_pill" />
+                    android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
+                <TextView
                     android:id="@+id/btn_day_thu"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/min_touch_target"
-                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
-                    android:insetLeft="0dp"
-                    android:insetRight="0dp"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:background="@drawable/bg_day_selected"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
                     android:text="@string/add_med_day_thu"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="@dimen/radius_pill" />
+                    android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
+                <TextView
                     android:id="@+id/btn_day_fri"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/min_touch_target"
-                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
-                    android:insetLeft="0dp"
-                    android:insetRight="0dp"
+                    android:layout_marginEnd="@dimen/spacing_xs"
+                    android:background="@drawable/bg_day_selected"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
                     android:text="@string/add_med_day_fri"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="@dimen/radius_pill" />
+                    android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
+                <TextView
                     android:id="@+id/btn_day_sat"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/min_touch_target"
+                    android:layout_weight="1"
                     android:layout_marginEnd="@dimen/spacing_xs"
-                    android:layout_weight="1"
-                    android:insetLeft="0dp"
-                    android:insetRight="0dp"
+                    android:background="@drawable/bg_day_selected"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
                     android:text="@string/add_med_day_sat"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="@dimen/radius_pill" />
+                    android:textStyle="bold" />
 
-                <com.google.android.material.button.MaterialButton
+                <TextView
                     android:id="@+id/btn_day_sun"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/min_touch_target"
                     android:layout_weight="1"
-                    android:insetLeft="0dp"
-                    android:insetRight="0dp"
+                    android:background="@drawable/bg_day_selected"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center"
                     android:text="@string/add_med_day_sun"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="@dimen/radius_pill" />
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Daily CheckBox -->

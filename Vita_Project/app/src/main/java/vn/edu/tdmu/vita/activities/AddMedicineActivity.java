@@ -36,7 +36,7 @@ public class AddMedicineActivity extends AppCompatActivity {
     private TextInputEditText etDosage;
     private TextInputLayout tilTime;
     private TextInputEditText etTime;
-    private MaterialButton[] dayButtons;
+    private android.widget.TextView[] dayButtons;
     private MaterialCheckBox cbAllDays;
     private MaterialButton btnSave;
 
@@ -73,7 +73,7 @@ public class AddMedicineActivity extends AppCompatActivity {
         etDosage = findViewById(R.id.et_med_dosage);
         tilTime = findViewById(R.id.til_med_time);
         etTime = findViewById(R.id.et_med_time);
-        dayButtons = new MaterialButton[]{
+        dayButtons = new android.widget.TextView[]{
                 findViewById(R.id.btn_day_mon),
                 findViewById(R.id.btn_day_tue),
                 findViewById(R.id.btn_day_wed),
@@ -162,19 +162,13 @@ public class AddMedicineActivity extends AppCompatActivity {
     private void refreshDayButtons() {
         for (int i = 0; i < dayButtons.length; i++) {
             boolean selected = (daysMask & (1 << i)) != 0;
-            MaterialButton btn = dayButtons[i];
+            android.widget.TextView btn = dayButtons[i];
             if (selected) {
-                btn.setBackgroundTintList(ColorStateList.valueOf(
-                        ContextCompat.getColor(this, R.color.vita_teal)));
+                btn.setBackgroundResource(R.drawable.bg_day_selected);
                 btn.setTextColor(ContextCompat.getColor(this, android.R.color.white));
-                btn.setStrokeColor(ColorStateList.valueOf(
-                        ContextCompat.getColor(this, R.color.vita_teal)));
             } else {
-                btn.setBackgroundTintList(ColorStateList.valueOf(
-                        ContextCompat.getColor(this, R.color.vita_teal_50)));
+                btn.setBackgroundResource(R.drawable.bg_day_unselected);
                 btn.setTextColor(ContextCompat.getColor(this, R.color.vita_teal));
-                btn.setStrokeColor(ColorStateList.valueOf(
-                        ContextCompat.getColor(this, R.color.vita_divider)));
             }
         }
         cbAllDays.setOnCheckedChangeListener(null);
