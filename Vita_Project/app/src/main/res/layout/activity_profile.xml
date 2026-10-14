@@ -67,7 +67,7 @@
                     android:id="@+id/tv_profile_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="@dimen/spacing_xs"
                     android:text="@string/app_name"
                     android:textColor="@color/vita_text_secondary"
                     android:textSize="@dimen/text_body" />
@@ -117,14 +117,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/profile_label_birth_year"
                                 android:textColor="@color/vita_text_secondary"
-                                android:textSize="11sp"
+                                android:textSize="@dimen/text_caption"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tv_profile_birth_year"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="@dimen/spacing_xs"
                                 android:text="--"
                                 android:textColor="@color/vita_text_primary"
                                 android:textSize="@dimen/text_body_lg"
@@ -144,14 +144,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/profile_label_gender"
                                 android:textColor="@color/vita_text_secondary"
-                                android:textSize="11sp"
+                                android:textSize="@dimen/text_caption"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tv_profile_gender"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="@dimen/spacing_xs"
                                 android:text="--"
                                 android:textColor="@color/vita_text_primary"
                                 android:textSize="@dimen/text_body_lg"
@@ -186,14 +186,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/profile_label_height"
                                 android:textColor="@color/vita_text_secondary"
-                                android:textSize="11sp"
+                                android:textSize="@dimen/text_caption"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tv_profile_height"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="@dimen/spacing_xs"
                                 android:text="-- cm"
                                 android:textColor="@color/vita_text_primary"
                                 android:textSize="@dimen/text_body_lg"
@@ -213,14 +213,14 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/profile_label_base_weight"
                                 android:textColor="@color/vita_text_secondary"
-                                android:textSize="11sp"
+                                android:textSize="@dimen/text_caption"
                                 android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/tv_profile_base_weight"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
+                                android:layout_marginTop="@dimen/spacing_xs"
                                 android:text="-- kg"
                                 android:textColor="@color/vita_text_primary"
                                 android:textSize="@dimen/text_body_lg"
@@ -245,14 +245,14 @@
                             android:layout_height="wrap_content"
                             android:text="@string/profile_label_water_goal"
                             android:textColor="@color/vita_text_secondary"
-                            android:textSize="11sp"
+                            android:textSize="@dimen/text_caption"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/tv_profile_water_goal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
+                            android:layout_marginTop="@dimen/spacing_xs"
                             android:text="2,000 ml / ngày"
                             android:textColor="@color/vita_water"
                             android:textSize="@dimen/text_body_lg"
@@ -328,7 +328,7 @@
                             android:paddingBottom="@dimen/spacing_xs"
                             android:text="@string/profile_bmi_undetermined"
                             android:textColor="@color/vita_teal"
-                            android:textSize="13sp"
+                            android:textSize="@dimen/text_body"
                             android:textStyle="bold" />
                     </LinearLayout>
 
@@ -341,7 +341,7 @@
                         android:layout_marginBottom="@dimen/spacing_sm"
                         android:text="Khoảng cân nặng hợp lý: --"
                         android:textColor="@color/vita_text_secondary"
-                        android:textSize="13sp" />
+                        android:textSize="@dimen/text_body" />
 
                     <View
                         android:layout_width="match_parent"
@@ -355,7 +355,7 @@
                         android:layout_marginBottom="@dimen/spacing_sm"
                         android:text="@string/profile_label_bmi_standard"
                         android:textColor="@color/vita_text_secondary"
-                        android:textSize="11sp"
+                        android:textSize="@dimen/text_caption"
                         android:textStyle="bold" />
 
                     <RadioGroup
@@ -373,7 +373,7 @@
                             android:paddingEnd="0dp"
                             android:text="@string/profile_standard_asian"
                             android:textColor="@color/vita_text_primary"
-                            android:textSize="13sp" />
+                            android:textSize="@dimen/text_body" />
 
                         <RadioButton
                             android:id="@+id/rb_bmi_who"
@@ -384,7 +384,7 @@
                             android:paddingEnd="0dp"
                             android:text="@string/profile_standard_who"
                             android:textColor="@color/vita_text_primary"
-                            android:textSize="13sp" />
+                            android:textSize="@dimen/text_body" />
                     </RadioGroup>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>

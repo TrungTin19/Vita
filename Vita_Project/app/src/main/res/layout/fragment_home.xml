@@ -262,7 +262,7 @@
                     android:id="@+id/tv_home_advice_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:lineSpacingExtra="4dp"
+                    android:lineSpacingExtra="@dimen/spacing_xs"
                     android:textColor="@color/vita_text_primary"
                     android:textSize="@dimen/text_body_lg"
                     tools:text="Hôm nay trời nắng nóng 33°C. Vita gợi ý bạn nên bổ sung thêm 300 ml nước nhé." />

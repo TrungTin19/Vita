@@ -142,91 +142,91 @@
                     android:id="@+id/btn_day_mon"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_height="@dimen/min_touch_target"
+                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
                     android:insetLeft="0dp"
                     android:insetRight="0dp"
                     android:text="@string/add_med_day_mon"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="20dp" />
+                    app:cornerRadius="@dimen/radius_pill" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_day_tue"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_height="@dimen/min_touch_target"
+                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
                     android:insetLeft="0dp"
                     android:insetRight="0dp"
                     android:text="@string/add_med_day_tue"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="20dp" />
+                    app:cornerRadius="@dimen/radius_pill" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_day_wed"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_height="@dimen/min_touch_target"
+                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
                     android:insetLeft="0dp"
                     android:insetRight="0dp"
                     android:text="@string/add_med_day_wed"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="20dp" />
+                    app:cornerRadius="@dimen/radius_pill" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_day_thu"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_height="@dimen/min_touch_target"
+                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
                     android:insetLeft="0dp"
                     android:insetRight="0dp"
                     android:text="@string/add_med_day_thu"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="20dp" />
+                    app:cornerRadius="@dimen/radius_pill" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_day_fri"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_height="@dimen/min_touch_target"
+                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
                     android:insetLeft="0dp"
                     android:insetRight="0dp"
                     android:text="@string/add_med_day_fri"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="20dp" />
+                    app:cornerRadius="@dimen/radius_pill" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_day_sat"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="4dp"
+                    android:layout_height="@dimen/min_touch_target"
+                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
                     android:insetLeft="0dp"
                     android:insetRight="0dp"
                     android:text="@string/add_med_day_sat"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="20dp" />
+                    app:cornerRadius="@dimen/radius_pill" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_day_sun"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="@dimen/min_touch_target"
                     android:layout_weight="1"
                     android:insetLeft="0dp"
                     android:insetRight="0dp"
                     android:text="@string/add_med_day_sun"
                     android:textSize="@dimen/text_caption"
-                    app:cornerRadius="20dp" />
+                    app:cornerRadius="@dimen/radius_pill" />
             </LinearLayout>
 
             <!-- Daily CheckBox -->
