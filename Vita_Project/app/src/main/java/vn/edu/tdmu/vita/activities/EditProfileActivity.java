@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -29,7 +29,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private TextInputLayout tilFullname;
     private TextInputLayout tilBirthYear;
-    private Spinner spGender;
+    private AutoCompleteTextView actGender;
     private TextInputLayout tilHeight;
     private TextInputLayout tilWeight;
     private TextInputLayout tilWaterGoal;
@@ -65,7 +65,7 @@ public class EditProfileActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar_edit_profile);
         tilFullname = findViewById(R.id.til_edit_fullname);
         tilBirthYear = findViewById(R.id.til_edit_birth_year);
-        spGender = findViewById(R.id.sp_edit_gender);
+        actGender = findViewById(R.id.act_edit_gender);
         tilHeight = findViewById(R.id.til_edit_height);
         tilWeight = findViewById(R.id.til_edit_weight);
         tilWaterGoal = findViewById(R.id.til_edit_water_goal);
@@ -82,8 +82,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void setupSpinner() {
         String[] genders = new String[]{"Nam", "Nữ", "Khác"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, genders);
-        spGender.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, genders);
+        actGender.setAdapter(adapter);
     }
 
     private void loadCurrentProfile() {
@@ -115,12 +115,10 @@ public class EditProfileActivity extends AppCompatActivity {
             etWaterGoal.setText(String.valueOf(currentUser.getWaterGoalMl()));
         }
 
-        if ("Nữ".equalsIgnoreCase(currentUser.getGender())) {
-            spGender.setSelection(1);
-        } else if ("Khác".equalsIgnoreCase(currentUser.getGender())) {
-            spGender.setSelection(2);
+        if (currentUser.getGender() != null && !currentUser.getGender().isEmpty()) {
+            actGender.setText(currentUser.getGender(), false);
         } else {
-            spGender.setSelection(0);
+            actGender.setText("Nam", false);
         }
     }
 
@@ -143,7 +141,8 @@ public class EditProfileActivity extends AppCompatActivity {
         String heightStr = etHeight.getText() != null ? etHeight.getText().toString().trim() : "";
         String weightStr = etWeight.getText() != null ? etWeight.getText().toString().trim() : "";
         String waterGoalStr = etWaterGoal.getText() != null ? etWaterGoal.getText().toString().trim() : "";
-        String gender = spGender.getSelectedItem() != null ? spGender.getSelectedItem().toString() : "Nam";
+        String gender = actGender.getText() != null && !actGender.getText().toString().trim().isEmpty()
+                ? actGender.getText().toString().trim() : "Nam";
 
         boolean hasError = false;
 

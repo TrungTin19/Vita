@@ -298,9 +298,11 @@
                 android:layout_marginBottom="24dp"
                 android:drawablePadding="8dp"
                 android:gravity="center_vertical"
-                android:text="ℹ️ Bạn có thể bỏ trống các chỉ số chưa đo, hệ thống sẽ lưu các chỉ số bạn nhập."
+                android:text="Bạn có thể bỏ trống các chỉ số chưa đo, hệ thống sẽ lưu các chỉ số bạn nhập."
                 android:textColor="@color/vita_text_secondary"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                app:drawableStartCompat="@drawable/ic_info"
+                app:drawableTint="@color/vita_teal" />
 
             <!-- Save Button -->
             <com.google.android.material.button.MaterialButton

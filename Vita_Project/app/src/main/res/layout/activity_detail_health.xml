@@ -29,7 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="@dimen/spacing_md">
 
             <!-- Date heading -->
             <TextView
@@ -38,10 +38,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
                 android:drawablePadding="@dimen/spacing_sm"
+                android:gravity="center_vertical"
                 android:textColor="@color/vita_text_primary"
                 android:textSize="@dimen/text_h2"
                 android:textStyle="bold"
-                tools:text="📅 Ngày đo: 09/10/2026" />
+                app:drawableStartCompat="@drawable/ic_calendar"
+                app:drawableTint="@color/vita_teal"
+                tools:text="Ngày đo: 09/10/2026" />
 
             <!-- Card: Blood Pressure & Heart Rate -->
             <com.google.android.material.card.MaterialCardView
@@ -65,50 +68,68 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_sm"
-                        android:text="❤️ HUYẾT ÁP \u0026 NHỊP TIM"
+                        android:text="HUYẾT ÁP \u0026 NHỊP TIM"
                         android:textColor="@color/vita_text_secondary"
                         android:textSize="@dimen/text_caption"
                         android:textStyle="bold" />
 
                     <!-- BP value + badge row -->
                     <LinearLayout
+                        android:id="@+id/layout_detail_bp_section"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/tv_detail_bp_value"
-                            android:layout_width="0dp"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:textColor="@color/vita_teal"
-                            android:textSize="@dimen/text_display"
-                            android:textStyle="bold"
-                            tools:text="125 / 82" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tv_detail_bp_value"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:textColor="@color/vita_teal"
+                                android:textSize="@dimen/text_display"
+                                android:textStyle="bold"
+                                tools:text="125 / 82" />
+
+                            <TextView
+                                android:id="@+id/tv_detail_bp_status"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_badge_good"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="4dp"
+                                android:textColor="@color/vita_status_good"
+                                android:textSize="@dimen/text_body"
+                                android:textStyle="bold"
+                                tools:text="Bình thường" />
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/tv_detail_bp_status"
+                            android:id="@+id/tv_detail_bp_unit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/bg_badge_rounded"
-                            android:paddingHorizontal="12dp"
-                            android:paddingVertical="4dp"
-                            android:textColor="@color/vita_status_good"
+                            android:text="mmHg"
+                            android:textColor="@color/vita_text_secondary"
+                            android:textSize="@dimen/text_body" />
+
+                        <!-- BP advice -->
+                        <TextView
+                            android:id="@+id/tv_detail_bp_advice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:textColor="@color/vita_text_secondary"
                             android:textSize="@dimen/text_body"
-                            android:textStyle="bold"
-                            tools:text="Bình thường" />
+                            tools:text="Đánh giá: Huyết áp ổn định" />
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tv_detail_bp_unit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="mmHg"
-                        android:textColor="@color/vita_text_secondary"
-                        android:textSize="@dimen/text_body" />
-
                     <View
+                        android:id="@+id/divider_detail_bp"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginVertical="@dimen/spacing_sm"
@@ -121,17 +142,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/vita_text_primary"
                         android:textSize="@dimen/text_body_lg"
-                        tools:text="• Nhịp tim: 76 bpm (Bình thường)" />
-
-                    <!-- BP advice -->
-                    <TextView
-                        android:id="@+id/tv_detail_bp_advice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/spacing_xs"
-                        android:textColor="@color/vita_text_secondary"
-                        android:textSize="@dimen/text_body"
-                        tools:text="• Đánh giá: Huyết áp ổn định" />
+                        tools:text="Nhịp tim: 76 bpm (Bình thường)" />
 
                 </LinearLayout>
 
@@ -158,7 +169,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_sm"
-                        android:text="⚖️ CÂN NẶNG \u0026 ĐƯỜNG HUYẾT"
+                        android:text="CÂN NẶNG \u0026 ĐƯỜNG HUYẾT"
                         android:textColor="@color/vita_text_secondary"
                         android:textSize="@dimen/text_caption"
                         android:textStyle="bold" />
@@ -205,7 +216,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_sm"
-                        android:text="📝 GHI CHÚ ĐÍNH KÈM"
+                        android:text="GHI CHÚ ĐÍNH KÈM"
                         android:textColor="@color/vita_text_secondary"
                         android:textSize="@dimen/text_caption"
                         android:textStyle="bold" />

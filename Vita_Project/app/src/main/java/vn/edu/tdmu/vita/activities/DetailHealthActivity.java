@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
@@ -36,6 +39,8 @@ public class DetailHealthActivity extends AppCompatActivity {
     private TextView tvHeartRate;
     private TextView tvBpAdvice;
     private MaterialCardView cvBp;
+    private LinearLayout layoutBpSection;
+    private View dividerBp;
 
     private TextView tvWeight;
     private TextView tvSugar;
@@ -81,11 +86,13 @@ public class DetailHealthActivity extends AppCompatActivity {
         tvDate = findViewById(R.id.tv_detail_date);
 
         cvBp = findViewById(R.id.cv_detail_bp);
+        layoutBpSection = findViewById(R.id.layout_detail_bp_section);
         tvBpValue = findViewById(R.id.tv_detail_bp_value);
         tvBpStatus = findViewById(R.id.tv_detail_bp_status);
         tvBpUnit = findViewById(R.id.tv_detail_bp_unit);
-        tvHeartRate = findViewById(R.id.tv_detail_heart_rate);
         tvBpAdvice = findViewById(R.id.tv_detail_bp_advice);
+        dividerBp = findViewById(R.id.divider_detail_bp);
+        tvHeartRate = findViewById(R.id.tv_detail_heart_rate);
 
         cvBody = findViewById(R.id.cv_detail_body);
         tvWeight = findViewById(R.id.tv_detail_weight);
@@ -129,67 +136,95 @@ public class DetailHealthActivity extends AppCompatActivity {
     }
 
     private void displayRecord(HealthRecord record) {
-        // Date
+        // Date (no emoji)
         String displayDate = DateTimeUtils.formatDisplayDate(record.getDate());
-        tvDate.setText("📅 Ngày đo: " + displayDate);
+        tvDate.setText("Ngày đo: " + displayDate);
 
-        // Blood Pressure
-        if (record.getSystolic() != null && record.getDiastolic() != null) {
-            tvBpValue.setText(String.format(Locale.getDefault(), "%d / %d",
-                    record.getSystolic(), record.getDiastolic()));
+        // Blood Pressure & Heart Rate section
+        boolean hasBp = record.getSystolic() != null && record.getDiastolic() != null;
+        boolean hasHr = record.getHeartRate() != null;
 
-            HealthEvaluator.BpResult bpResult = HealthEvaluator.classifyBloodPressure(
-                    record.getSystolic(), record.getDiastolic());
-            tvBpStatus.setText(bpResult.label);
+        if (!hasBp && !hasHr) {
+            cvBp.setVisibility(View.GONE);
+        } else {
+            cvBp.setVisibility(View.VISIBLE);
 
-            int statusColor;
-            switch (bpResult.severity) {
-                case HealthEvaluator.STATUS_WARNING: statusColor = getColor(R.color.vita_status_warning); break;
-                case HealthEvaluator.STATUS_DANGER:  statusColor = getColor(R.color.vita_status_danger); break;
-                default:                             statusColor = getColor(R.color.vita_status_good); break;
+            if (hasBp) {
+                layoutBpSection.setVisibility(View.VISIBLE);
+                tvBpValue.setText(String.format(Locale.getDefault(), "%d / %d",
+                        record.getSystolic(), record.getDiastolic()));
+
+                HealthEvaluator.BpResult bpResult = HealthEvaluator.classifyBloodPressure(
+                        record.getSystolic(), record.getDiastolic());
+                tvBpStatus.setText(bpResult.label);
+
+                int statusColor;
+                int badgeBgRes;
+                switch (bpResult.severity) {
+                    case HealthEvaluator.STATUS_WARNING:
+                        statusColor = ContextCompat.getColor(this, R.color.vita_status_warning);
+                        badgeBgRes = R.drawable.bg_badge_warning;
+                        break;
+                    case HealthEvaluator.STATUS_DANGER:
+                        statusColor = ContextCompat.getColor(this, R.color.vita_status_danger);
+                        badgeBgRes = R.drawable.bg_badge_danger;
+                        break;
+                    default:
+                        statusColor = ContextCompat.getColor(this, R.color.vita_status_good);
+                        badgeBgRes = R.drawable.bg_badge_good;
+                        break;
+                }
+                tvBpStatus.setTextColor(statusColor);
+                tvBpStatus.setBackgroundResource(badgeBgRes);
+
+                tvBpAdvice.setText("Đánh giá: " + HealthEvaluator.getBpAdvice(bpResult));
+                tvBpAdvice.setVisibility(View.VISIBLE);
+            } else {
+                layoutBpSection.setVisibility(View.GONE);
             }
-            tvBpStatus.setTextColor(statusColor);
 
-            String advice = "• Đánh giá: " + HealthEvaluator.getBpAdvice(bpResult);
-            tvBpAdvice.setText(advice);
-        } else {
-            tvBpValue.setText("-- / --");
-            tvBpStatus.setText("Không đo");
-            tvBpStatus.setTextColor(getColor(R.color.vita_text_disabled));
-            tvBpAdvice.setText("• Đánh giá: -- (Không đo trong lần này)");
+            if (hasHr) {
+                tvHeartRate.setVisibility(View.VISIBLE);
+                String hrClassification = HealthEvaluator.classifyHeartRate(record.getHeartRate());
+                tvHeartRate.setText(String.format(Locale.getDefault(),
+                        "Nhịp tim: %d bpm (%s)", record.getHeartRate(), hrClassification));
+            } else {
+                tvHeartRate.setVisibility(View.GONE);
+            }
+
+            dividerBp.setVisibility(hasBp && hasHr ? View.VISIBLE : View.GONE);
         }
 
-        // Heart Rate
-        if (record.getHeartRate() != null) {
-            String hrClassification = HealthEvaluator.classifyHeartRate(record.getHeartRate());
-            tvHeartRate.setText(String.format(Locale.getDefault(),
-                    "• Nhịp tim: %d bpm (%s)", record.getHeartRate(), hrClassification));
+        // Weight & Blood Sugar section (Hide if both null)
+        boolean hasWeight = record.getWeightKg() != null;
+        boolean hasSugar = record.getBloodSugar() != null;
+
+        if (!hasWeight && !hasSugar) {
+            cvBody.setVisibility(View.GONE);
         } else {
-            tvHeartRate.setText("• Nhịp tim: -- (Không đo trong lần này)");
+            cvBody.setVisibility(View.VISIBLE);
+            if (hasWeight) {
+                tvWeight.setVisibility(View.VISIBLE);
+                tvWeight.setText(String.format(Locale.getDefault(), "Cân nặng: %.1f kg", record.getWeightKg()));
+            } else {
+                tvWeight.setVisibility(View.GONE);
+            }
+
+            if (hasSugar) {
+                tvSugar.setVisibility(View.VISIBLE);
+                tvSugar.setText(String.format(Locale.getDefault(), "Đường huyết: %.1f mg/dL", record.getBloodSugar()));
+            } else {
+                tvSugar.setVisibility(View.GONE);
+            }
         }
 
-        // Weight
-        if (record.getWeightKg() != null) {
-            tvWeight.setText(String.format(Locale.getDefault(),
-                    "• Cân nặng: %.1f kg", record.getWeightKg()));
+        // Note section (Hide if empty)
+        boolean hasNote = record.getNote() != null && !record.getNote().trim().isEmpty();
+        if (!hasNote) {
+            cvNote.setVisibility(View.GONE);
         } else {
-            tvWeight.setText("• Cân nặng: -- (Không đo trong lần này)");
-        }
-
-        // Blood Sugar
-        if (record.getBloodSugar() != null) {
-            tvSugar.setText(String.format(Locale.getDefault(),
-                    "• Đường huyết: %.1f mg/dL", record.getBloodSugar()));
-        } else {
-            tvSugar.setText("• Đường huyết: -- (Không đo trong lần này)");
-        }
-
-        // Note
-        if (record.getNote() != null && !record.getNote().trim().isEmpty()) {
-            tvNote.setText(record.getNote());
-        } else {
-            tvNote.setText("Không có ghi chú");
-            tvNote.setTextColor(getColor(R.color.vita_text_disabled));
+            cvNote.setVisibility(View.VISIBLE);
+            tvNote.setText(record.getNote().trim());
         }
     }
 

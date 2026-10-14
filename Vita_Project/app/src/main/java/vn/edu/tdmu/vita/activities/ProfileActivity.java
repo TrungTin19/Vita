@@ -172,6 +172,16 @@ public class ProfileActivity extends AppCompatActivity {
             int colorRes = BmiUtils.getStatusColorRes(bmi, standard);
             tvBmiCategory.setTextColor(ContextCompat.getColor(this, colorRes));
 
+            if (colorRes == R.color.vita_status_good) {
+                tvBmiCategory.setBackgroundResource(R.drawable.bg_badge_good);
+            } else if (colorRes == R.color.vita_status_warning) {
+                tvBmiCategory.setBackgroundResource(R.drawable.bg_badge_warning);
+            } else if (colorRes == R.color.vita_status_danger) {
+                tvBmiCategory.setBackgroundResource(R.drawable.bg_badge_danger);
+            } else {
+                tvBmiCategory.setBackgroundResource(R.drawable.bg_badge_neutral);
+            }
+
             double[] healthyRange = BmiUtils.getHealthyWeightRange(heightCm, standard);
             tvHealthyWeight.setText(String.format(Locale.getDefault(),
                     "Khoảng cân nặng lý tưởng nên duy trì: %.1f kg – %.1f kg", healthyRange[0], healthyRange[1]));
@@ -179,6 +189,7 @@ public class ProfileActivity extends AppCompatActivity {
             tvBmiValue.setText("--");
             tvBmiCategory.setText("Chưa có số đo");
             tvBmiCategory.setTextColor(ContextCompat.getColor(this, R.color.vita_text_secondary));
+            tvBmiCategory.setBackgroundResource(R.drawable.bg_badge_neutral);
             tvHealthyWeight.setText("Vui lòng cập nhật chiều cao và cân nặng để tính BMI.");
         }
     }

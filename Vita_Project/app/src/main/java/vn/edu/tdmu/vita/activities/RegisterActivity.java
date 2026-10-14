@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputLayout tilConfirm;
     private TextInputLayout tilFullname;
     private TextInputLayout tilBirthYear;
-    private Spinner spGender;
+    private AutoCompleteTextView actGender;
     private TextInputLayout tilHeight;
     private TextInputLayout tilWeight;
     private TextInputEditText etUsername;
@@ -68,7 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
         tilConfirm = findViewById(R.id.til_reg_confirm);
         tilFullname = findViewById(R.id.til_reg_fullname);
         tilBirthYear = findViewById(R.id.til_reg_birth_year);
-        spGender = findViewById(R.id.sp_reg_gender);
+        actGender = findViewById(R.id.act_reg_gender);
         tilHeight = findViewById(R.id.til_reg_height);
         tilWeight = findViewById(R.id.til_reg_weight);
 
@@ -86,8 +86,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void setupSpinner() {
         String[] genders = new String[]{"Nam", "Nữ", "Khác"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, genders);
-        spGender.setAdapter(adapter);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, genders);
+        actGender.setAdapter(adapter);
+        actGender.setText("Nam", false);
     }
 
     private void setupListeners() {
@@ -148,7 +149,8 @@ public class RegisterActivity extends AppCompatActivity {
         String birthYearStr = etBirthYear.getText() != null ? etBirthYear.getText().toString().trim() : "";
         String heightStr = etHeight.getText() != null ? etHeight.getText().toString().trim() : "";
         String weightStr = etWeight.getText() != null ? etWeight.getText().toString().trim() : "";
-        String gender = spGender.getSelectedItem() != null ? spGender.getSelectedItem().toString() : "Nam";
+        String gender = actGender.getText() != null && !actGender.getText().toString().trim().isEmpty()
+                ? actGender.getText().toString().trim() : "Nam";
 
         boolean hasError = false;
 

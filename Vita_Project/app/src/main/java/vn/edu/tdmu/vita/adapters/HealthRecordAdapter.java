@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -102,12 +103,23 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
                 tvBpStatus.setVisibility(View.VISIBLE);
                 tvBpStatus.setText(bpResult.label);
                 int statusColor;
+                int badgeBgRes;
                 switch (bpResult.severity) {
-                    case HealthEvaluator.STATUS_WARNING: statusColor = 0xFFF57C00; break;
-                    case HealthEvaluator.STATUS_DANGER:  statusColor = 0xFFD32F2F; break;
-                    default:                             statusColor = 0xFF2E7D32; break;
+                    case HealthEvaluator.STATUS_WARNING:
+                        statusColor = ContextCompat.getColor(itemView.getContext(), R.color.vita_status_warning);
+                        badgeBgRes = R.drawable.bg_badge_warning;
+                        break;
+                    case HealthEvaluator.STATUS_DANGER:
+                        statusColor = ContextCompat.getColor(itemView.getContext(), R.color.vita_status_danger);
+                        badgeBgRes = R.drawable.bg_badge_danger;
+                        break;
+                    default:
+                        statusColor = ContextCompat.getColor(itemView.getContext(), R.color.vita_status_good);
+                        badgeBgRes = R.drawable.bg_badge_good;
+                        break;
                 }
                 tvBpStatus.setTextColor(statusColor);
+                tvBpStatus.setBackgroundResource(badgeBgRes);
             } else {
                 layoutBpRow.setVisibility(View.GONE);
                 tvBpStatus.setVisibility(View.GONE);

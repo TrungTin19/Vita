@@ -21,8 +21,12 @@
 
     <!-- Semantic Status & Features -->
     <color name="vita_status_good">#2E7D32</color>
+    <color name="vita_status_good_bg">#E8F5E9</color>
     <color name="vita_status_warning">#F57C00</color>
+    <color name="vita_status_warning_bg">#FFF3E0</color>
     <color name="vita_status_danger">#D32F2F</color>
+    <color name="vita_status_danger_bg">#FFEBEE</color>
+    <color name="vita_status_neutral_bg">#F5F5F5</color>
     <color name="vita_water">#1976D2</color>
     <color name="vita_sleep">#512DA8</color>
 

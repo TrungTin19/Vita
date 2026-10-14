@@ -107,7 +107,8 @@ public class AddHealthActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
 
         etDate.setOnClickListener(v -> showDatePicker());
-        tilDate.setEndIconOnClickListener(v -> showDatePicker());
+        tilDate.setStartIconOnClickListener(v -> showDatePicker());
+        tilDate.setOnClickListener(v -> showDatePicker());
 
         etSystolic.addTextChangedListener(new SimpleTextWatcher(() -> tilSystolic.setError(null)));
         etDiastolic.addTextChangedListener(new SimpleTextWatcher(() -> tilDiastolic.setError(null)));

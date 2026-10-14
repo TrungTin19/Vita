@@ -218,33 +218,31 @@
                         tools:hint="Năm sinh" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_reg_gender"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:minHeight="56dp"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1"
-                    android:background="@drawable/spinner_border"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    android:paddingTop="4dp"
-                    android:paddingBottom="4dp">
+                    android:hint="Giới tính"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="8dp"
+                    app:boxCornerRadiusBottomStart="8dp"
+                    app:boxCornerRadiusTopEnd="8dp"
+                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxStrokeColor="@color/vita_teal"
+                    app:helperText=" "
+                    app:hintTextColor="@color/vita_teal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Giới tính"
-                        android:textColor="@color/vita_teal"
-                        android:textSize="12sp" />
-
-                    <Spinner
-                        android:id="@+id/sp_reg_gender"
+                    <AutoCompleteTextView
+                        android:id="@+id/act_reg_gender"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:minHeight="32dp" />
-                </LinearLayout>
+                        android:inputType="none"
+                        android:textColor="@color/vita_text_primary"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
             <!-- Height and Weight Row -->
