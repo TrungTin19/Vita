@@ -196,4 +196,28 @@
     <string name="add_health_success_edit">Đã cập nhật chỉ số sức khỏe thành công!</string>
     <string name="add_health_error_save">Không thể lưu chỉ số. Vui lòng thử lại.</string>
     <string name="add_health_error_update">Không thể cập nhật chỉ số. Vui lòng thử lại.</string>
+
+    <!-- Add / Edit Medicine Screen -->
+    <string name="add_med_title_add">Lịch uống thuốc mới</string>
+    <string name="add_med_title_edit">Chỉnh sửa lịch uống thuốc</string>
+    <string name="add_med_hint_name">Tên thuốc *</string>
+    <string name="add_med_hint_dosage">Liều lượng &amp; Hướng dẫn dùng</string>
+    <string name="add_med_helper_dosage">Ví dụ: 1 viên sau ăn sáng</string>
+    <string name="add_med_hint_time">Giờ uống thuốc *</string>
+    <string name="add_med_section_days">LẶP LẠI CÁC NGÀY TRONG TUẦN</string>
+    <string name="add_med_day_mon">T2</string>
+    <string name="add_med_day_tue">T3</string>
+    <string name="add_med_day_wed">T4</string>
+    <string name="add_med_day_thu">T5</string>
+    <string name="add_med_day_fri">T6</string>
+    <string name="add_med_day_sat">T7</string>
+    <string name="add_med_day_sun">CN</string>
+    <string name="add_med_all_days">Chọn tất cả các ngày (Hằng ngày)</string>
+    <string name="add_med_btn_save">Lưu lịch uống thuốc</string>
+    <string name="add_med_error_empty_name">Vui lòng nhập tên thuốc</string>
+    <string name="add_med_error_no_days">Vui lòng chọn ít nhất một ngày trong tuần để báo thức hoạt động</string>
+    <string name="add_med_success_add">Đã đặt báo thức nhắc %1$s lúc %2$s</string>
+    <string name="add_med_success_edit">Đã cập nhật lịch uống thuốc thành công!</string>
+    <string name="add_med_error_save">Không thể lưu lịch uống thuốc. Vui lòng thử lại.</string>
+    <string name="add_med_error_update">Không thể cập nhật lịch uống thuốc. Vui lòng thử lại.</string>
 </resources>
