@@ -62,6 +62,20 @@
             android:name=".activities.DetailHealthActivity"
             android:exported="false" />
 
+        <receiver
+            android:name=".receivers.MedicineAlarmReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".receivers.NotificationActionReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".receivers.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
