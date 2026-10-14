@@ -571,13 +571,13 @@
 - Consumes: `HomeFragment`, `HealthFragment`, `ReminderFragment`, `StatsFragment`
 - Produces: Khung chứa 4 Tabs điều hướng đáy; Toolbar Menu mở `ProfileActivity`.
 
-- [ ] **Step 1: Dựng menu và layout `activity_main.xml`**
+- [x] **Step 1: Dựng menu và layout `activity_main.xml`**
   Cấu hình `BottomNavigationView` cao 56dp với 4 Tab có đầy đủ nhãn chữ (`app:labelVisibilityMode="labeled"`).
-- [ ] **Step 2: Hiện thực điều hướng Fragment trong `MainActivity.java`**
+- [x] **Step 2: Hiện thực điều hướng Fragment trong `MainActivity.java`**
   Sử dụng `FragmentManager` và `FragmentTransaction.replace()`; gắn listener icon Toolbar góc phải mở `ProfileActivity`.
-- [ ] **Step 3: Kiểm thử chuyển đổi qua lại giữa 4 Tabs**
+- [x] **Step 3: Kiểm thử chuyển đổi qua lại giữa 4 Tabs**
   Xác nhận chuyển tab mượt mà, không bị giật lag và dữ liệu được nạp đúng.
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
   `git commit -m "feat: implement MainActivity hosting BottomNavigationView and 4 fragments"`
 
 ---
