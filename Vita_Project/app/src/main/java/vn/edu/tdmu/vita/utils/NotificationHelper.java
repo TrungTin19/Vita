@@ -24,7 +24,7 @@ public final class NotificationHelper {
     private static final String CHANNEL_NAME = "Nhắc nhở uống thuốc Vita";
     private static final String PREFS_CHANNEL = "vita_channels";
     private static final String KEY_MED_CHANNEL_V = "med_channel_v";
-    private static final int MED_CHANNEL_VERSION = 2;
+    private static final int MED_CHANNEL_VERSION = 3;
 
     public static final String WATER_CHANNEL_ID = "vita_water_channel";
     private static final String WATER_CHANNEL_NAME = "Nhắc nhở uống nước Vita";
@@ -45,6 +45,12 @@ public final class NotificationHelper {
         NotificationChannel channel = new NotificationChannel(
                 CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
         channel.setDescription("Báo thức nhắc uống thuốc đúng giờ của Vita");
+        android.media.AudioAttributes audioAttributes = new android.media.AudioAttributes.Builder()
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(android.media.AudioAttributes.USAGE_NOTIFICATION)
+                .build();
+        channel.setSound(android.media.RingtoneManager.getDefaultUri(
+                android.media.RingtoneManager.TYPE_NOTIFICATION), audioAttributes);
         channel.enableVibration(true);
         channel.setVibrationPattern(new long[]{0, 250, 100, 250});
         manager.createNotificationChannel(channel);
