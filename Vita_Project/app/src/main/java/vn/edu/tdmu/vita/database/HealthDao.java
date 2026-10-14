@@ -103,6 +103,28 @@ public class HealthDao {
         return list;
     }
 
+    public List<HealthRecord> getRecordsRange(long userId, String startDate, String endDate) {
+        List<HealthRecord> list = new ArrayList<>();
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(
+                DatabaseHelper.TABLE_HEALTH_RECORDS,
+                null,
+                DatabaseHelper.COL_HEALTH_USER_ID + " = ? AND " +
+                        DatabaseHelper.COL_HEALTH_DATE + " >= ? AND " +
+                        DatabaseHelper.COL_HEALTH_DATE + " <= ?",
+                new String[]{String.valueOf(userId), startDate, endDate},
+                null, null,
+                DatabaseHelper.COL_HEALTH_DATE + " ASC, " + DatabaseHelper.COL_HEALTH_ID + " ASC"
+        );
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                list.add(cursorToRecord(cursor));
+            }
+            cursor.close();
+        }
+        return list;
+    }
+
     public Float getLatestWeight(long userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(

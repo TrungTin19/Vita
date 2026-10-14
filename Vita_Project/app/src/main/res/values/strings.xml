@@ -264,4 +264,22 @@
     <string name="add_sleep_error_same_time">Giờ ngủ và giờ thức không thể trùng nhau. Vui lòng kiểm tra lại.</string>
     <string name="add_sleep_success">Đã lưu giấc ngủ thành công!</string>
     <string name="add_sleep_error_save">Không thể lưu giấc ngủ. Vui lòng thử lại.</string>
+
+    <!-- Stats Screen -->
+    <string name="stats_title">Xu hướng &amp; phân tích thống kê</string>
+    <string name="stats_range_7">7 ngày qua</string>
+    <string name="stats_range_30">30 ngày qua</string>
+    <string name="stats_bp_title">Biến thiên huyết áp (mmHg)</string>
+    <string name="stats_bp_sys_label">Tâm thu</string>
+    <string name="stats_bp_dia_label">Tâm trương</string>
+    <string name="stats_bp_legend">Đường liền: Tâm thu • Đường đứt: Tâm trương</string>
+    <string name="stats_water_title">Lượng nước uống mỗi ngày (ml)</string>
+    <string name="stats_water_goal_format">Mục tiêu: %,d ml/ngày</string>
+    <string name="stats_sleep_chart_title">Thời lượng ngủ mỗi đêm (giờ)</string>
+    <string name="stats_sleep_section">NHẬT KÝ GIẤC NGỦ GẦN ĐÂY</string>
+    <string name="stats_sleep_empty">Chưa có dữ liệu giấc ngủ</string>
+    <string name="stats_sleep_item_format">Ngủ: %1$s – Thức: %2$s (%3$.1f giờ)</string>
+    <string name="stats_sleep_date_format">Đêm %1$s → Sáng %2$s</string>
+    <string name="stats_fab_desc">Ghi nhận giấc ngủ mới</string>
+    <string name="stats_not_enough_data">Chưa đủ dữ liệu vẽ đồ thị. Hãy ghi nhận ít nhất 2 ngày để theo dõi xu hướng nhé.</string>
 </resources>
