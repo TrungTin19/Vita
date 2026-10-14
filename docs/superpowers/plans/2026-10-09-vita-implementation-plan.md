@@ -475,13 +475,13 @@
 - Consumes: `SleepDao.insert()`
 - Produces: Chọn giờ ngủ và giờ thức (`TimePickerDialog`), tự động tính `duration_h` qua đêm và lưu theo ngày thức dậy.
 
-- [ ] **Step 1: Dựng layout `activity_add_sleep.xml`**
+- [x] **Step 1: Dựng layout `activity_add_sleep.xml`**
   Icon mặt trăng tím `#512DA8`, 2 ô chọn giờ, Thẻ kết quả tổng thời lượng tự động nhảy số.
-- [ ] **Step 2: Hiện thực thuật toán xử lý qua nửa đêm trong `AddSleepActivity.java`**
+- [x] **Step 2: Hiện thực thuật toán xử lý qua nửa đêm trong `AddSleepActivity.java`**
   Nếu `wake_time < sleep_time`, thời lượng = `(24 * 60 - sleep_min + wake_min) / 60.0f`; hiển thị kết quả thời gian thực.
-- [ ] **Step 3: Kiểm thử logic giờ ngủ**
+- [x] **Step 3: Kiểm thử logic giờ ngủ**
   Nhập ngủ 23:00, thức 06:30 -> Hiển thị chính xác 7.5 giờ; lưu thành công vào SQLite.
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
   `git commit -m "feat: implement AddSleepActivity with overnight sleep calculation"`
 
 ---
