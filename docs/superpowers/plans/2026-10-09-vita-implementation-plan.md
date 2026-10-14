@@ -403,15 +403,15 @@
 - Consumes: `MedicineDao.setActive()`, `MedicineDao.logMedicine()`, `AlarmManager`
 - Produces: NotificationChannel `vita_medicine_channel` (High Priority); Thông báo có 2 Action Button "Đã uống" / "Bỏ qua"; Phục hồi báo thức khi `ACTION_BOOT_COMPLETED`.
 
-- [ ] **Step 1: Hiện thực `NotificationHelper.java`**
+- [x] **Step 1: Hiện thực `NotificationHelper.java`**
   Tạo `NotificationChannel` trên Android 8.0+ với `IMPORTANCE_HIGH`, âm thanh và rung nhịp đôi.
-- [ ] **Step 2: Hiện thực `MedicineAlarmReceiver.java`**
+- [x] **Step 2: Hiện thực `MedicineAlarmReceiver.java`**
   Bắn `NotificationCompat.Builder` hiển thị tên thuốc, liều dùng và 2 `PendingIntent` gắn Action Button "Đã uống" / "Bỏ qua".
-- [ ] **Step 3: Hiện thực `NotificationActionReceiver.java`**
+- [x] **Step 3: Hiện thực `NotificationActionReceiver.java`**
   Bắt sự kiện click: ghi `medicine_logs` ('TAKEN' / 'SKIPPED'), đóng Notification (`cancel`), tự động đặt lại Alarm cho ngày tiếp theo.
-- [ ] **Step 4: Hiện thực `BootReceiver.java`**
+- [x] **Step 4: Hiện thực `BootReceiver.java`**
   Lắng nghe `ACTION_BOOT_COMPLETED`, truy vấn `MedicineDao` lấy thuốc `is_active = 1` và kích hoạt lại Alarm.
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   `git commit -m "feat: implement MedicineAlarmReceiver, NotificationActionReceiver and BootReceiver"`
 
 ---
