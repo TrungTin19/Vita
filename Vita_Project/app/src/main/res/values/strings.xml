@@ -220,4 +220,29 @@
     <string name="add_med_success_edit">Đã cập nhật lịch uống thuốc thành công!</string>
     <string name="add_med_error_save">Không thể lưu lịch uống thuốc. Vui lòng thử lại.</string>
     <string name="add_med_error_update">Không thể cập nhật lịch uống thuốc. Vui lòng thử lại.</string>
+
+    <!-- Reminder Screen (Medicines + Water) -->
+    <string name="reminder_title">Nhắc nhở &amp; Thói quen hàng ngày</string>
+    <string name="reminder_water_title">Tiến độ uống nước hôm nay</string>
+    <string name="reminder_water_progress_format">%,d / %,d ml (%d%%)</string>
+    <string name="reminder_btn_add_water">Nạp 250 ml nước</string>
+    <string name="reminder_water_reached">Tuyệt vời! Bạn đã hoàn thành mục tiêu uống nước hôm nay.</string>
+    <string name="reminder_section_medicines">DANH SÁCH LỊCH UỐNG THUỐC</string>
+    <string name="reminder_empty_title">Chưa có đơn thuốc nào</string>
+    <string name="reminder_empty_desc">Nhấn nút + để thêm lịch nhắc uống thuốc</string>
+    <string name="reminder_fab_desc">Thêm lịch uống thuốc mới</string>
+    <string name="reminder_switch_desc">Bật hoặc tắt báo thức thuốc này</string>
+    <string name="reminder_med_time_format">%1$s • %2$s</string>
+    <string name="reminder_med_days_prefix">Lặp lại: %1$s</string>
+    <string name="reminder_med_days_daily">Hằng ngày</string>
+    <string name="reminder_context_menu_title">Tùy chọn</string>
+    <string name="reminder_context_menu_edit">Sửa đơn thuốc này</string>
+    <string name="reminder_context_menu_delete">Xóa đơn thuốc này</string>
+    <string name="reminder_delete_dialog_title">Xác nhận xóa</string>
+    <string name="reminder_delete_dialog_msg">Bạn có chắc chắn muốn xóa lịch nhắc %1$s? Báo thức của thuốc này sẽ bị hủy.</string>
+    <string name="reminder_delete_success">Đã xóa đơn thuốc thành công</string>
+    <string name="reminder_delete_error">Không thể xóa đơn thuốc. Vui lòng thử lại.</string>
+    <string name="reminder_alarm_off">Đã tắt nhắc nhở cho %1$s</string>
+    <string name="reminder_alarm_on">Đã bật nhắc nhở cho %1$s</string>
+    <string name="reminder_undo">Hoàn tác</string>
 </resources>

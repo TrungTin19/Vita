@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_reminder"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vita_bg">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_reminder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="88dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header title -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/spacing_md"
+                android:paddingTop="@dimen/spacing_md"
+                android:paddingBottom="@dimen/spacing_sm"
+                android:text="@string/reminder_title"
+                android:textColor="@color/vita_text_primary"
+                android:textSize="@dimen/text_h2"
+                android:textStyle="bold" />
+
+            <!-- Water Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_water_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/radius_card"
+                app:cardElevation="@dimen/elevation_card_resting"
+                app:cardUseCompatPadding="true"
+                app:strokeColor="@color/card_stroke"
+                app:strokeWidth="0.5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_marginEnd="@dimen/spacing_sm"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_water_drop"
+                            app:tint="@color/vita_water" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/reminder_water_title"
+                            android:textColor="@color/vita_text_primary"
+                            android:textSize="@dimen/text_body_lg"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_water_progress_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:gravity="center"
+                        android:textColor="@color/vita_water"
+                        android:textSize="@dimen/text_h1"
+                        android:textStyle="bold"
+                        tools:text="1,500 / 2,000 ml (75%)" />
+
+                    <ProgressBar
+                        android:id="@+id/pb_water_progress"
+                        style="@android:style/Widget.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="12dp"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:max="2000"
+                        android:progress="0"
+                        android:progressDrawable="@drawable/progress_water" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_quick_add_water"
+                        style="@style/Widget.Vita.Button.Primary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_md"
+                        android:text="@string/reminder_btn_add_water" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Medicines Section Label -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/spacing_md"
+                android:paddingBottom="@dimen/spacing_sm"
+                android:text="@string/reminder_section_medicines"
+                android:textColor="@color/vita_teal"
+                android:textSize="@dimen/text_caption"
+                android:textStyle="bold" />
+
+            <!-- Medicines RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_medicines"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_medicine" />
+
+            <!-- Empty state -->
+            <LinearLayout
+                android:id="@+id/layout_medicine_empty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_lg"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <ImageView
+                    android:layout_width="@dimen/min_touch_target"
+                    android:layout_height="@dimen/min_touch_target"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_empty_notes"
+                    app:tint="@color/vita_text_disabled" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_md"
+                    android:text="@string/reminder_empty_title"
+                    android:textColor="@color/vita_text_disabled"
+                    android:textSize="@dimen/text_body_lg" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/spacing_xs"
+                    android:text="@string/reminder_empty_desc"
+                    android:textColor="@color/vita_text_disabled"
+                    android:textSize="@dimen/text_body" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_medicine"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/spacing_md"
+        android:layout_marginBottom="@dimen/spacing_scroll_pad"
+        android:contentDescription="@string/reminder_fab_desc"
+        app:backgroundTint="@color/btn_fab_bg"
+        app:elevation="@dimen/elevation_fab"
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@color/white" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cv_medicine_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/spacing_md"
+    android:layout_marginBottom="@dimen/spacing_sm"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="@dimen/radius_card"
+    app:cardElevation="@dimen/elevation_card_resting"
+    app:cardUseCompatPadding="true"
+    app:strokeColor="@color/card_stroke"
+    app:strokeWidth="0.5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_md">
+
+        <!-- Name + Switch row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginEnd="@dimen/spacing_sm"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_nav_medicines"
+                app:tint="@color/vita_teal" />
+
+            <TextView
+                android:id="@+id/tv_med_item_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/vita_text_primary"
+                android:textSize="@dimen/text_body_lg"
+                android:textStyle="bold"
+                tools:text="Panadol Extra" />
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/sw_med_active"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/min_touch_target"
+                android:contentDescription="@string/reminder_switch_desc" />
+        </LinearLayout>
+
+        <!-- Time + Dosage -->
+        <TextView
+            android:id="@+id/tv_med_item_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:textColor="@color/vita_text_secondary"
+            android:textSize="@dimen/text_body"
+            tools:text="08:00 • 1 viên sau ăn sáng" />
+
+        <!-- Repeat days -->
+        <TextView
+            android:id="@+id/tv_med_item_days"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_xs"
+            android:textColor="@color/vita_text_secondary"
+            android:textSize="@dimen/text_caption"
+            tools:text="Lặp lại: T2, T3, T4, T5, T6, T7, CN" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
