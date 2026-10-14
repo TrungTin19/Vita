@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_health"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vita_bg">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Header title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/spacing_md"
+            android:paddingTop="@dimen/spacing_md"
+            android:paddingBottom="@dimen/spacing_sm"
+            android:text="Nhật ký chỉ số sức khỏe"
+            android:textColor="@color/vita_text_primary"
+            android:textSize="@dimen/text_h2"
+            android:textStyle="bold" />
+
+        <!-- Date filter bar -->
+        <LinearLayout
+            android:id="@+id/layout_health_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="@dimen/spacing_md"
+            android:paddingBottom="@dimen/spacing_sm">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_health_filter_date"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/min_touch_target"
+                android:layout_marginEnd="@dimen/spacing_sm"
+                android:layout_weight="1"
+                android:text="Tất cả ngày"
+                android:textColor="@color/vita_text_primary"
+                app:icon="@drawable/ic_calendar"
+                app:iconGravity="start"
+                app:iconTint="@color/vita_teal"
+                app:strokeColor="@color/vita_divider" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_health_clear_filter"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/min_touch_target"
+                android:text="Xem tất cả"
+                android:textColor="@color/vita_teal"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_health_records"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingBottom="88dp"
+            tools:listitem="@layout/item_health_record" />
+
+        <!-- Empty state -->
+        <LinearLayout
+            android:id="@+id/layout_health_empty"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <ImageView
+                android:layout_width="@dimen/min_touch_target"
+                android:layout_height="@dimen/min_touch_target"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_empty_notes"
+                app:tint="@color/vita_text_disabled" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:text="Chưa có bản ghi sức khỏe nào"
+                android:textColor="@color/vita_text_disabled"
+                android:textSize="@dimen/text_body_lg" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:text="Nhấn nút + để ghi nhận chỉ số đo đầu tiên"
+                android:textColor="@color/vita_text_disabled"
+                android:textSize="@dimen/text_body" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_health"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="@dimen/spacing_md"
+        android:layout_marginBottom="@dimen/spacing_scroll_pad"
+        android:contentDescription="Thêm chỉ số sức khỏe mới"
+        app:backgroundTint="@color/btn_fab_bg"
+        app:elevation="@dimen/elevation_fab"
+        app:srcCompat="@drawable/ic_add"
+        app:tint="@color/white" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

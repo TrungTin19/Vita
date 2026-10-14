@@ -355,11 +355,11 @@
 - Consumes: `HealthDao.getAllByUserId()`, `HealthDao.delete()`
 - Produces: Danh sách ngày giảm dần; Single Click mở `DetailHealthActivity`; Long Click mở Context Menu (Sửa / Xóa kèm Dialog xác nhận).
 
-- [ ] **Step 1: Dựng layout `item_health_record.xml` và `fragment_health.xml`**
+- [x] **Step 1: Dựng layout `item_health_record.xml` và `fragment_health.xml`**
   Thẻ CardView bo góc 12dp, padding 16dp, badge màu trạng thái huyết áp, FAB mở `AddHealthActivity`.
-- [ ] **Step 2: Hiện thực `HealthRecordAdapter.java`**
+- [x] **Step 2: Hiện thực `HealthRecordAdapter.java`**
   Kế thừa `RecyclerView.Adapter`, triển khai ViewHolder pattern, gán `setOnCreateContextMenuListener` cho item.
-- [ ] **Step 3: Hiện thực `HealthFragment.java`**
+- [x] **Step 3: Hiện thực `HealthFragment.java`**
   Tải dữ liệu từ `HealthDao`, xử lý bộ lọc ngày qua `DatePickerDialog`, xử lý sự kiện Context Menu Sửa và Xóa (kèm AlertDialog xác nhận).
 - [ ] **Step 4: Kiểm thử xóa bản ghi qua Context Menu**
   Nhấn giữ item, chọn Xóa -> Dialog xác nhận -> xóa khỏi DB và gọi `notifyItemRemoved()`.
