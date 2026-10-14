@@ -306,17 +306,17 @@
 **Interfaces:**
 - Produces: `BMICalculator.calculate(float weightKg, float heightCm): float`, `BMICalculator.classify(float bmi, String standard): BmiResult`
 
-- [ ] **Step 1: Write unit test cho công thức tính BMI và phân loại theo 2 chuẩn**
+- [x] **Step 1: Write unit test cho công thức tính BMI và phân loại theo 2 chuẩn**
   Test case: Chiều cao 1m70, nặng 68kg -> BMI = 23.53 -> Chuẩn Châu Á: "Thừa cân", Chuẩn WHO: "Bình thường".
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
   Run: `./gradlew testDebugUnitTest --tests "vn.edu.tdmu.vita.utils.BMICalculatorTest"`
   Expected: FAIL.
-- [ ] **Step 3: Hiện thực `BMICalculator.java`**
+- [x] **Step 3: Hiện thực `BMICalculator.java`**
   Tính $\text{BMI} = \frac{\text{cân nặng (kg)}}{(\text{chiều cao (m)})^2}$; phân loại trả về nhãn tiếng Việt và màu sắc Semantic Status.
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
   Run: `./gradlew testDebugUnitTest --tests "vn.edu.tdmu.vita.utils.BMICalculatorTest"`
   Expected: PASS.
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   `git commit -m "feat: implement BMICalculator supporting Asian and WHO standards"`
 
 ---
