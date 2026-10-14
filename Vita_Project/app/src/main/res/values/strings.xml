@@ -282,4 +282,33 @@
     <string name="stats_sleep_date_format">Đêm %1$s → Sáng %2$s</string>
     <string name="stats_fab_desc">Ghi nhận giấc ngủ mới</string>
     <string name="stats_not_enough_data">Chưa đủ dữ liệu vẽ đồ thị. Hãy ghi nhận ít nhất 2 ngày để theo dõi xu hướng nhé.</string>
+
+    <!-- Home Screen -->
+    <string name="home_sub_greeting">Chúc bạn một ngày tràn đầy năng lượng.</string>
+    <string name="home_bmi_title">CHỈ SỐ THỂ TRẠNG (BMI)</string>
+    <string name="home_bmi_info_format">Chiều cao: %1$.0f cm • Cân nặng: %2$.0f kg%3$s</string>
+    <string name="home_bmi_info_initial_suffix"> (ban đầu)</string>
+    <string name="home_bmi_standard_format">Chuẩn đánh giá: %1$s</string>
+    <string name="home_bmi_standard_asian">Châu Á</string>
+    <string name="home_bmi_standard_who">Quốc tế (WHO)</string>
+    <string name="home_bmi_no_data">Hãy ghi nhận cân nặng để Vita tính BMI nhé.</string>
+    <string name="home_greeting_morning">Chào buổi sáng, %1$s!</string>
+    <string name="home_greeting_afternoon">Chào buổi chiều, %1$s!</string>
+    <string name="home_greeting_evening">Chào buổi tối, %1$s!</string>
+    <string name="home_weather_title">THỜI TIẾT &amp; MÔI TRƯỜNG</string>
+    <string name="home_temp_format">%.0f°C</string>
+    <string name="home_humidity_format">Độ ẩm: %1$d%%</string>
+    <string name="home_aqi_format">AQI: %1$d</string>
+    <string name="home_aqi_good">Không khí tốt</string>
+    <string name="home_aqi_moderate">Không khí vừa phải</string>
+    <string name="home_aqi_sensitive">Nhạy cảm với nhóm sức khỏe yếu</string>
+    <string name="home_aqi_bad">Không khí kém</string>
+    <string name="home_aqi_unknown">Chưa có dữ liệu AQI</string>
+    <string name="home_updated_format">Cập nhật: %1$s</string>
+    <string name="home_offline_label">Ngoại tuyến</string>
+    <string name="home_weather_error">Không tải được thời tiết. Kiểm tra mạng nhé.</string>
+    <string name="home_advice_title">GỢI Ý CHĂM SÓC HÔM NAY</string>
+    <string name="home_advice_heat">Hôm nay trời nắng nóng %1$.0f°C. Vita gợi ý bạn nên bổ sung thêm 300 ml nước để thanh lọc cơ thể nhé.</string>
+    <string name="home_advice_air">Chất lượng không khí kém (AQI %1$d). Hãy đeo khẩu trang khi ra ngoài và hạn chế vận động mạnh nhé.</string>
+    <string name="home_advice_good">Hôm nay thời tiết dễ chịu. Hãy duy trì uống đủ nước và vận động nhẹ nhàng nhé.</string>
 </resources>

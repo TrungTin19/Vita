@@ -27,6 +27,7 @@
     <color name="vita_status_danger">#D32F2F</color>
     <color name="vita_status_danger_bg">#FFEBEE</color>
     <color name="vita_status_neutral_bg">#F5F5F5</color>
+    <color name="vita_aqi_moderate">#FBC02D</color>
     <color name="vita_water">#1976D2</color>
     <color name="vita_sleep">#512DA8</color>
 
