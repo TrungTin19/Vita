@@ -18,7 +18,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Calendar;
 
-import vn.edu.tdmu.vita.MainActivity;
+import vn.edu.tdmu.vita.activities.MainActivity;
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.models.User;

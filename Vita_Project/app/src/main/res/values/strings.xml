@@ -311,4 +311,12 @@
     <string name="home_advice_heat">Hôm nay trời nắng nóng %1$.0f°C. Vita gợi ý bạn nên bổ sung thêm 300 ml nước để thanh lọc cơ thể nhé.</string>
     <string name="home_advice_air">Chất lượng không khí kém (AQI %1$d). Hãy đeo khẩu trang khi ra ngoài và hạn chế vận động mạnh nhé.</string>
     <string name="home_advice_good">Hôm nay thời tiết dễ chịu. Hãy duy trì uống đủ nước và vận động nhẹ nhàng nhé.</string>
+
+    <!-- Main Navigation -->
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_health">Chỉ số</string>
+    <string name="nav_reminder">Nhắc nhở</string>
+    <string name="nav_stats">Thống kê</string>
+    <string name="main_profile_title">Hồ sơ cá nhân</string>
+    <string name="main_profile_desc">Mở hồ sơ cá nhân</string>
 </resources>

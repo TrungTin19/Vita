@@ -8,7 +8,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import vn.edu.tdmu.vita.MainActivity;
+import vn.edu.tdmu.vita.activities.MainActivity;
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
