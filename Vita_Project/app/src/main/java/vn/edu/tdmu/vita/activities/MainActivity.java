@@ -19,6 +19,9 @@ import vn.edu.tdmu.vita.fragments.StatsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final String EXTRA_TAB = "extra_tab";
+    public static final String TAB_REMINDER = "reminder";
+
     private MaterialToolbar toolbar;
     private BottomNavigationView bottomNav;
 
@@ -35,9 +38,31 @@ public class MainActivity extends AppCompatActivity {
         bottomNav.setOnItemReselectedListener(item -> { /* đứng yên tab hiện tại */ });
 
         if (savedInstanceState == null) {
+            openTab(getIntentTab());
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        openTab(getIntentTab());
+    }
+
+    private int getIntentTab() {
+        if (getIntent() != null && TAB_REMINDER.equals(getIntent().getStringExtra(EXTRA_TAB))) {
+            return R.id.nav_reminder;
+        }
+        return R.id.nav_home;
+    }
+
+    private void openTab(int itemId) {
+        if (bottomNav.getSelectedItemId() != itemId) {
+            bottomNav.setSelectedItemId(itemId); // khác tab -> listener tự bắn
+        } else {
             // ponytail: setSelectedItemId không bắn listener khi item đã checked sẵn
             // -> gọi transaction trực tiếp thay vì trông chờ callback.
-            onTabSelected(bottomNav.getMenu().findItem(R.id.nav_home));
+            onTabSelected(bottomNav.getMenu().findItem(itemId));
         }
     }
 

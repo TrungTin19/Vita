@@ -297,6 +297,10 @@
     <string name="reminder_med_status_none">Hôm nay: chưa xác nhận</string>
     <string name="reminder_med_status_taken">Hôm nay: đã uống lúc %1$s</string>
     <string name="reminder_med_status_skipped">Hôm nay: đã bỏ qua cữ này</string>
+    <string name="reminder_quick_taken">Đã uống</string>
+    <string name="reminder_quick_skipped">Bỏ qua</string>
+    <string name="reminder_quick_taken_toast">Vita ghi nhận bạn đã uống %1$s. Chúc bạn mau khỏe!</string>
+    <string name="reminder_quick_skipped_toast">Đã ghi nhận bỏ qua cữ thuốc này. Hãy chú ý giữ gìn sức khỏe nhé.</string>
 
     <!-- Home Screen -->
     <string name="home_sub_greeting">Chúc bạn một ngày tràn đầy năng lượng.</string>

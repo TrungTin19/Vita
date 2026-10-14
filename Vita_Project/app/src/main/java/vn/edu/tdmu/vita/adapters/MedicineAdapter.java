@@ -25,9 +25,14 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         void onSwitchChanged(Medicine medicine, int position, boolean isActive);
     }
 
+    public interface OnQuickLogListener {
+        void onQuickLog(Medicine medicine, int position, boolean taken);
+    }
+
     private final List<Medicine> medicines;
     private java.util.Map<Long, vn.edu.tdmu.vita.models.MedicineLog> todayLogs;
     private OnSwitchChangeListener switchListener;
+    private OnQuickLogListener quickLogListener;
     private int contextMenuPosition = -1;
 
     public MedicineAdapter(List<Medicine> medicines) {
@@ -40,6 +45,10 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
 
     public void setOnSwitchChangeListener(OnSwitchChangeListener listener) {
         this.switchListener = listener;
+    }
+
+    public void setOnQuickLogListener(OnQuickLogListener listener) {
+        this.quickLogListener = listener;
     }
 
     public int getContextMenuPosition() {
@@ -86,6 +95,8 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         private final TextView tvTime;
         private final TextView tvDays;
         private final TextView tvStatus;
+        private final com.google.android.material.button.MaterialButton btnTaken;
+        private final com.google.android.material.button.MaterialButton btnSkipped;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -95,6 +106,8 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
             tvTime = itemView.findViewById(R.id.tv_med_item_time);
             tvDays = itemView.findViewById(R.id.tv_med_item_days);
             tvStatus = itemView.findViewById(R.id.tv_med_item_status);
+            btnTaken = itemView.findViewById(R.id.btn_med_taken);
+            btnSkipped = itemView.findViewById(R.id.btn_med_skipped);
 
             itemView.setOnCreateContextMenuListener(this);
         }
@@ -123,6 +136,17 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
             cardView.setOnLongClickListener(v -> {
                 contextMenuPosition = getBindingAdapterPosition();
                 return false;
+            });
+
+            btnTaken.setOnClickListener(v -> {
+                if (quickLogListener != null) {
+                    quickLogListener.onQuickLog(medicine, getBindingAdapterPosition(), true);
+                }
+            });
+            btnSkipped.setOnClickListener(v -> {
+                if (quickLogListener != null) {
+                    quickLogListener.onQuickLog(medicine, getBindingAdapterPosition(), false);
+                }
             });
         }
 

@@ -149,6 +149,7 @@ public class ReminderFragment extends Fragment {
         medicines = new ArrayList<>();
         adapter = new MedicineAdapter(medicines);
         adapter.setOnSwitchChangeListener(this::handleSwitchChanged);
+        adapter.setOnQuickLogListener(this::handleQuickLog);
         rvMedicines.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvMedicines.setAdapter(adapter);
         registerForContextMenu(rvMedicines);
@@ -239,8 +240,19 @@ public class ReminderFragment extends Fragment {
         }
     }
 
-    private void handleSwitchChanged(Medicine medicine, int position, boolean isActive) {
-        medicine.setActive(isActive);
+    private void handleQuickLog(Medicine medicine, int position, boolean taken) {
+        String status = taken ? "TAKEN" : "SKIPPED";
+        medicineDao.logMedicineStatus(medicine.getId(),
+                vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate(), status,
+                vn.edu.tdmu.vita.utils.DateTimeUtils.getCurrentTimestamp());
+        loadMedicines();
+        int msgRes = taken ? R.string.reminder_quick_taken_toast
+                : R.string.reminder_quick_skipped_toast;
+        String message = taken ? getString(msgRes, medicine.getName()) : getString(msgRes);
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void handleSwitchChanged(Medicine medicine, int position, boolean isActive) {        medicine.setActive(isActive);
         boolean saved = medicineDao.toggleActive(medicine.getId(), isActive);
         if (!saved) {
             medicine.setActive(!isActive);

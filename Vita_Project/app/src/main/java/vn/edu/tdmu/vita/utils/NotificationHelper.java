@@ -65,6 +65,13 @@ public final class NotificationHelper {
         PendingIntent skippedIntent = actionPendingIntent(context, medicine.getId(),
                 NotificationActionReceiver.ACTION_SKIPPED, (int) (medicine.getId() * 100 + 2));
 
+        Intent openReminder = new Intent(context,
+                vn.edu.tdmu.vita.activities.MainActivity.class);
+        openReminder.putExtra(vn.edu.tdmu.vita.activities.MainActivity.EXTRA_TAB,
+                vn.edu.tdmu.vita.activities.MainActivity.TAB_REMINDER);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, (int) medicine.getId(),
+                openReminder, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
         String dosage = medicine.getDosage() == null || medicine.getDosage().trim().isEmpty()
                 ? "đúng liều" : medicine.getDosage();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -76,7 +83,8 @@ public final class NotificationHelper {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
-                .setAutoCancel(false)
+                .setContentIntent(contentIntent)
+                .setAutoCancel(true)
                 .setOngoing(false)
                 .setColor(0xFF00897B)
                 .addAction(R.drawable.ic_check, "Đã uống", takenIntent)

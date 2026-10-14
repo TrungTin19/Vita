@@ -88,6 +88,36 @@
             android:textStyle="bold"
             tools:text="Hôm nay: chưa xác nhận" />
 
+        <!-- Quick log row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_med_taken"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/min_touch_target"
+                android:layout_weight="1"
+                android:text="@string/reminder_quick_taken"
+                android:textColor="@color/vita_status_good"
+                app:icon="@drawable/ic_check"
+                app:iconTint="@color/vita_status_good" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_med_skipped"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/min_touch_target"
+                android:layout_weight="1"
+                android:text="@string/reminder_quick_skipped"
+                android:textColor="@color/vita_status_danger"
+                app:icon="@drawable/ic_cancel"
+                app:iconTint="@color/vita_status_danger" />
+        </LinearLayout>
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
