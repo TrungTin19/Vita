@@ -114,6 +114,24 @@ public class ReminderFragment extends Fragment {
         super.onResume();
         loadWaterProgress(false);
         loadMedicines();
+        promptExactAlarmIfNeeded();
+    }
+
+    private void promptExactAlarmIfNeeded() {
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.S) return;
+        android.app.AlarmManager alarmManager = requireContext()
+                .getSystemService(android.app.AlarmManager.class);
+        if (alarmManager != null && !alarmManager.canScheduleExactAlarms()
+                && getView() != null) {
+            Snackbar.make(getView(), getString(R.string.exact_alarm_needed),
+                            Snackbar.LENGTH_LONG)
+                    .setAction(getString(R.string.exact_alarm_open_settings), v -> {
+                        Intent intent = new Intent(
+                                android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                        startActivity(intent);
+                    })
+                    .show();
+        }
     }
 
     private void initViews(View view) {

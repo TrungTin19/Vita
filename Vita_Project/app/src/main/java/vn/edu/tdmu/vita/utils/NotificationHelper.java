@@ -58,6 +58,7 @@ public final class NotificationHelper {
                         "Liều dùng: " + dosage + ". Hãy uống thuốc đúng giờ nhé!"))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setAutoCancel(false)
                 .setOngoing(false)
                 .setColor(0xFF00897B)

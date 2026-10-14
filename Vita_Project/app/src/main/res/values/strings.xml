@@ -324,4 +324,8 @@
     <string name="water_reminder_title">Đến giờ uống nước</string>
     <string name="water_reminder_text">Uống một ly nước để cơ thể tỉnh táo nhé!</string>
     <string name="water_reminder_action">Đã uống 250 ml</string>
+
+    <!-- Exact Alarm Permission -->
+    <string name="exact_alarm_needed">Vita cần quyền Báo thức chính xác để nhắc thuốc đúng giờ</string>
+    <string name="exact_alarm_open_settings">Mở cài đặt</string>
 </resources>
