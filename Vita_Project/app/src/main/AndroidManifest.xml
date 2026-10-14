@@ -67,6 +67,11 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".activities.AddSleepActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+
         <receiver
             android:name=".receivers.MedicineAlarmReceiver"
             android:exported="false" />
