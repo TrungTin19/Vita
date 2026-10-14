@@ -122,7 +122,7 @@ public class HealthFragment extends Fragment {
 
         btnClearFilter.setOnClickListener(v -> {
             currentDateFilter = null;
-            btnFilterDate.setText("Tất cả ngày");
+            btnFilterDate.setText(getString(R.string.health_filter_all_dates));
             btnClearFilter.setVisibility(View.GONE);
             loadData();
         });
@@ -203,19 +203,19 @@ public class HealthFragment extends Fragment {
     private void showDeleteConfirmation(HealthRecord record, int position) {
         String dateDisplay = DateTimeUtils.formatDisplayDate(record.getDate());
         new AlertDialog.Builder(requireContext())
-                .setTitle("Xác nhận xóa")
-                .setMessage("Bạn có chắc chắn muốn xóa bản ghi đo ngày " + dateDisplay + " không? Thao tác này không thể hoàn tác.")
-                .setNegativeButton("Hủy bỏ", null)
-                .setPositiveButton("Xóa", (dialog, which) -> {
+                .setTitle(getString(R.string.health_delete_dialog_title))
+                .setMessage(getString(R.string.health_delete_dialog_msg, dateDisplay))
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+                .setPositiveButton(getString(R.string.btn_delete), (dialog, which) -> {
                     boolean deleted = healthDao.delete(record.getId());
                     if (deleted) {
                         records.remove(position);
                         adapter.notifyItemRemoved(position);
                         adapter.notifyItemRangeChanged(position, records.size() - position);
                         updateEmptyState();
-                        Toast.makeText(requireContext(), "Đã xóa bản ghi thành công", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), getString(R.string.health_delete_success), Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(requireContext(), "Không thể xóa bản ghi. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), getString(R.string.health_delete_error), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .show();

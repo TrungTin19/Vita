@@ -82,12 +82,12 @@ public class LoginActivity extends AppCompatActivity {
         boolean hasError = false;
 
         if (username.isEmpty()) {
-            tilUsername.setError("Vui lòng nhập tên đăng nhập");
+            tilUsername.setError(getString(R.string.login_error_empty_username));
             hasError = true;
         }
 
         if (password.isEmpty()) {
-            tilPassword.setError("Vui lòng nhập mật khẩu");
+            tilPassword.setError(getString(R.string.login_error_empty_password));
             hasError = true;
         }
 
@@ -100,14 +100,14 @@ public class LoginActivity extends AppCompatActivity {
             sessionManager.saveSession(user.getId(), user.getUsername(), user.getFullname());
             String displayName = (user.getFullname() != null && !user.getFullname().trim().isEmpty())
                     ? user.getFullname() : user.getUsername();
-            Toast.makeText(this, "Chào mừng " + displayName + " quay trở lại!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.login_welcome_back, displayName), Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         } else {
-            tilPassword.setError("Tên đăng nhập hoặc mật khẩu chưa chính xác. Vui lòng kiểm tra lại.");
+            tilPassword.setError(getString(R.string.login_error_invalid_credentials));
         }
     }
 

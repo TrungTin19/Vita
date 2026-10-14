@@ -13,31 +13,35 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/vita_surface"
-        android:elevation="2dp"
+        android:elevation="@dimen/elevation_toolbar"
         app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationContentDescription="@string/a11y_navigate_back"
         app:navigationIconTint="@color/vita_text_primary"
-        app:title="Chỉnh sửa hồ sơ"
+        app:title="@string/edit_profile_toolbar_title"
         app:titleTextColor="@color/vita_text_primary" />
 
     <ScrollView
         android:id="@+id/scroll_edit_profile"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingHorizontal="@dimen/spacing_md"
+            android:paddingTop="@dimen/spacing_md"
+            android:paddingBottom="@dimen/spacing_scroll_pad">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="Cập nhật thông tin thể trạng và mục tiêu sức khỏe"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="@string/edit_profile_subtitle"
                 android:textColor="@color/vita_text_secondary"
-                android:textSize="14sp" />
+                android:textSize="@dimen/text_body" />
 
             <!-- Full Name -->
             <com.google.android.material.textfield.TextInputLayout
@@ -45,13 +49,13 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="Họ và tên"
+                android:layout_marginBottom="@dimen/spacing_sm"
+                android:hint="@string/edit_profile_hint_fullname"
                 app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+                app:boxCornerRadiusBottomStart="@dimen/radius_input"
+                app:boxCornerRadiusTopEnd="@dimen/radius_input"
+                app:boxCornerRadiusTopStart="@dimen/radius_input"
                 app:boxStrokeColor="@color/vita_teal"
                 app:hintTextColor="@color/vita_teal">
 
@@ -63,15 +67,15 @@
                     android:inputType="textPersonName"
                     android:maxLines="1"
                     android:textColor="@color/vita_text_primary"
-                    android:textSize="16sp"
-                    tools:hint="Họ và tên" />
+                    android:textSize="@dimen/text_body_lg"
+                    tools:hint="@string/edit_profile_hint_fullname" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Birth Year and Gender Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="@dimen/spacing_sm"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -80,16 +84,16 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
-                    android:hint="Năm sinh"
+                    android:hint="@string/edit_profile_hint_birth_year"
                     app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+                    app:boxCornerRadiusBottomStart="@dimen/radius_input"
+                    app:boxCornerRadiusTopEnd="@dimen/radius_input"
+                    app:boxCornerRadiusTopStart="@dimen/radius_input"
                     app:boxStrokeColor="@color/vita_teal"
-                    app:helperText="Ví dụ: 2000"
+                    app:helperText="@string/register_helper_birth_year"
                     app:hintTextColor="@color/vita_teal">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -100,8 +104,8 @@
                         android:inputType="number"
                         android:maxLength="4"
                         android:textColor="@color/vita_text_primary"
-                        android:textSize="16sp"
-                        tools:hint="Năm sinh" />
+                        android:textSize="@dimen/text_body_lg"
+                        tools:hint="@string/edit_profile_hint_birth_year" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -109,14 +113,14 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="@dimen/spacing_xs"
                     android:layout_weight="1"
-                    android:hint="Giới tính"
+                    android:hint="@string/edit_profile_hint_gender"
                     app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+                    app:boxCornerRadiusBottomStart="@dimen/radius_input"
+                    app:boxCornerRadiusTopEnd="@dimen/radius_input"
+                    app:boxCornerRadiusTopStart="@dimen/radius_input"
                     app:boxStrokeColor="@color/vita_teal"
                     app:helperText=" "
                     app:hintTextColor="@color/vita_teal">
@@ -127,7 +131,7 @@
                         android:layout_height="wrap_content"
                         android:inputType="none"
                         android:textColor="@color/vita_text_primary"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/text_body_lg" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
@@ -135,7 +139,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="@dimen/spacing_sm"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -144,18 +148,18 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="@dimen/spacing_xs"
                     android:layout_weight="1"
-                    android:hint="Chiều cao (cm) *"
+                    android:hint="@string/edit_profile_hint_height"
                     app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+                    app:boxCornerRadiusBottomStart="@dimen/radius_input"
+                    app:boxCornerRadiusTopEnd="@dimen/radius_input"
+                    app:boxCornerRadiusTopStart="@dimen/radius_input"
                     app:boxStrokeColor="@color/vita_teal"
-                    app:helperText="50 – 250 cm"
+                    app:helperText="@string/register_helper_height"
                     app:hintTextColor="@color/vita_teal"
-                    app:suffixText="cm">
+                    app:suffixText="@string/register_suffix_cm">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_edit_height"
@@ -164,8 +168,8 @@
                         android:imeOptions="actionNext"
                         android:inputType="numberDecimal"
                         android:textColor="@color/vita_text_primary"
-                        android:textSize="16sp"
-                        tools:hint="Chiều cao (cm) *" />
+                        android:textSize="@dimen/text_body_lg"
+                        tools:hint="@string/edit_profile_hint_height" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -173,18 +177,18 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="@dimen/spacing_xs"
                     android:layout_weight="1"
-                    android:hint="Cân nặng cơ sở (kg) *"
+                    android:hint="@string/edit_profile_hint_weight"
                     app:boxBackgroundMode="outline"
-                    app:boxCornerRadiusBottomEnd="8dp"
-                    app:boxCornerRadiusBottomStart="8dp"
-                    app:boxCornerRadiusTopEnd="8dp"
-                    app:boxCornerRadiusTopStart="8dp"
+                    app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+                    app:boxCornerRadiusBottomStart="@dimen/radius_input"
+                    app:boxCornerRadiusTopEnd="@dimen/radius_input"
+                    app:boxCornerRadiusTopStart="@dimen/radius_input"
                     app:boxStrokeColor="@color/vita_teal"
-                    app:helperText="20 – 300 kg"
+                    app:helperText="@string/register_helper_weight"
                     app:hintTextColor="@color/vita_teal"
-                    app:suffixText="kg">
+                    app:suffixText="@string/register_suffix_kg">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_edit_weight"
@@ -193,8 +197,8 @@
                         android:imeOptions="actionNext"
                         android:inputType="numberDecimal"
                         android:textColor="@color/vita_text_primary"
-                        android:textSize="16sp"
-                        tools:hint="Cân nặng cơ sở (kg) *" />
+                        android:textSize="@dimen/text_body_lg"
+                        tools:hint="@string/edit_profile_hint_weight" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
@@ -204,17 +208,17 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="28dp"
-                android:hint="Mục tiêu nước mỗi ngày (ml) *"
+                android:layout_marginBottom="@dimen/spacing_lg"
+                android:hint="@string/edit_profile_hint_water_goal"
                 app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+                app:boxCornerRadiusBottomStart="@dimen/radius_input"
+                app:boxCornerRadiusTopEnd="@dimen/radius_input"
+                app:boxCornerRadiusTopStart="@dimen/radius_input"
                 app:boxStrokeColor="@color/vita_teal"
-                app:helperText="Khuyến nghị: 2,000 ml / ngày"
+                app:helperText="@string/edit_profile_helper_water_goal"
                 app:hintTextColor="@color/vita_teal"
-                app:suffixText="ml">
+                app:suffixText="@string/edit_profile_suffix_ml">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_edit_water_goal"
@@ -223,41 +227,27 @@
                     android:imeOptions="actionDone"
                     android:inputType="number"
                     android:textColor="@color/vita_text_primary"
-                    android:textSize="16sp"
-                    tools:hint="Mục tiêu nước mỗi ngày (ml) *" />
+                    android:textSize="@dimen/text_body_lg"
+                    tools:hint="@string/edit_profile_hint_water_goal" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Save Changes Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_edit_save"
+                style="@style/Widget.Vita.Button.Primary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:minHeight="48dp"
-                android:text="LƯU THAY ĐỔI"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:backgroundTint="@color/vita_teal"
-                app:cornerRadius="8dp" />
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="@string/edit_profile_btn_save" />
 
             <!-- Logout Button (Destructive Red) -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_edit_logout"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                style="@style/Widget.Vita.Button.Outlined.Danger"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:minHeight="48dp"
-                android:text="ĐĂNG XUẤT"
-                android:textAllCaps="true"
-                android:textColor="@color/vita_status_danger"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                app:cornerRadius="8dp"
-                app:strokeColor="@color/vita_status_danger"
-                app:strokeWidth="1.5dp" />
+                android:layout_marginBottom="@dimen/spacing_lg"
+                android:text="@string/edit_profile_btn_logout" />
 
         </LinearLayout>
     </ScrollView>

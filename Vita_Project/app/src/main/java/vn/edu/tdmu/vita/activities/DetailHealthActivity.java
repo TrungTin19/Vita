@@ -66,7 +66,7 @@ public class DetailHealthActivity extends AppCompatActivity {
         recordId = getIntent().getLongExtra(EXTRA_RECORD_ID, -1);
 
         if (recordId <= 0) {
-            Toast.makeText(this, "Bản ghi không hợp lệ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.detail_health_invalid_record), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -127,7 +127,7 @@ public class DetailHealthActivity extends AppCompatActivity {
     private void loadAndDisplay() {
         currentRecord = healthDao.getById(recordId);
         if (currentRecord == null) {
-            Toast.makeText(this, "Không tìm thấy bản ghi", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.detail_health_record_not_found), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -138,7 +138,7 @@ public class DetailHealthActivity extends AppCompatActivity {
     private void displayRecord(HealthRecord record) {
         // Date (no emoji)
         String displayDate = DateTimeUtils.formatDisplayDate(record.getDate());
-        tvDate.setText("Ngày đo: " + displayDate);
+        tvDate.setText(getString(R.string.detail_health_date_format, displayDate));
 
         // Blood Pressure & Heart Rate section
         boolean hasBp = record.getSystolic() != null && record.getDiastolic() != null;
@@ -177,7 +177,7 @@ public class DetailHealthActivity extends AppCompatActivity {
                 tvBpStatus.setTextColor(statusColor);
                 tvBpStatus.setBackgroundResource(badgeBgRes);
 
-                tvBpAdvice.setText("Đánh giá: " + HealthEvaluator.getBpAdvice(bpResult));
+                tvBpAdvice.setText(getString(R.string.detail_health_advice_format, HealthEvaluator.getBpAdvice(bpResult)));
                 tvBpAdvice.setVisibility(View.VISIBLE);
             } else {
                 layoutBpSection.setVisibility(View.GONE);
@@ -186,8 +186,7 @@ public class DetailHealthActivity extends AppCompatActivity {
             if (hasHr) {
                 tvHeartRate.setVisibility(View.VISIBLE);
                 String hrClassification = HealthEvaluator.classifyHeartRate(record.getHeartRate());
-                tvHeartRate.setText(String.format(Locale.getDefault(),
-                        "Nhịp tim: %d bpm (%s)", record.getHeartRate(), hrClassification));
+                tvHeartRate.setText(getString(R.string.detail_health_hr_format, record.getHeartRate(), hrClassification));
             } else {
                 tvHeartRate.setVisibility(View.GONE);
             }
@@ -205,14 +204,14 @@ public class DetailHealthActivity extends AppCompatActivity {
             cvBody.setVisibility(View.VISIBLE);
             if (hasWeight) {
                 tvWeight.setVisibility(View.VISIBLE);
-                tvWeight.setText(String.format(Locale.getDefault(), "Cân nặng: %.1f kg", record.getWeightKg()));
+                tvWeight.setText(getString(R.string.detail_health_weight_format, record.getWeightKg()));
             } else {
                 tvWeight.setVisibility(View.GONE);
             }
 
             if (hasSugar) {
                 tvSugar.setVisibility(View.VISIBLE);
-                tvSugar.setText(String.format(Locale.getDefault(), "Đường huyết: %.1f mg/dL", record.getBloodSugar()));
+                tvSugar.setText(getString(R.string.detail_health_sugar_format, record.getBloodSugar()));
             } else {
                 tvSugar.setVisibility(View.GONE);
             }
@@ -239,17 +238,17 @@ public class DetailHealthActivity extends AppCompatActivity {
 
         String dateDisplay = DateTimeUtils.formatDisplayDate(currentRecord.getDate());
         new AlertDialog.Builder(this)
-                .setTitle("Xác nhận xóa")
-                .setMessage("Bạn có chắc chắn muốn xóa bản ghi đo ngày " + dateDisplay + " không? Thao tác này không thể hoàn tác.")
-                .setNegativeButton("Hủy bỏ", null)
-                .setPositiveButton("Xóa", (dialog, which) -> {
+                .setTitle(getString(R.string.health_delete_dialog_title))
+                .setMessage(getString(R.string.health_delete_dialog_msg, dateDisplay))
+                .setNegativeButton(getString(R.string.btn_cancel), null)
+                .setPositiveButton(getString(R.string.btn_delete), (dialog, which) -> {
                     boolean deleted = healthDao.delete(recordId);
                     if (deleted) {
-                        Toast.makeText(this, "Đã xóa bản ghi thành công", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.health_delete_success), Toast.LENGTH_SHORT).show();
                         setResult(RESULT_OK);
                         finish();
                     } else {
-                        Toast.makeText(this, "Không thể xóa. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.health_delete_error), Toast.LENGTH_SHORT).show();
                     }
                 })
                 .show();

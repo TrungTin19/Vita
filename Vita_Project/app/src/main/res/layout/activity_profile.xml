@@ -13,22 +13,26 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/vita_surface"
-        android:elevation="2dp"
+        android:elevation="@dimen/elevation_toolbar"
         app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationContentDescription="@string/a11y_navigate_back"
         app:navigationIconTint="@color/vita_text_primary"
-        app:title="Hồ sơ cá nhân"
+        app:title="@string/profile_toolbar_title"
         app:titleTextColor="@color/vita_text_primary" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:clipToPadding="false"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingHorizontal="@dimen/spacing_md"
+            android:paddingTop="@dimen/spacing_md"
+            android:paddingBottom="@dimen/spacing_scroll_pad">
 
             <!-- Avatar & User Info Header -->
             <LinearLayout
@@ -36,15 +40,15 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="8dp"
-                android:paddingBottom="20dp">
+                android:paddingTop="@dimen/spacing_sm"
+                android:paddingBottom="@dimen/spacing_md">
 
                 <ImageView
                     android:id="@+id/iv_profile_avatar"
                     android:layout_width="88dp"
                     android:layout_height="88dp"
                     android:background="@drawable/bg_avatar_circle"
-                    android:contentDescription="Ảnh đại diện tài khoản"
+                    android:contentDescription="@string/profile_avatar_desc"
                     android:padding="18dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_profile_user" />
@@ -53,10 +57,10 @@
                     android:id="@+id/tv_profile_fullname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:text="Người dùng Vita"
+                    android:layout_marginTop="@dimen/spacing_sm"
+                    android:text="@string/profile_default_user"
                     android:textColor="@color/vita_text_primary"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_h1"
                     android:textStyle="bold" />
 
                 <TextView
@@ -64,9 +68,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="@username"
+                    android:text="@string/app_name"
                     android:textColor="@color/vita_text_secondary"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/text_body" />
             </LinearLayout>
 
             <!-- Card 1: Body Physical Stats (Label-Value Grid) -->
@@ -75,33 +79,28 @@
                 style="@style/Widget.Vita.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardBackgroundColor="@color/vita_surface"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:strokeColor="@color/vita_divider"
-                app:strokeWidth="1dp">
+                android:layout_marginBottom="@dimen/spacing_md">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="@dimen/spacing_md">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="14dp"
-                        android:text="THÔNG SỐ THỂ CHẤT"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:text="@string/profile_section_physical"
                         android:textColor="@color/vita_teal"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/text_caption"
                         android:textStyle="bold" />
 
                     <!-- Row 1: Birth Year and Gender -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="@dimen/spacing_sm"
                         android:baselineAligned="false"
                         android:orientation="horizontal">
 
@@ -109,14 +108,14 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
+                            android:layout_marginEnd="@dimen/spacing_xs"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="NĂM SINH"
+                                android:text="@string/profile_label_birth_year"
                                 android:textColor="@color/vita_text_secondary"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -128,7 +127,7 @@
                                 android:layout_marginTop="2dp"
                                 android:text="--"
                                 android:textColor="@color/vita_text_primary"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_body_lg"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -136,14 +135,14 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
+                            android:layout_marginStart="@dimen/spacing_xs"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="GIỚI TÍNH"
+                                android:text="@string/profile_label_gender"
                                 android:textColor="@color/vita_text_secondary"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -155,7 +154,7 @@
                                 android:layout_marginTop="2dp"
                                 android:text="--"
                                 android:textColor="@color/vita_text_primary"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_body_lg"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
@@ -163,14 +162,14 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="@dimen/spacing_sm"
                         android:background="@color/vita_divider" />
 
                     <!-- Row 2: Height and Base Weight -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="@dimen/spacing_sm"
                         android:baselineAligned="false"
                         android:orientation="horizontal">
 
@@ -178,14 +177,14 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
+                            android:layout_marginEnd="@dimen/spacing_xs"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="CHIỀU CAO"
+                                android:text="@string/profile_label_height"
                                 android:textColor="@color/vita_text_secondary"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -197,7 +196,7 @@
                                 android:layout_marginTop="2dp"
                                 android:text="-- cm"
                                 android:textColor="@color/vita_text_primary"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_body_lg"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -205,14 +204,14 @@
                         <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="8dp"
+                            android:layout_marginStart="@dimen/spacing_xs"
                             android:layout_weight="1"
                             android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="CÂN NẶNG BAN ĐẦU"
+                                android:text="@string/profile_label_base_weight"
                                 android:textColor="@color/vita_text_secondary"
                                 android:textSize="11sp"
                                 android:textStyle="bold" />
@@ -224,7 +223,7 @@
                                 android:layout_marginTop="2dp"
                                 android:text="-- kg"
                                 android:textColor="@color/vita_text_primary"
-                                android:textSize="16sp"
+                                android:textSize="@dimen/text_body_lg"
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </LinearLayout>
@@ -232,7 +231,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="@dimen/spacing_sm"
                         android:background="@color/vita_divider" />
 
                     <!-- Row 3: Water Goal -->
@@ -244,7 +243,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="MỤC TIÊU NƯỚC UỐNG HẰNG NGÀY"
+                            android:text="@string/profile_label_water_goal"
                             android:textColor="@color/vita_text_secondary"
                             android:textSize="11sp"
                             android:textStyle="bold" />
@@ -256,7 +255,7 @@
                             android:layout_marginTop="2dp"
                             android:text="2,000 ml / ngày"
                             android:textColor="@color/vita_water"
-                            android:textSize="16sp"
+                            android:textSize="@dimen/text_body_lg"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>
@@ -268,26 +267,21 @@
                 style="@style/Widget.Vita.Card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                app:cardBackgroundColor="@color/vita_surface"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:strokeColor="@color/vita_divider"
-                app:strokeWidth="1dp">
+                android:layout_marginBottom="@dimen/spacing_lg">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="@dimen/spacing_md">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:text="CHỈ SỐ KHỐI CƠ THỂ (BMI)"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:text="@string/profile_section_bmi"
                         android:textColor="@color/vita_teal"
-                        android:textSize="13sp"
+                        android:textSize="@dimen/text_caption"
                         android:textStyle="bold" />
 
                     <!-- Visual BMI Status Section -->
@@ -297,7 +291,7 @@
                         android:background="@color/vita_bg"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:padding="12dp">
+                        android:padding="@dimen/spacing_sm">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -308,9 +302,9 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="BMI Hiện Tại"
+                                android:text="@string/profile_label_current_bmi"
                                 android:textColor="@color/vita_text_secondary"
-                                android:textSize="12sp" />
+                                android:textSize="@dimen/text_caption" />
 
                             <TextView
                                 android:id="@+id/tv_profile_bmi_value"
@@ -318,7 +312,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="--"
                                 android:textColor="@color/vita_text_primary"
-                                android:textSize="28sp"
+                                android:textSize="@dimen/text_display"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
@@ -328,11 +322,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@drawable/bg_badge_rounded"
-                            android:paddingStart="12dp"
-                            android:paddingTop="6dp"
-                            android:paddingEnd="12dp"
-                            android:paddingBottom="6dp"
-                            android:text="Chưa xác định"
+                            android:paddingStart="@dimen/spacing_sm"
+                            android:paddingTop="@dimen/spacing_xs"
+                            android:paddingEnd="@dimen/spacing_sm"
+                            android:paddingBottom="@dimen/spacing_xs"
+                            android:text="@string/profile_bmi_undetermined"
                             android:textColor="@color/vita_teal"
                             android:textSize="13sp"
                             android:textStyle="bold" />
@@ -343,8 +337,8 @@
                         android:id="@+id/tv_profile_healthy_weight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="14dp"
+                        android:layout_marginTop="@dimen/spacing_sm"
+                        android:layout_marginBottom="@dimen/spacing_sm"
                         android:text="Khoảng cân nặng hợp lý: --"
                         android:textColor="@color/vita_text_secondary"
                         android:textSize="13sp" />
@@ -352,14 +346,14 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="@dimen/spacing_sm"
                         android:background="@color/vita_divider" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="TIÊU CHUẨN ĐÁNH GIÁ"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:text="@string/profile_label_bmi_standard"
                         android:textColor="@color/vita_text_secondary"
                         android:textSize="11sp"
                         android:textStyle="bold" />
@@ -375,9 +369,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:checked="true"
-                            android:paddingStart="8dp"
+                            android:paddingStart="@dimen/spacing_sm"
                             android:paddingEnd="0dp"
-                            android:text="Chuẩn Châu Á (IDI &amp; WPRO)\nKhuyến nghị cho người Việt Nam (bình thường: 18.5 – 22.9)"
+                            android:text="@string/profile_standard_asian"
                             android:textColor="@color/vita_text_primary"
                             android:textSize="13sp" />
 
@@ -385,10 +379,10 @@
                             android:id="@+id/rb_bmi_who"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp"
-                            android:paddingStart="8dp"
+                            android:layout_marginTop="@dimen/spacing_xs"
+                            android:paddingStart="@dimen/spacing_sm"
                             android:paddingEnd="0dp"
-                            android:text="Chuẩn Quốc tế (WHO)\nÁp dụng đa chủng tộc toàn cầu (bình thường: 18.5 – 24.9)"
+                            android:text="@string/profile_standard_who"
                             android:textColor="@color/vita_text_primary"
                             android:textSize="13sp" />
                     </RadioGroup>
@@ -401,15 +395,8 @@
                 style="@style/Widget.Vita.Button.Outlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:minHeight="48dp"
-                android:text="CHỈNH SỬA HỒ SƠ"
-                android:textAllCaps="true"
-                android:textColor="@color/vita_teal"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                app:cornerRadius="8dp"
-                app:strokeColor="@color/vita_teal" />
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="@string/profile_btn_edit" />
 
         </LinearLayout>
     </ScrollView>

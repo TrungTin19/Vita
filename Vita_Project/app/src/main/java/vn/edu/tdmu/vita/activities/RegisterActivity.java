@@ -156,49 +156,49 @@ public class RegisterActivity extends AppCompatActivity {
 
         // Validate username
         if (username.isEmpty()) {
-            tilUsername.setError("Vui lòng nhập tên đăng nhập");
+            tilUsername.setError(getString(R.string.register_error_empty_username));
             hasError = true;
         } else if (username.length() < 3) {
-            tilUsername.setError("Tên đăng nhập tối thiểu 3 ký tự");
+            tilUsername.setError(getString(R.string.register_error_short_username));
             hasError = true;
         } else if (username.contains(" ")) {
-            tilUsername.setError("Tên đăng nhập không được chứa khoảng trắng");
+            tilUsername.setError(getString(R.string.register_error_space_username));
             hasError = true;
         }
 
         // Validate password
         if (password.isEmpty()) {
-            tilPassword.setError("Vui lòng nhập mật khẩu");
+            tilPassword.setError(getString(R.string.register_error_empty_password));
             hasError = true;
         } else if (!vn.edu.tdmu.vita.utils.InputValidator.isValidPassword(password)) {
-            tilPassword.setError("Mật khẩu phải có tối thiểu 6 ký tự");
+            tilPassword.setError(getString(R.string.register_error_short_password));
             hasError = true;
         }
 
         // Validate confirm password
         if (confirm.isEmpty()) {
-            tilConfirm.setError("Vui lòng xác nhận lại mật khẩu");
+            tilConfirm.setError(getString(R.string.register_error_empty_confirm));
             hasError = true;
         } else if (!password.equals(confirm)) {
-            tilConfirm.setError("Mật khẩu xác nhận không trùng khớp");
+            tilConfirm.setError(getString(R.string.register_error_mismatch_confirm));
             hasError = true;
         }
 
         // Validate height
         float height = 0f;
         if (heightStr.isEmpty()) {
-            tilHeight.setError("Vui lòng nhập chiều cao");
+            tilHeight.setError(getString(R.string.register_error_empty_height));
             hasError = true;
         } else {
             try {
                 height = Float.parseFloat(heightStr);
                 if (!vn.edu.tdmu.vita.utils.InputValidator.isValidHeight(height)) {
-                    tilHeight.setError(String.format("Chiều cao hợp lệ từ %.0fcm đến %.0fcm",
+                    tilHeight.setError(getString(R.string.register_error_invalid_height,
                             vn.edu.tdmu.vita.utils.InputValidator.MIN_HEIGHT_CM, vn.edu.tdmu.vita.utils.InputValidator.MAX_HEIGHT_CM));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
-                tilHeight.setError("Chiều cao không hợp lệ");
+                tilHeight.setError(getString(R.string.register_error_nan_height));
                 hasError = true;
             }
         }
@@ -206,18 +206,18 @@ public class RegisterActivity extends AppCompatActivity {
         // Validate weight
         float weight = 0f;
         if (weightStr.isEmpty()) {
-            tilWeight.setError("Vui lòng nhập cân nặng");
+            tilWeight.setError(getString(R.string.register_error_empty_weight));
             hasError = true;
         } else {
             try {
                 weight = Float.parseFloat(weightStr);
                 if (!vn.edu.tdmu.vita.utils.InputValidator.isValidWeight(weight)) {
-                    tilWeight.setError(String.format("Cân nặng hợp lệ từ %.0fkg đến %.0fkg",
+                    tilWeight.setError(getString(R.string.register_error_invalid_weight,
                             vn.edu.tdmu.vita.utils.InputValidator.MIN_WEIGHT_KG, vn.edu.tdmu.vita.utils.InputValidator.MAX_WEIGHT_KG));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
-                tilWeight.setError("Cân nặng không hợp lệ");
+                tilWeight.setError(getString(R.string.register_error_nan_weight));
                 hasError = true;
             }
         }
@@ -229,11 +229,11 @@ public class RegisterActivity extends AppCompatActivity {
                 birthYear = Integer.parseInt(birthYearStr);
                 int currentYear = Calendar.getInstance().get(Calendar.YEAR);
                 if (!vn.edu.tdmu.vita.utils.InputValidator.isValidBirthYear(birthYear)) {
-                    tilBirthYear.setError("Năm sinh từ 1900 đến " + currentYear);
+                    tilBirthYear.setError(getString(R.string.register_error_invalid_birth_year, currentYear));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
-                tilBirthYear.setError("Năm sinh không hợp lệ");
+                tilBirthYear.setError(getString(R.string.register_error_nan_birth_year));
                 hasError = true;
             }
         }
@@ -254,13 +254,13 @@ public class RegisterActivity extends AppCompatActivity {
 
         long userId = userDao.register(newUser, password);
         if (userId == -1) {
-            tilUsername.setError("Tên đăng nhập đã tồn tại, vui lòng chọn tên khác");
+            tilUsername.setError(getString(R.string.register_error_username_exists));
             return;
         }
 
         // Save session and enter main app
         sessionManager.saveSession(userId, username, fullname);
-        Toast.makeText(this, "Đăng ký thành công! Chào mừng bạn đến với Vita.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.register_success, Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

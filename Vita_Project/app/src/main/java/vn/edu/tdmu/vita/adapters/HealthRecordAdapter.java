@@ -128,7 +128,7 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
             // Weight
             if (record.getWeightKg() != null) {
                 tvWeight.setVisibility(View.VISIBLE);
-                tvWeight.setText(String.format(Locale.getDefault(), "Cân nặng: %.1f kg", record.getWeightKg()));
+                tvWeight.setText(itemView.getContext().getString(R.string.health_item_weight_format, record.getWeightKg()));
             } else {
                 tvWeight.setVisibility(View.GONE);
             }
@@ -136,7 +136,7 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
             // Heart Rate
             if (record.getHeartRate() != null) {
                 tvHeartRate.setVisibility(View.VISIBLE);
-                tvHeartRate.setText(String.format(Locale.getDefault(), "Tim: %d bpm", record.getHeartRate()));
+                tvHeartRate.setText(itemView.getContext().getString(R.string.health_item_hr_format, record.getHeartRate()));
             } else {
                 tvHeartRate.setVisibility(View.GONE);
             }
@@ -144,7 +144,7 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
             // Blood Sugar
             if (record.getBloodSugar() != null) {
                 tvSugar.setVisibility(View.VISIBLE);
-                tvSugar.setText(String.format(Locale.getDefault(), "Đường huyết: %.0f mg/dL", record.getBloodSugar()));
+                tvSugar.setText(itemView.getContext().getString(R.string.health_item_sugar_format, record.getBloodSugar()));
             } else {
                 tvSugar.setVisibility(View.GONE);
             }
@@ -166,9 +166,9 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v,
                                          ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Tùy chọn");
-            menu.add(0, R.id.menu_health_edit, 0, "Sửa bản ghi này");
-            menu.add(0, R.id.menu_health_delete, 1, "Xóa bản ghi này");
+            menu.setHeaderTitle(itemView.getContext().getString(R.string.health_context_menu_title));
+            menu.add(0, R.id.menu_health_edit, 0, itemView.getContext().getString(R.string.health_context_menu_edit));
+            menu.add(0, R.id.menu_health_delete, 1, itemView.getContext().getString(R.string.health_context_menu_delete));
         }
     }
 }

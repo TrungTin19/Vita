@@ -149,20 +149,20 @@ public class EditProfileActivity extends AppCompatActivity {
         // Height validation
         float height = 0f;
         if (heightStr.isEmpty()) {
-            tilHeight.setError("Vui lòng nhập chiều cao");
+            tilHeight.setError(getString(R.string.register_error_empty_height));
             hasError = true;
         } else {
             try {
                 height = Float.parseFloat(heightStr);
                 if (!InputValidator.isValidHeight(height)) {
-                    tilHeight.setError(String.format("Chiều cao hợp lệ từ %.0fcm đến %.0fcm",
+                    tilHeight.setError(getString(R.string.register_error_invalid_height,
                             InputValidator.MIN_HEIGHT_CM, InputValidator.MAX_HEIGHT_CM));
                     hasError = true;
                 } else {
                     tilHeight.setError(null);
                 }
             } catch (NumberFormatException e) {
-                tilHeight.setError("Chiều cao không hợp lệ");
+                tilHeight.setError(getString(R.string.register_error_nan_height));
                 hasError = true;
             }
         }
@@ -170,20 +170,20 @@ public class EditProfileActivity extends AppCompatActivity {
         // Weight validation
         float weight = 0f;
         if (weightStr.isEmpty()) {
-            tilWeight.setError("Vui lòng nhập cân nặng");
+            tilWeight.setError(getString(R.string.register_error_empty_weight));
             hasError = true;
         } else {
             try {
                 weight = Float.parseFloat(weightStr);
                 if (!InputValidator.isValidWeight(weight)) {
-                    tilWeight.setError(String.format("Cân nặng hợp lệ từ %.0fkg đến %.0fkg",
+                    tilWeight.setError(getString(R.string.register_error_invalid_weight,
                             InputValidator.MIN_WEIGHT_KG, InputValidator.MAX_WEIGHT_KG));
                     hasError = true;
                 } else {
                     tilWeight.setError(null);
                 }
             } catch (NumberFormatException e) {
-                tilWeight.setError("Cân nặng không hợp lệ");
+                tilWeight.setError(getString(R.string.register_error_nan_weight));
                 hasError = true;
             }
         }
@@ -195,13 +195,13 @@ public class EditProfileActivity extends AppCompatActivity {
                 birthYear = Integer.parseInt(birthYearStr);
                 int currentYear = Calendar.getInstance().get(Calendar.YEAR);
                 if (!InputValidator.isValidBirthYear(birthYear)) {
-                    tilBirthYear.setError("Năm sinh từ 1900 đến " + currentYear);
+                    tilBirthYear.setError(getString(R.string.register_error_invalid_birth_year, currentYear));
                     hasError = true;
                 } else {
                     tilBirthYear.setError(null);
                 }
             } catch (NumberFormatException e) {
-                tilBirthYear.setError("Năm sinh không hợp lệ");
+                tilBirthYear.setError(getString(R.string.register_error_nan_birth_year));
                 hasError = true;
             }
         }
@@ -212,14 +212,14 @@ public class EditProfileActivity extends AppCompatActivity {
             try {
                 waterGoal = Integer.parseInt(waterGoalStr);
                 if (!InputValidator.isValidWaterGoal(waterGoal)) {
-                    tilWaterGoal.setError(String.format("Mục tiêu nước từ %,d đến %,d ml / ngày",
+                    tilWaterGoal.setError(getString(R.string.edit_profile_error_invalid_water_goal,
                             InputValidator.MIN_WATER_GOAL_ML, InputValidator.MAX_WATER_GOAL_ML));
                     hasError = true;
                 } else {
                     tilWaterGoal.setError(null);
                 }
             } catch (NumberFormatException e) {
-                tilWaterGoal.setError("Mục tiêu nước không hợp lệ");
+                tilWaterGoal.setError(getString(R.string.edit_profile_error_nan_water_goal));
                 hasError = true;
             }
         }
@@ -238,26 +238,26 @@ public class EditProfileActivity extends AppCompatActivity {
         boolean success = userDao.updateProfile(currentUser);
         if (success) {
             sessionManager.saveSession(currentUser.getId(), currentUser.getUsername(), currentUser.getFullname());
-            Toast.makeText(this, "Đã lưu thay đổi hồ sơ thành công!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.edit_profile_save_success, Toast.LENGTH_SHORT).show();
             finish();
         } else {
-            Toast.makeText(this, "Không thể cập nhật hồ sơ. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.edit_profile_save_error, Toast.LENGTH_SHORT).show();
         }
     }
 
     private void showLogoutConfirmDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Xác nhận đăng xuất")
-                .setMessage("Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng Vita không?")
-                .setPositiveButton("Đăng xuất", (dialog, which) -> {
+                .setTitle(R.string.edit_profile_logout_dialog_title)
+                .setMessage(R.string.edit_profile_logout_dialog_msg)
+                .setPositiveButton(R.string.edit_profile_btn_logout, (dialog, which) -> {
                     sessionManager.clearSession();
-                    Toast.makeText(EditProfileActivity.this, "Đã đăng xuất tài khoản", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditProfileActivity.this, R.string.edit_profile_logout_toast, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(EditProfileActivity.this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
                 })
-                .setNegativeButton("Hủy bỏ", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(R.string.btn_cancel, (dialog, which) -> dialog.dismiss())
                 .show();
     }
 

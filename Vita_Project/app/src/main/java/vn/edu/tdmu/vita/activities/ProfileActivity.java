@@ -97,8 +97,8 @@ public class ProfileActivity extends AppCompatActivity {
             renderBmiCard(selectedStandard);
 
             String message = (checkedId == R.id.rb_bmi_who)
-                    ? "Đã đổi sang Chuẩn Quốc tế (WHO)"
-                    : "Đã đổi sang Chuẩn Châu Á (IDI & WPRO)";
+                    ? getString(R.string.profile_snackbar_standard_who)
+                    : getString(R.string.profile_snackbar_standard_asian);
             Snackbar.make(rgBmiStandard, message, Snackbar.LENGTH_SHORT).show();
         });
 
@@ -129,15 +129,15 @@ public class ProfileActivity extends AppCompatActivity {
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int age = currentYear - currentUser.getBirthYear();
         if (currentUser.getBirthYear() > 0 && age >= 0 && age <= 120) {
-            tvBirthYear.setText(String.format(Locale.getDefault(), "%d (%d tuổi)", currentUser.getBirthYear(), age));
+            tvBirthYear.setText(getString(R.string.profile_age_format, currentUser.getBirthYear(), age));
         } else {
-            tvBirthYear.setText("Chưa cập nhật");
+            tvBirthYear.setText(getString(R.string.profile_not_updated));
         }
 
-        tvGender.setText(currentUser.getGender() != null ? currentUser.getGender() : "Chưa rõ");
-        tvHeight.setText(String.format(Locale.getDefault(), "%.1f cm", currentUser.getHeightCm()));
-        tvBaseWeight.setText(String.format(Locale.getDefault(), "%.1f kg", currentUser.getBaseWeightKg()));
-        tvWaterGoal.setText(String.format(Locale.getDefault(), "%,d ml / ngày", currentUser.getWaterGoalMl()));
+        tvGender.setText(currentUser.getGender() != null ? currentUser.getGender() : getString(R.string.profile_unknown));
+        tvHeight.setText(getString(R.string.profile_height_format, currentUser.getHeightCm()));
+        tvBaseWeight.setText(getString(R.string.profile_weight_format, currentUser.getBaseWeightKg()));
+        tvWaterGoal.setText(getString(R.string.profile_water_goal_format, currentUser.getWaterGoalMl()));
 
         String standard = (currentUser.getBmiStandard() != null && !currentUser.getBmiStandard().trim().isEmpty())
                 ? currentUser.getBmiStandard() : BmiUtils.STANDARD_ASIAN;
@@ -183,14 +183,13 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             double[] healthyRange = BmiUtils.getHealthyWeightRange(heightCm, standard);
-            tvHealthyWeight.setText(String.format(Locale.getDefault(),
-                    "Khoảng cân nặng lý tưởng nên duy trì: %.1f kg – %.1f kg", healthyRange[0], healthyRange[1]));
+            tvHealthyWeight.setText(getString(R.string.profile_healthy_weight_format, healthyRange[0], healthyRange[1]));
         } else {
             tvBmiValue.setText("--");
-            tvBmiCategory.setText("Chưa có số đo");
+            tvBmiCategory.setText(getString(R.string.profile_bmi_no_metrics));
             tvBmiCategory.setTextColor(ContextCompat.getColor(this, R.color.vita_text_secondary));
             tvBmiCategory.setBackgroundResource(R.drawable.bg_badge_neutral);
-            tvHealthyWeight.setText("Vui lòng cập nhật chiều cao và cân nặng để tính BMI.");
+            tvHealthyWeight.setText(getString(R.string.profile_healthy_weight_prompt));
         }
     }
 }

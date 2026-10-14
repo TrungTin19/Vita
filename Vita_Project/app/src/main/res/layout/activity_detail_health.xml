@@ -15,7 +15,8 @@
         android:background="@color/vita_surface"
         android:elevation="@dimen/elevation_toolbar"
         app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="Chi tiết lần đo"
+        app:navigationContentDescription="@string/a11y_navigate_back"
+        app:title="@string/detail_health_toolbar_title"
         app:titleTextColor="@color/vita_text_primary" />
 
     <!-- Scrollable content -->
@@ -68,7 +69,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_sm"
-                        android:text="HUYẾT ÁP \u0026 NHỊP TIM"
+                        android:text="@string/detail_health_section_bp"
                         android:textColor="@color/vita_text_secondary"
                         android:textSize="@dimen/text_caption"
                         android:textStyle="bold" />
@@ -113,7 +114,7 @@
                             android:id="@+id/tv_detail_bp_unit"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="mmHg"
+                            android:text="@string/detail_health_bp_unit"
                             android:textColor="@color/vita_text_secondary"
                             android:textSize="@dimen/text_body" />
 
@@ -169,7 +170,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_sm"
-                        android:text="CÂN NẶNG \u0026 ĐƯỜNG HUYẾT"
+                        android:text="@string/detail_health_section_body"
                         android:textColor="@color/vita_text_secondary"
                         android:textSize="@dimen/text_caption"
                         android:textStyle="bold" />
@@ -216,7 +217,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_sm"
-                        android:text="GHI CHÚ ĐÍNH KÈM"
+                        android:text="@string/detail_health_section_notes"
                         android:textColor="@color/vita_text_secondary"
                         android:textSize="@dimen/text_caption"
                         android:textStyle="bold" />
@@ -238,7 +239,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
-                android:text="Lời khuyên tham khảo từ Vita. Nếu bạn cảm thấy chóng mặt, đau đầu, hãy tham vấn ý kiến bác sĩ gia đình."
+                android:text="@string/detail_health_disclaimer"
                 android:textColor="@color/vita_text_disabled"
                 android:textSize="@dimen/text_caption"
                 android:textStyle="italic" />
@@ -249,7 +250,7 @@
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/min_touch_target"
-                android:text="Chỉnh sửa bản ghi này"
+                android:text="@string/detail_health_btn_edit"
                 android:textColor="@color/vita_teal"
                 app:icon="@drawable/ic_edit"
                 app:iconGravity="textStart"

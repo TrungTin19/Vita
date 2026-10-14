@@ -124,7 +124,7 @@ public class AddHealthActivity extends AppCompatActivity {
 
         if (recordId > 0) {
             // Edit Mode
-            toolbar.setTitle("Chỉnh sửa số đo");
+            toolbar.setTitle(getString(R.string.add_health_title_edit));
             HealthRecord record = healthDao.getById(recordId);
             if (record != null) {
                 selectedDate = record.getDate();
@@ -151,7 +151,7 @@ public class AddHealthActivity extends AppCompatActivity {
             }
         } else {
             // Add Mode
-            toolbar.setTitle("Ghi nhận chỉ số đo");
+            toolbar.setTitle(getString(R.string.add_health_title_add));
             selectedDate = DateTimeUtils.getTodayDate();
             etDate.setText(DateTimeUtils.formatDisplayDate(selectedDate));
         }
@@ -191,7 +191,7 @@ public class AddHealthActivity extends AppCompatActivity {
         // Sanity check: must provide at least one measurement or note
         if (systolicStr.isEmpty() && diastolicStr.isEmpty() && heartRateStr.isEmpty()
                 && weightStr.isEmpty() && sugarStr.isEmpty() && noteStr.isEmpty()) {
-            Toast.makeText(this, "Vui lòng nhập ít nhất một chỉ số đo hoặc ghi chú.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.add_health_error_no_input), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -208,11 +208,11 @@ public class AddHealthActivity extends AppCompatActivity {
             try {
                 systolic = Integer.parseInt(systolicStr);
                 if (!InputValidator.isValidSystolic(systolic)) {
-                    tilSystolic.setError("Tâm thu từ 50 đến 250 mmHg");
+                    tilSystolic.setError(getString(R.string.add_health_error_systolic_range));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
-                tilSystolic.setError("Số không hợp lệ");
+                tilSystolic.setError(getString(R.string.add_health_error_invalid_number));
                 hasError = true;
             }
         }
@@ -222,11 +222,11 @@ public class AddHealthActivity extends AppCompatActivity {
             try {
                 diastolic = Integer.parseInt(diastolicStr);
                 if (!InputValidator.isValidDiastolic(diastolic)) {
-                    tilDiastolic.setError("Tâm trương từ 30 đến 150 mmHg");
+                    tilDiastolic.setError(getString(R.string.add_health_error_diastolic_range));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
-                tilDiastolic.setError("Số không hợp lệ");
+                tilDiastolic.setError(getString(R.string.add_health_error_invalid_number));
                 hasError = true;
             }
         }
@@ -234,7 +234,7 @@ public class AddHealthActivity extends AppCompatActivity {
         // Validate Blood Pressure relation: Systolic must be greater than Diastolic
         if (systolic != null && diastolic != null && !hasError) {
             if (!InputValidator.isValidBloodPressure(systolic, diastolic)) {
-                tilSystolic.setError("Tâm thu phải lớn hơn tâm trương");
+                tilSystolic.setError(getString(R.string.add_health_error_bp_relation));
                 hasError = true;
             }
         }
@@ -244,11 +244,11 @@ public class AddHealthActivity extends AppCompatActivity {
             try {
                 heartRate = Integer.parseInt(heartRateStr);
                 if (!InputValidator.isValidHeartRate(heartRate)) {
-                    tilHeartRate.setError("Nhịp tim từ 30 đến 250 bpm");
+                    tilHeartRate.setError(getString(R.string.add_health_error_hr_range));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
-                tilHeartRate.setError("Số không hợp lệ");
+                tilHeartRate.setError(getString(R.string.add_health_error_invalid_number));
                 hasError = true;
             }
         }
@@ -258,11 +258,11 @@ public class AddHealthActivity extends AppCompatActivity {
             try {
                 weight = Float.parseFloat(weightStr);
                 if (!InputValidator.isValidWeight(weight)) {
-                    tilWeight.setError("Cân nặng từ 20kg đến 300kg");
+                    tilWeight.setError(getString(R.string.add_health_error_weight_range));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
-                tilWeight.setError("Số không hợp lệ");
+                tilWeight.setError(getString(R.string.add_health_error_invalid_number));
                 hasError = true;
             }
         }
@@ -272,11 +272,11 @@ public class AddHealthActivity extends AppCompatActivity {
             try {
                 bloodSugar = Float.parseFloat(sugarStr);
                 if (!InputValidator.isValidBloodSugar(bloodSugar)) {
-                    tilSugar.setError("Đường huyết từ 20 đến 600 mg/dL");
+                    tilSugar.setError(getString(R.string.add_health_error_sugar_range));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
-                tilSugar.setError("Số không hợp lệ");
+                tilSugar.setError(getString(R.string.add_health_error_invalid_number));
                 hasError = true;
             }
         }
@@ -301,22 +301,22 @@ public class AddHealthActivity extends AppCompatActivity {
 
                 boolean success = healthDao.update(record);
                 if (success) {
-                    Toast.makeText(this, "Đã cập nhật chỉ số sức khỏe thành công!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.add_health_success_edit), Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    Toast.makeText(this, "Không thể cập nhật chỉ số. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.add_health_error_update), Toast.LENGTH_SHORT).show();
                 }
             }
         } else {
             HealthRecord record = new HealthRecord(0, userId, selectedDate, weight, systolic, diastolic, heartRate, bloodSugar, note);
             long id = healthDao.insert(record);
             if (id > 0) {
-                Toast.makeText(this, "Đã lưu bản ghi sức khỏe thành công!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.add_health_success_add), Toast.LENGTH_SHORT).show();
                 setResult(RESULT_OK);
                 finish();
             } else {
-                Toast.makeText(this, "Không thể lưu chỉ số. Vui lòng thử lại.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.add_health_error_save), Toast.LENGTH_SHORT).show();
             }
         }
     }

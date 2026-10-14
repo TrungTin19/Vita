@@ -1,3 +1,199 @@
 <resources>
+    <!-- App Brand & Identity -->
     <string name="app_name">Vita</string>
+    <string name="app_slogan">Sức sống mỗi ngày, an tâm tại nhà</string>
+    <string name="app_version_default">Phiên bản 1.0 - ĐH Thủ Dầu Một</string>
+    <string name="app_logo_content_desc">Biểu tượng ứng dụng quản lý sức khỏe Vita</string>
+
+    <!-- Common Button Actions (Sentence Case) -->
+    <string name="btn_save">Lưu</string>
+    <string name="btn_cancel">Hủy bỏ</string>
+    <string name="btn_delete">Xóa</string>
+    <string name="btn_edit">Chỉnh sửa</string>
+    <string name="btn_close">Đóng</string>
+    <string name="btn_confirm">Xác nhận</string>
+    <string name="btn_see_all">Xem tất cả</string>
+
+    <!-- Accessibility Descriptions -->
+    <string name="a11y_navigate_back">Quay lại</string>
+    <string name="a11y_delete_record">Xóa bản ghi</string>
+
+    <!-- Splash Screen -->
+    <string name="splash_title">Vita</string>
+    <string name="splash_slogan">Sức sống mỗi ngày, an tâm tại nhà</string>
+    <string name="splash_version">Phiên bản 1.0 - ĐH Thủ Dầu Một</string>
+    <string name="splash_logo_desc">Biểu tượng ứng dụng quản lý sức khỏe Vita</string>
+
+    <!-- Login Screen -->
+    <string name="login_title">Đăng nhập vào Vita</string>
+    <string name="login_subtitle">Cùng chăm sóc sức khỏe mỗi ngày nhé!</string>
+    <string name="login_hint_username">Tên đăng nhập</string>
+    <string name="login_hint_password">Mật khẩu</string>
+    <string name="login_btn_submit">Đăng nhập</string>
+    <string name="login_link_register">Chưa có tài khoản? Đăng ký ngay</string>
+    <string name="login_error_empty_username">Vui lòng nhập tên đăng nhập</string>
+    <string name="login_error_empty_password">Vui lòng nhập mật khẩu</string>
+    <string name="login_error_invalid_credentials">Tên đăng nhập hoặc mật khẩu chưa chính xác. Vui lòng kiểm tra lại.</string>
+    <string name="login_welcome_back">Chào mừng %1$s quay trở lại!</string>
+
+    <!-- Register Screen -->
+    <string name="register_toolbar_title">Tạo tài khoản mới</string>
+    <string name="register_subtitle">Bắt đầu hành trình sống khỏe cùng Vita!</string>
+    <string name="register_section_account">THÔNG TIN ĐĂNG NHẬP</string>
+    <string name="register_section_physical">THÔNG TIN THỂ CHẤT BAN ĐẦU</string>
+    <string name="register_hint_username">Tên đăng nhập *</string>
+    <string name="register_hint_password">Mật khẩu (tối thiểu 6 ký tự) *</string>
+    <string name="register_hint_confirm">Xác nhận lại mật khẩu *</string>
+    <string name="register_hint_fullname">Họ và tên</string>
+    <string name="register_hint_birth_year">Năm sinh</string>
+    <string name="register_helper_birth_year">Ví dụ: 2000</string>
+    <string name="register_hint_gender">Giới tính</string>
+    <string name="register_hint_height">Chiều cao (cm) *</string>
+    <string name="register_helper_height">50 – 250 cm</string>
+    <string name="register_hint_weight">Cân nặng (kg) *</string>
+    <string name="register_helper_weight">20 – 300 kg</string>
+    <string name="register_suffix_cm">cm</string>
+    <string name="register_suffix_kg">kg</string>
+    <string name="register_btn_submit">Hoàn tất đăng ký</string>
+    <string name="register_link_login">Đã có tài khoản? Đăng nhập ngay</string>
+    <string name="register_error_empty_username">Vui lòng nhập tên đăng nhập</string>
+    <string name="register_error_short_username">Tên đăng nhập tối thiểu 3 ký tự</string>
+    <string name="register_error_space_username">Tên đăng nhập không được chứa khoảng trắng</string>
+    <string name="register_error_empty_password">Vui lòng nhập mật khẩu</string>
+    <string name="register_error_short_password">Mật khẩu phải có tối thiểu 6 ký tự</string>
+    <string name="register_error_empty_confirm">Vui lòng xác nhận lại mật khẩu</string>
+    <string name="register_error_mismatch_confirm">Mật khẩu xác nhận không trùng khớp</string>
+    <string name="register_error_empty_height">Vui lòng nhập chiều cao</string>
+    <string name="register_error_invalid_height">Chiều cao hợp lệ từ %1$.0fcm đến %2$.0fcm</string>
+    <string name="register_error_nan_height">Chiều cao không hợp lệ</string>
+    <string name="register_error_empty_weight">Vui lòng nhập cân nặng</string>
+    <string name="register_error_invalid_weight">Cân nặng hợp lệ từ %1$.0fkg đến %2$.0fkg</string>
+    <string name="register_error_nan_weight">Cân nặng không hợp lệ</string>
+    <string name="register_error_invalid_birth_year">Năm sinh từ 1900 đến %1$d</string>
+    <string name="register_error_nan_birth_year">Năm sinh không hợp lệ</string>
+    <string name="register_error_username_exists">Tên đăng nhập đã tồn tại, vui lòng chọn tên khác</string>
+    <string name="register_success">Đăng ký thành công! Chào mừng bạn đến với Vita.</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_toolbar_title">Hồ sơ cá nhân</string>
+    <string name="profile_avatar_desc">Ảnh đại diện tài khoản</string>
+    <string name="profile_default_user">Người dùng Vita</string>
+    <string name="profile_section_physical">THÔNG SỐ THỂ CHẤT</string>
+    <string name="profile_label_birth_year">NĂM SINH</string>
+    <string name="profile_label_gender">GIỚI TÍNH</string>
+    <string name="profile_label_height">CHIỀU CAO</string>
+    <string name="profile_label_base_weight">CÂN NẶNG BAN ĐẦU</string>
+    <string name="profile_label_water_goal">MỤC TIÊU NƯỚC UỐNG HẰNG NGÀY</string>
+    <string name="profile_section_bmi">CHỈ SỐ KHỐI CƠ THỂ (BMI)</string>
+    <string name="profile_label_current_bmi">BMI Hiện Tại</string>
+    <string name="profile_bmi_undetermined">Chưa xác định</string>
+    <string name="profile_bmi_no_metrics">Chưa có số đo</string>
+    <string name="profile_label_bmi_standard">TIÊU CHUẨN ĐÁNH GIÁ</string>
+    <string name="profile_standard_asian">Chuẩn Châu Á (IDI &amp; WPRO)\nKhuyến nghị cho người Việt Nam (bình thường: 18.5 – 22.9)</string>
+    <string name="profile_standard_who">Chuẩn Quốc tế (WHO)\nÁp dụng đa chủng tộc toàn cầu (bình thường: 18.5 – 24.9)</string>
+    <string name="profile_btn_edit">Chỉnh sửa hồ sơ</string>
+    <string name="profile_age_format">%1$d (%2$d tuổi)</string>
+    <string name="profile_not_updated">Chưa cập nhật</string>
+    <string name="profile_unknown">Chưa rõ</string>
+    <string name="profile_height_format">%1$.1f cm</string>
+    <string name="profile_weight_format">%1$.1f kg</string>
+    <string name="profile_water_goal_format">%,d ml / ngày</string>
+    <string name="profile_healthy_weight_format">Khoảng cân nặng lý tưởng nên duy trì: %1$.1f kg – %2$.1f kg</string>
+    <string name="profile_healthy_weight_prompt">Vui lòng cập nhật chiều cao và cân nặng để tính BMI.</string>
+    <string name="profile_snackbar_standard_who">Đã đổi sang Chuẩn Quốc tế (WHO)</string>
+    <string name="profile_snackbar_standard_asian">Đã đổi sang Chuẩn Châu Á (IDI &amp; WPRO)</string>
+
+    <!-- Edit Profile Screen -->
+    <string name="edit_profile_toolbar_title">Chỉnh sửa hồ sơ</string>
+    <string name="edit_profile_subtitle">Cập nhật thông tin thể trạng và mục tiêu sức khỏe</string>
+    <string name="edit_profile_hint_fullname">Họ và tên</string>
+    <string name="edit_profile_hint_birth_year">Năm sinh</string>
+    <string name="edit_profile_hint_gender">Giới tính</string>
+    <string name="edit_profile_hint_height">Chiều cao (cm) *</string>
+    <string name="edit_profile_hint_weight">Cân nặng cơ sở (kg) *</string>
+    <string name="edit_profile_hint_water_goal">Mục tiêu nước mỗi ngày (ml) *</string>
+    <string name="edit_profile_helper_water_goal">Khuyến nghị: 2,000 ml / ngày</string>
+    <string name="edit_profile_suffix_ml">ml</string>
+    <string name="edit_profile_btn_save">Lưu thay đổi</string>
+    <string name="edit_profile_btn_logout">Đăng xuất</string>
+    <string name="edit_profile_logout_dialog_title">Xác nhận đăng xuất</string>
+    <string name="edit_profile_logout_dialog_msg">Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng Vita không?</string>
+    <string name="edit_profile_logout_toast">Đã đăng xuất tài khoản</string>
+    <string name="edit_profile_save_success">Đã lưu thay đổi hồ sơ thành công!</string>
+    <string name="edit_profile_save_error">Không thể cập nhật hồ sơ. Vui lòng thử lại.</string>
+    <string name="edit_profile_error_invalid_water_goal">Mục tiêu nước từ %1$,d đến %2$,d ml / ngày</string>
+    <string name="edit_profile_error_nan_water_goal">Mục tiêu nước không hợp lệ</string>
+
+    <!-- Health Log List (HealthFragment & Adapter) -->
+    <string name="health_list_title">Nhật ký chỉ số sức khỏe</string>
+    <string name="health_filter_all_dates">Tất cả ngày</string>
+    <string name="health_filter_clear">Xem tất cả</string>
+    <string name="health_empty_title">Chưa có bản ghi sức khỏe nào</string>
+    <string name="health_empty_desc">Nhấn nút + để ghi nhận chỉ số đo đầu tiên</string>
+    <string name="health_fab_content_desc">Thêm chỉ số sức khỏe mới</string>
+    <string name="health_context_menu_title">Tùy chọn</string>
+    <string name="health_context_menu_edit">Sửa bản ghi này</string>
+    <string name="health_context_menu_delete">Xóa bản ghi này</string>
+    <string name="health_delete_dialog_title">Xác nhận xóa</string>
+    <string name="health_delete_dialog_msg">Bạn có chắc chắn muốn xóa bản ghi đo ngày %1$s không? Thao tác này không thể hoàn tác.</string>
+    <string name="health_delete_success">Đã xóa bản ghi thành công</string>
+    <string name="health_delete_error">Không thể xóa bản ghi. Vui lòng thử lại.</string>
+    <string name="health_item_bp_label">Huyết áp: </string>
+    <string name="health_item_bp_format">%1$d/%2$d mmHg</string>
+    <string name="health_item_weight_format">Cân nặng: %1$.1f kg</string>
+    <string name="health_item_hr_format">Tim: %1$d bpm</string>
+    <string name="health_item_sugar_format">Đường huyết: %1$.0f mg/dL</string>
+
+    <!-- Detail Health Screen -->
+    <string name="detail_health_toolbar_title">Chi tiết lần đo</string>
+    <string name="detail_health_date_format">Ngày đo: %1$s</string>
+    <string name="detail_health_section_bp">HUYẾT ÁP &amp; NHỊP TIM</string>
+    <string name="detail_health_bp_unit">mmHg</string>
+    <string name="detail_health_advice_format">Đánh giá: %1$s</string>
+    <string name="detail_health_hr_format">Nhịp tim: %1$d bpm (%2$s)</string>
+    <string name="detail_health_section_body">CÂN NẶNG &amp; ĐƯỜNG HUYẾT</string>
+    <string name="detail_health_weight_format">Cân nặng: %1$.1f kg</string>
+    <string name="detail_health_sugar_format">Đường huyết: %1$.1f mg/dL</string>
+    <string name="detail_health_section_notes">GHI CHÚ ĐÍNH KÈM</string>
+    <string name="detail_health_disclaimer">Lời khuyên tham khảo từ Vita. Nếu bạn cảm thấy chóng mặt, đau đầu, hãy tham vấn ý kiến bác sĩ gia đình.</string>
+    <string name="detail_health_btn_edit">Chỉnh sửa bản ghi này</string>
+    <string name="detail_health_record_not_found">Không tìm thấy bản ghi</string>
+    <string name="detail_health_invalid_record">Bản ghi không hợp lệ</string>
+
+    <!-- Add / Edit Health Screen -->
+    <string name="add_health_title_add">Ghi nhận chỉ số đo</string>
+    <string name="add_health_title_edit">Chỉnh sửa số đo</string>
+    <string name="add_health_hint_date">Ngày đo *</string>
+    <string name="add_health_section_bp">HUYẾT ÁP &amp; TIM MẠCH</string>
+    <string name="add_health_hint_systolic">Tâm thu (Huyết áp trên)</string>
+    <string name="add_health_helper_systolic">Ví dụ: 120</string>
+    <string name="add_health_hint_diastolic">Tâm trương (Huyết áp dưới)</string>
+    <string name="add_health_helper_diastolic">Ví dụ: 80</string>
+    <string name="add_health_hint_hr">Nhịp tim</string>
+    <string name="add_health_helper_hr">Ví dụ: 75 (nhịp/phút)</string>
+    <string name="add_health_suffix_mmhg">mmHg</string>
+    <string name="add_health_suffix_bpm">bpm</string>
+    <string name="add_health_section_body">THỂ TRẠNG &amp; ĐƯỜNG HUYẾT</string>
+    <string name="add_health_hint_weight">Cân nặng</string>
+    <string name="add_health_helper_weight">20 – 300 kg</string>
+    <string name="add_health_suffix_kg">kg</string>
+    <string name="add_health_hint_sugar">Đường huyết</string>
+    <string name="add_health_helper_sugar">Ví dụ: 95.0</string>
+    <string name="add_health_suffix_sugar">mg/dL</string>
+    <string name="add_health_section_notes">GHI CHÚ BỔ SUNG</string>
+    <string name="add_health_hint_notes">Ghi chú (cảm giác cơ thể, triệu chứng, sau ăn...)</string>
+    <string name="add_health_guidance_nullable">Bạn có thể bỏ trống các chỉ số chưa đo, hệ thống sẽ lưu các chỉ số bạn nhập.</string>
+    <string name="add_health_btn_save">Lưu bản ghi</string>
+    <string name="add_health_error_no_input">Vui lòng nhập ít nhất một chỉ số đo hoặc ghi chú.</string>
+    <string name="add_health_error_systolic_range">Tâm thu từ 50 đến 250 mmHg</string>
+    <string name="add_health_error_diastolic_range">Tâm trương từ 30 đến 150 mmHg</string>
+    <string name="add_health_error_bp_relation">Tâm thu phải lớn hơn tâm trương</string>
+    <string name="add_health_error_hr_range">Nhịp tim từ 30 đến 250 bpm</string>
+    <string name="add_health_error_weight_range">Cân nặng từ 20kg đến 300kg</string>
+    <string name="add_health_error_sugar_range">Đường huyết từ 20 đến 600 mg/dL</string>
+    <string name="add_health_error_invalid_number">Số không hợp lệ</string>
+    <string name="add_health_success_add">Đã lưu bản ghi sức khỏe thành công!</string>
+    <string name="add_health_success_edit">Đã cập nhật chỉ số sức khỏe thành công!</string>
+    <string name="add_health_error_save">Không thể lưu chỉ số. Vui lòng thử lại.</string>
+    <string name="add_health_error_update">Không thể cập nhật chỉ số. Vui lòng thử lại.</string>
 </resources>

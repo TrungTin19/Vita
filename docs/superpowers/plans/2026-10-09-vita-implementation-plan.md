@@ -378,13 +378,13 @@
 - Consumes: `HealthDao.getById(recordId)`
 - Produces: Đánh giá chi tiết huyết áp & nhịp tim; hiển thị `--` cho trường null; nút chuyển sang `AddHealthActivity` sửa bản ghi.
 
-- [ ] **Step 1: Dựng layout `activity_detail_health.xml`**
+- [x] **Step 1: Dựng layout `activity_detail_health.xml`**
   Thẻ Huyết áp Display 32sp, Thẻ Thể trạng, Thẻ Ghi chú, Nút Sửa bản ghi.
-- [ ] **Step 2: Hiện thực `DetailHealthActivity.java`**
+- [x] **Step 2: Hiện thực `DetailHealthActivity.java`**
   Đọc dữ liệu từ SQLite; áp dụng thuật toán phân loại huyết áp chuẩn y học Việt Nam; xử lý click nút Sửa.
-- [ ] **Step 3: Kiểm thử hiển thị**
+- [x] **Step 3: Kiểm thử hiển thị**
   Mở bản ghi từ danh sách, kiểm tra hiển thị đúng thông số và đánh giá.
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
   `git commit -m "feat: implement DetailHealthActivity with health evaluation"`
 
 ---

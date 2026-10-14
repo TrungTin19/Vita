@@ -19,7 +19,7 @@
             android:paddingHorizontal="@dimen/spacing_md"
             android:paddingTop="@dimen/spacing_md"
             android:paddingBottom="@dimen/spacing_sm"
-            android:text="Nhật ký chỉ số sức khỏe"
+            android:text="@string/health_list_title"
             android:textColor="@color/vita_text_primary"
             android:textSize="@dimen/text_h2"
             android:textStyle="bold" />
@@ -41,7 +41,7 @@
                 android:layout_height="@dimen/min_touch_target"
                 android:layout_marginEnd="@dimen/spacing_sm"
                 android:layout_weight="1"
-                android:text="Tất cả ngày"
+                android:text="@string/health_filter_all_dates"
                 android:textColor="@color/vita_text_primary"
                 app:icon="@drawable/ic_calendar"
                 app:iconGravity="start"
@@ -53,7 +53,7 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/min_touch_target"
-                android:text="Xem tất cả"
+                android:text="@string/health_filter_clear"
                 android:textColor="@color/vita_teal"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_md"
-                android:text="Chưa có bản ghi sức khỏe nào"
+                android:text="@string/health_empty_title"
                 android:textColor="@color/vita_text_disabled"
                 android:textSize="@dimen/text_body_lg" />
 
@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_xs"
-                android:text="Nhấn nút + để ghi nhận chỉ số đo đầu tiên"
+                android:text="@string/health_empty_desc"
                 android:textColor="@color/vita_text_disabled"
                 android:textSize="@dimen/text_body" />
         </LinearLayout>
@@ -114,7 +114,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/spacing_md"
         android:layout_marginBottom="@dimen/spacing_scroll_pad"
-        android:contentDescription="Thêm chỉ số sức khỏe mới"
+        android:contentDescription="@string/health_fab_content_desc"
         app:backgroundTint="@color/btn_fab_bg"
         app:elevation="@dimen/elevation_fab"
         app:srcCompat="@drawable/ic_add"
