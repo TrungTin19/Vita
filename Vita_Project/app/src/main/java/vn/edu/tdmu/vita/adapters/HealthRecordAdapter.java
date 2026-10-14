@@ -18,6 +18,7 @@ import java.util.Locale;
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.models.HealthRecord;
 import vn.edu.tdmu.vita.utils.DateTimeUtils;
+import vn.edu.tdmu.vita.utils.HealthEvaluator;
 
 public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapter.ViewHolder> {
 
@@ -95,11 +96,17 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
                 tvBp.setText(String.format(Locale.getDefault(), "%d/%d mmHg",
                         record.getSystolic(), record.getDiastolic()));
 
-                // BP status badge
-                String statusText = classifyBloodPressure(record.getSystolic(), record.getDiastolic());
-                int statusColor = getBpStatusColor(record.getSystolic(), record.getDiastolic());
+                // BP status badge — delegate to HealthEvaluator (single source of truth)
+                HealthEvaluator.BpResult bpResult = HealthEvaluator.classifyBloodPressure(
+                        record.getSystolic(), record.getDiastolic());
                 tvBpStatus.setVisibility(View.VISIBLE);
-                tvBpStatus.setText(statusText);
+                tvBpStatus.setText(bpResult.label);
+                int statusColor;
+                switch (bpResult.severity) {
+                    case HealthEvaluator.STATUS_WARNING: statusColor = 0xFFF57C00; break;
+                    case HealthEvaluator.STATUS_DANGER:  statusColor = 0xFFD32F2F; break;
+                    default:                             statusColor = 0xFF2E7D32; break;
+                }
                 tvBpStatus.setTextColor(statusColor);
             } else {
                 layoutBpRow.setVisibility(View.GONE);
@@ -150,37 +157,6 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
             menu.setHeaderTitle("Tùy chọn");
             menu.add(0, R.id.menu_health_edit, 0, "Sửa bản ghi này");
             menu.add(0, R.id.menu_health_delete, 1, "Xóa bản ghi này");
-        }
-    }
-
-    /**
-     * Classifies blood pressure according to Vietnamese medical standards.
-     * Based on JNC 7 / Vietnamese Heart Association guidelines.
-     */
-    private String classifyBloodPressure(int systolic, int diastolic) {
-        if (systolic < 120 && diastolic < 80) {
-            return "Bình thường";
-        } else if (systolic < 130 && diastolic < 85) {
-            return "Bình thường cao";
-        } else if (systolic < 140 || diastolic < 90) {
-            return "Cần chú ý";
-        } else {
-            return "Tăng huyết áp";
-        }
-    }
-
-    /**
-     * Returns status color resource ID for BP classification.
-     */
-    private int getBpStatusColor(int systolic, int diastolic) {
-        if (systolic < 120 && diastolic < 80) {
-            return 0xFF2E7D32; // vita_status_good
-        } else if (systolic < 130 && diastolic < 85) {
-            return 0xFF2E7D32; // vita_status_good
-        } else if (systolic < 140 || diastolic < 90) {
-            return 0xFFF57C00; // vita_status_warning
-        } else {
-            return 0xFFD32F2F; // vita_status_danger
         }
     }
 }

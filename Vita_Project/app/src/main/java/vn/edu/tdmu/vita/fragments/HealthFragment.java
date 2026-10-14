@@ -29,6 +29,7 @@ import java.util.Locale;
 
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.activities.AddHealthActivity;
+import vn.edu.tdmu.vita.activities.DetailHealthActivity;
 import vn.edu.tdmu.vita.adapters.HealthRecordAdapter;
 import vn.edu.tdmu.vita.database.HealthDao;
 import vn.edu.tdmu.vita.models.HealthRecord;
@@ -105,10 +106,8 @@ public class HealthFragment extends Fragment {
         adapter = new HealthRecordAdapter(records);
 
         adapter.setOnItemClickListener((record, position) -> {
-            // TODO Task 3.4: Open DetailHealthActivity
-            // For now, open AddHealthActivity in edit mode
-            Intent intent = new Intent(requireContext(), AddHealthActivity.class);
-            intent.putExtra(AddHealthActivity.EXTRA_RECORD_ID, record.getId());
+            Intent intent = new Intent(requireContext(), DetailHealthActivity.class);
+            intent.putExtra(DetailHealthActivity.EXTRA_RECORD_ID, record.getId());
             addHealthLauncher.launch(intent);
         });
 

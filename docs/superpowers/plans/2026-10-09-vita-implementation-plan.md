@@ -361,9 +361,9 @@
   Kế thừa `RecyclerView.Adapter`, triển khai ViewHolder pattern, gán `setOnCreateContextMenuListener` cho item.
 - [x] **Step 3: Hiện thực `HealthFragment.java`**
   Tải dữ liệu từ `HealthDao`, xử lý bộ lọc ngày qua `DatePickerDialog`, xử lý sự kiện Context Menu Sửa và Xóa (kèm AlertDialog xác nhận).
-- [ ] **Step 4: Kiểm thử xóa bản ghi qua Context Menu**
+- [x] **Step 4: Kiểm thử xóa bản ghi qua Context Menu**
   Nhấn giữ item, chọn Xóa -> Dialog xác nhận -> xóa khỏi DB và gọi `notifyItemRemoved()`.
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
   `git commit -m "feat: implement HealthRecordAdapter with Context Menu and HealthFragment"`
 
 ---

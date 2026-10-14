@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vita_bg"
+    android:orientation="vertical">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_detail_health"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@color/vita_surface"
+        android:elevation="@dimen/elevation_toolbar"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:title="Chi tiết lần đo"
+        app:titleTextColor="@color/vita_text_primary" />
+
+    <!-- Scrollable content -->
+    <ScrollView
+        android:id="@+id/scroll_detail_health"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Date heading -->
+            <TextView
+                android:id="@+id/tv_detail_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:drawablePadding="@dimen/spacing_sm"
+                android:textColor="@color/vita_text_primary"
+                android:textSize="@dimen/text_h2"
+                android:textStyle="bold"
+                tools:text="📅 Ngày đo: 09/10/2026" />
+
+            <!-- Card: Blood Pressure & Heart Rate -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_detail_bp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/radius_card"
+                app:cardElevation="@dimen/elevation_card_resting"
+                app:strokeColor="@color/card_stroke"
+                app:strokeWidth="0.5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+
+                    <!-- Section title -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:text="❤️ HUYẾT ÁP \u0026 NHỊP TIM"
+                        android:textColor="@color/vita_text_secondary"
+                        android:textSize="@dimen/text_caption"
+                        android:textStyle="bold" />
+
+                    <!-- BP value + badge row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_detail_bp_value"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textColor="@color/vita_teal"
+                            android:textSize="@dimen/text_display"
+                            android:textStyle="bold"
+                            tools:text="125 / 82" />
+
+                        <TextView
+                            android:id="@+id/tv_detail_bp_status"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_badge_rounded"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="4dp"
+                            android:textColor="@color/vita_status_good"
+                            android:textSize="@dimen/text_body"
+                            android:textStyle="bold"
+                            tools:text="Bình thường" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_detail_bp_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="mmHg"
+                        android:textColor="@color/vita_text_secondary"
+                        android:textSize="@dimen/text_body" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginVertical="@dimen/spacing_sm"
+                        android:background="@color/vita_divider" />
+
+                    <!-- Heart rate -->
+                    <TextView
+                        android:id="@+id/tv_detail_heart_rate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/vita_text_primary"
+                        android:textSize="@dimen/text_body_lg"
+                        tools:text="• Nhịp tim: 76 bpm (Bình thường)" />
+
+                    <!-- BP advice -->
+                    <TextView
+                        android:id="@+id/tv_detail_bp_advice"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:textColor="@color/vita_text_secondary"
+                        android:textSize="@dimen/text_body"
+                        tools:text="• Đánh giá: Huyết áp ổn định" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card: Weight & Blood Sugar -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_detail_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/radius_card"
+                app:cardElevation="@dimen/elevation_card_resting"
+                app:strokeColor="@color/card_stroke"
+                app:strokeWidth="0.5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:text="⚖️ CÂN NẶNG \u0026 ĐƯỜNG HUYẾT"
+                        android:textColor="@color/vita_text_secondary"
+                        android:textSize="@dimen/text_caption"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_detail_weight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/vita_text_primary"
+                        android:textSize="@dimen/text_body_lg"
+                        tools:text="• Cân nặng: 61.5 kg" />
+
+                    <TextView
+                        android:id="@+id/tv_detail_sugar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/spacing_xs"
+                        android:textColor="@color/vita_text_primary"
+                        android:textSize="@dimen/text_body_lg"
+                        tools:text="• Đường huyết: 95.0 mg/dL" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Card: Notes -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_detail_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lg"
+                app:cardCornerRadius="@dimen/radius_card"
+                app:cardElevation="@dimen/elevation_card_resting"
+                app:strokeColor="@color/card_stroke"
+                app:strokeWidth="0.5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:text="📝 GHI CHÚ ĐÍNH KÈM"
+                        android:textColor="@color/vita_text_secondary"
+                        android:textSize="@dimen/text_caption"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tv_detail_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/vita_text_primary"
+                        android:textSize="@dimen/text_body"
+                        tools:text="Đo sau bữa sáng 30 phút, cơ thể cảm thấy khỏe khoắn." />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Medical disclaimer -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:text="Lời khuyên tham khảo từ Vita. Nếu bạn cảm thấy chóng mặt, đau đầu, hãy tham vấn ý kiến bác sĩ gia đình."
+                android:textColor="@color/vita_text_disabled"
+                android:textSize="@dimen/text_caption"
+                android:textStyle="italic" />
+
+            <!-- Edit button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_detail_edit"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/min_touch_target"
+                android:text="Chỉnh sửa bản ghi này"
+                android:textColor="@color/vita_teal"
+                app:icon="@drawable/ic_edit"
+                app:iconGravity="textStart"
+                app:iconTint="@color/vita_teal"
+                app:strokeColor="@color/vita_teal" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
