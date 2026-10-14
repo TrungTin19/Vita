@@ -426,13 +426,13 @@
 - Consumes: `MedicineDao.insert()`, `MedicineDao.update()`
 - Produces: Chọn giờ qua `TimePickerDialog`, chọn 7 ngày trong tuần qua các nút tương ứng mặt nạ bit `days_mask` (0–127), kích hoạt `AlarmManager.setExactAndAllowWhileIdle()`.
 
-- [ ] **Step 1: Dựng layout `activity_add_medicine.xml`**
+- [x] **Step 1: Dựng layout `activity_add_medicine.xml`**
   Trường tên thuốc, liều dùng, ô giờ báo thức, 7 nút tròn T2 đến CN, CheckBox "Chọn hàng ngày".
-- [ ] **Step 2: Hiện thực logic tính bitmask ngày và hẹn giờ**
+- [x] **Step 2: Hiện thực logic tính bitmask ngày và hẹn giờ**
   Tính toán mốc `nextTriggerMillis` dựa trên giờ đã chọn và ngày trong tuần gần nhất.
-- [ ] **Step 3: Kiểm thử đặt lịch thuốc**
+- [x] **Step 3: Kiểm thử đặt lịch thuốc**
   Tạo đơn thuốc thử nghiệm sau 2 phút, khóa màn hình, xác nhận chuông báo nổ đúng giờ.
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
   `git commit -m "feat: implement AddMedicineActivity with TimePicker and days bitmask"`
 
 ---
