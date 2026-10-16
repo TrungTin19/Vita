@@ -22,6 +22,8 @@ import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.models.Medicine;
 import vn.edu.tdmu.vita.models.User;
 import vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver;
+import vn.edu.tdmu.vita.utils.SessionManager;
+import vn.edu.tdmu.vita.utils.NotificationHelper;
 
 /**
  * Chạy trên thiết bị: đặt thuốc 1 phút sau, chờ chuông, xác nhận noti hiện.
@@ -46,6 +48,8 @@ public class MedicineAlarmDeviceTest {
         user.setBaseWeightKg(65f);
         long userId = userDao.register(user, "matkhau123");
         assertTrue(userId > 0);
+        new SessionManager(context).saveSession(userId, "alarm_test", "");
+        assertTrue("Test requires notification permission", NotificationHelper.canNotify(context));
 
         Calendar c = Calendar.getInstance();
         c.add(Calendar.MINUTE, 1);
@@ -65,7 +69,8 @@ public class MedicineAlarmDeviceTest {
         for (int i = 0; i < 30; i++) {
             Thread.sleep(4000);
             for (StatusBarNotification sbn : manager.getActiveNotifications()) {
-                if (sbn.getId() == (int) medId) {
+                if (sbn.getId() == NotificationHelper.doseNotificationId(medId,
+                        vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate(), time)) {
                     shown = true;
                     break;
                 }

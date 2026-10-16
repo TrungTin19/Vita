@@ -10,9 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.models.SleepLog;
@@ -71,7 +69,8 @@ public class SleepRecordAdapter extends RecyclerView.Adapter<SleepRecordAdapter.
         void bind(SleepLog log) {
             String wakeDisplay = DateTimeUtils.formatDisplayDate(log.getDate());
             tvDate.setText(itemView.getContext().getString(R.string.stats_sleep_date_format,
-                    nightBefore(log.getDate()), wakeDisplay));
+                    DateTimeUtils.formatDisplayDate(DateTimeUtils.sleepStartDate(
+                            log.getDate(), log.getSleepTime(), log.getWakeTime())), wakeDisplay));
             tvTime.setText(itemView.getContext().getString(R.string.stats_sleep_item_format,
                     log.getSleepTime(), log.getWakeTime(), log.getDurationH()));
 
@@ -107,23 +106,5 @@ public class SleepRecordAdapter extends RecyclerView.Adapter<SleepRecordAdapter.
             menu.add(0, R.id.menu_sleep_delete, 1, itemView.getContext().getString(R.string.stats_sleep_menu_delete));
         }
 
-        private String nightBefore(String wakeDate) {
-            if (wakeDate == null || !wakeDate.matches("\\d{4}-\\d{2}-\\d{2}")) {
-                return DateTimeUtils.formatDisplayDate(wakeDate);
-            }
-            String[] parts = wakeDate.split("-");
-            try {
-                Calendar c = Calendar.getInstance();
-                c.set(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) - 1,
-                        Integer.parseInt(parts[2]));
-                c.add(Calendar.DAY_OF_YEAR, -1);
-                String night = String.format(Locale.US, "%04d-%02d-%02d",
-                        c.get(Calendar.YEAR), c.get(Calendar.MONTH) + 1,
-                        c.get(Calendar.DAY_OF_MONTH));
-                return DateTimeUtils.formatDisplayDate(night);
-            } catch (NumberFormatException e) {
-                return DateTimeUtils.formatDisplayDate(wakeDate);
-            }
-        }
     }
 }

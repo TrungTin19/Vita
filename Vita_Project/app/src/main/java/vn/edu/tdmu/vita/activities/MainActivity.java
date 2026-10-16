@@ -43,6 +43,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        vn.edu.tdmu.vita.utils.SessionManager session = new vn.edu.tdmu.vita.utils.SessionManager(this);
+        if (!session.isLoggedIn()) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
+        for (vn.edu.tdmu.vita.models.Medicine medicine :
+                new vn.edu.tdmu.vita.database.MedicineDao(this).getActiveMedicines(session.getUserId())) {
+            vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver.schedule(this, medicine);
+        }
+        vn.edu.tdmu.vita.receivers.WaterReminderReceiver.schedule(this);
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);

@@ -137,7 +137,7 @@ public class DetailHealthActivity extends AppCompatActivity {
 
     private void displayRecord(HealthRecord record) {
         // Date (no emoji)
-        String displayDate = DateTimeUtils.formatDisplayDate(record.getDate());
+        String displayDate = vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(this, record);
         tvDate.setText(getString(R.string.detail_health_date_format, displayDate));
 
         // Blood Pressure & Heart Rate section

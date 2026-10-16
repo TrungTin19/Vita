@@ -38,7 +38,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -54,11 +53,16 @@ import vn.edu.tdmu.vita.models.HealthRecord;
 import vn.edu.tdmu.vita.models.SleepLog;
 import vn.edu.tdmu.vita.models.User;
 import vn.edu.tdmu.vita.utils.DateTimeUtils;
+import vn.edu.tdmu.vita.utils.HealthChartData;
+import vn.edu.tdmu.vita.utils.HydrationGoal;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class StatsFragment extends Fragment {
 
     private LineChart chartBp;
+    private LineChart chartWeight;
+    private LineChart chartHeartRate;
+    private LineChart chartGlucose;
     private BarChart chartWater;
     private BarChart chartSleep;
     private TextView tvWaterGoal;
@@ -107,6 +111,9 @@ public class StatsFragment extends Fragment {
         userDao = new UserDao(requireContext());
 
         chartBp = view.findViewById(R.id.chart_bp);
+        chartWeight = view.findViewById(R.id.chart_weight);
+        chartHeartRate = view.findViewById(R.id.chart_heart_rate);
+        chartGlucose = view.findViewById(R.id.chart_glucose);
         chartWater = view.findViewById(R.id.chart_water);
         chartSleep = view.findViewById(R.id.chart_sleep);
         tvWaterGoal = view.findViewById(R.id.tv_water_goal);
@@ -167,7 +174,11 @@ public class StatsFragment extends Fragment {
         String start = days.get(0);
         String end = days.get(days.size() - 1);
 
-        drawBpChart(userId, start, end);
+        List<HealthRecord> records = healthDao.getRecordsRange(userId, start, end);
+        drawMetricChart(chartWeight, records, days, HealthChartData.Metric.WEIGHT);
+        drawMetricChart(chartHeartRate, records, days, HealthChartData.Metric.HEART_RATE);
+        drawMetricChart(chartGlucose, records, days, HealthChartData.Metric.BLOOD_SUGAR);
+        drawBpChart(records, days);
         drawWaterChart(userId, days);
         drawSleepChart(userId, days);
     }
@@ -185,24 +196,57 @@ public class StatsFragment extends Fragment {
         return labels;
     }
 
-    private void drawBpChart(long userId, String start, String end) {
-        Context context = requireContext();
-        List<HealthRecord> records = healthDao.getRecordsRange(userId, start, end);
+    private void drawMetricChart(LineChart chart, List<HealthRecord> records,
+                                 List<String> days, HealthChartData.Metric metric) {
+        styleLineChart(requireContext(), chart);
+        chart.setNoDataText(getString(R.string.stats_not_enough_data));
+        List<Entry> entries = new ArrayList<>();
+        for (HealthChartData.Point point : HealthChartData.metricPoints(records, days, metric)) {
+            entries.add(new Entry(point.x, point.value,
+                    vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(requireContext(), point.record)));
+        }
+        if (entries.isEmpty()) {
+            chart.clear();
+            return;
+        }
+        boolean weight = metric == HealthChartData.Metric.WEIGHT;
+        boolean glucose = metric == HealthChartData.Metric.BLOOD_SUGAR;
+        String unit = weight ? " kg" : glucose ? " mg/dL" : " bpm";
+        LineDataSet data = new LineDataSet(entries,
+                getString(weight ? R.string.stats_weight_title : glucose ? R.string.stats_glucose_title : R.string.stats_heart_rate_title));
+        int color = ContextCompat.getColor(requireContext(),
+                weight ? R.color.vita_teal : R.color.vita_status_danger);
+        data.setColor(color);
+        data.setCircleColor(color);
+        data.setLineWidth(2f);
+        data.setCircleRadius(4f);
+        data.setDrawValues(false);
+        chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(dayLabels(days)));
+        chart.getXAxis().setAxisMinimum(0f);
+        chart.getXAxis().setAxisMaximum(days.size());
+        chart.setMarker(new ChartMarker(requireContext(), dayLabels(days), unit));
+        chart.setData(new LineData(data));
+        chart.invalidate();
+    }
 
+    private void drawBpChart(List<HealthRecord> records, List<String> days) {
+        Context context = requireContext();
         List<Entry> sysEntries = new ArrayList<>();
         List<Entry> diaEntries = new ArrayList<>();
-        List<String> labels = new ArrayList<>();
+        List<String> labels = dayLabels(days);
         for (HealthRecord r : records) {
             if (r.getSystolic() == null || r.getDiastolic() == null) continue;
-            int x = labels.size();
-            sysEntries.add(new Entry(x, r.getSystolic()));
-            diaEntries.add(new Entry(x, r.getDiastolic()));
-            labels.add(shortDate(r.getDate()));
+            int x = days.indexOf(r.getDate());
+            if (x < 0) continue;
+            float position = HealthChartData.measurementX(r, x);
+            String label = vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(context, r);
+            sysEntries.add(new Entry(position, r.getSystolic(), label));
+            diaEntries.add(new Entry(position, r.getDiastolic(), label));
         }
 
         styleLineChart(context, chartBp);
         chartBp.setNoDataText(getString(R.string.stats_not_enough_data));
-        if (sysEntries.size() < 2) {
+        if (sysEntries.isEmpty()) {
             chartBp.clear();
             chartBp.invalidate();
             return;
@@ -216,7 +260,7 @@ public class StatsFragment extends Fragment {
         sysSet.setCircleColor(sysColor);
         sysSet.setCircleRadius(4f);
         sysSet.setLineWidth(2.5f);
-        sysSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        sysSet.setMode(LineDataSet.Mode.LINEAR);
 
         LineDataSet diaSet = new LineDataSet(diaEntries, getString(R.string.stats_bp_dia_label));
         diaSet.setColor(diaColor);
@@ -224,7 +268,7 @@ public class StatsFragment extends Fragment {
         diaSet.setCircleRadius(5f);
         diaSet.setLineWidth(2f);
         diaSet.enableDashedLine(10f, 5f, 0f); // nét đứt cho người mù màu
-        diaSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        diaSet.setMode(LineDataSet.Mode.LINEAR);
 
         LimitLine sysLimit = new LimitLine(120f);
         sysLimit.setLineColor(sysColor);
@@ -236,6 +280,8 @@ public class StatsFragment extends Fragment {
         chartBp.getAxisLeft().addLimitLine(sysLimit);
         chartBp.getAxisLeft().addLimitLine(diaLimit);
 
+        chartBp.getXAxis().setAxisMinimum(0f);
+        chartBp.getXAxis().setAxisMaximum(days.size());
         chartBp.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
         chartBp.setMarker(new ChartMarker(context, labels, " mmHg"));
         chartBp.setData(new LineData(sysSet, diaSet));
@@ -248,7 +294,7 @@ public class StatsFragment extends Fragment {
         Map<String, Integer> totals = waterDao.getDailyTotalsRange(userId, days.get(0), days.get(days.size() - 1));
 
         User user = userDao.getUserById(userId);
-        int goal = (user != null && user.getWaterGoalMl() > 0) ? user.getWaterGoalMl() : 2000;
+        int goal = HydrationGoal.current(context, user);
         tvWaterGoal.setText(String.format(Locale.getDefault(),
                 getString(R.string.stats_water_goal_format), goal));
 
@@ -287,10 +333,7 @@ public class StatsFragment extends Fragment {
     private void drawSleepChart(long userId, List<String> days) {
         Context context = requireContext();
         List<SleepLog> logs = sleepDao.getLogsRange(userId, days.get(0), days.get(days.size() - 1));
-        Map<String, Float> byDate = new HashMap<>();
-        for (SleepLog log : logs) {
-            byDate.put(log.getDate(), log.getDurationH());
-        }
+        Map<String, Float> byDate = HealthChartData.sleepTotals(logs);
 
         List<BarEntry> entries = new ArrayList<>();
         boolean hasData = false;
@@ -430,6 +473,7 @@ public class StatsFragment extends Fragment {
         public void refreshContent(Entry e, Highlight highlight) {
             int x = (int) e.getX();
             String label = (x >= 0 && x < labels.size()) ? labels.get(x) : "";
+            if (e.getData() instanceof String) label = (String) e.getData();
             tvText.setText(label + ": " + e.getY() + unit);
             super.refreshContent(e, highlight);
         }

@@ -10,6 +10,7 @@ import androidx.core.app.NotificationManagerCompat;
 import vn.edu.tdmu.vita.database.MedicineDao;
 import vn.edu.tdmu.vita.models.Medicine;
 import vn.edu.tdmu.vita.utils.DateTimeUtils;
+import vn.edu.tdmu.vita.utils.SessionManager;
 
 /**
  * Ghi medicine_logs khi bấm nút trên notification rồi đặt lại lịch ngày kế tiếp.
@@ -25,16 +26,21 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         long medicineId = intent.getLongExtra(EXTRA_MEDICINE_ID, -1);
         if (medicineId <= 0) return;
         String action = intent.getAction();
+        if (!ACTION_TAKEN.equals(action) && !ACTION_SKIPPED.equals(action)) return;
         String status = ACTION_SKIPPED.equals(action) ? "SKIPPED" : "TAKEN";
 
         MedicineDao dao = new MedicineDao(context);
         Medicine medicine = dao.getById(medicineId);
-        String medicineName = medicine != null ? medicine.getName() : "thuốc";
-        dao.logMedicineStatus(medicineId, DateTimeUtils.getTodayDate(), status,
+        if (medicine == null || !SessionManager.matchesUser(
+                medicine.getUserId(), new SessionManager(context).getUserId())) return;
+        String date = intent.getStringExtra(MedicineAlarmReceiver.EXTRA_DOSE_DATE);
+        String time = intent.getStringExtra(MedicineAlarmReceiver.EXTRA_DOSE_TIME);
+        if (date == null || time == null) return;
+        String medicineName = medicine.getName();
+        dao.logMedicineStatus(medicineId, date, time, status,
                 DateTimeUtils.getCurrentTimestamp());
 
-        NotificationManagerCompat.from(context).cancel((int) medicineId);
-        if (medicine != null) MedicineAlarmReceiver.schedule(context, medicine);
+        NotificationManagerCompat.from(context).cancel(vn.edu.tdmu.vita.utils.NotificationHelper.doseNotificationId(medicineId, date, time));
 
         String message = "TAKEN".equals(status)
                 ? "Vita ghi nhận bạn đã uống " + medicineName + ". Chúc bạn mau khỏe!"

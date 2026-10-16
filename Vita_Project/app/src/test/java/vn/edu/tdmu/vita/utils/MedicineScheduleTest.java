@@ -11,6 +11,26 @@ import java.util.Calendar;
  */
 public class MedicineScheduleTest {
 
+    @Test
+    public void multipleTimes_selectsNextDoseToday() {
+        long now = millis(2026, Calendar.OCTOBER, 12, 8, 0);
+        assertEquals(millis(2026, Calendar.OCTOBER, 12, 12, 0),
+                MedicineSchedule.computeNextTriggerMillis("19:00,07:00,12:00", 127, now));
+        assertEquals(millis(2026, Calendar.OCTOBER, 13, 7, 0),
+                MedicineSchedule.computeNextTriggerMillis("07:00,12:00,19:00", 127,
+                        millis(2026, Calendar.OCTOBER, 12, 20, 0)));
+    }
+
+    @Test
+    public void times_areSortedUniqueAndValidated() {
+        assertEquals("07:00,12:00,19:00", MedicineSchedule.normalizeTimes("19:00, 07:00,12:00,07:00"));
+        assertEquals(-1, MedicineSchedule.computeNextTriggerMillis("07:00,25:00", 127, 0));
+        try {
+            MedicineSchedule.normalizeTimes("07:00,,12:00");
+            fail("Empty dose time must be rejected");
+        } catch (IllegalArgumentException expected) { }
+    }
+
     private static long millis(int year, int month0, int day, int hour, int min) {
         Calendar c = Calendar.getInstance();
         c.set(year, month0, day, hour, min, 0);

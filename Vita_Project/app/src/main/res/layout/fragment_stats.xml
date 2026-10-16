@@ -59,6 +59,86 @@
                     android:text="@string/stats_range_30" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/radius_card"
+                app:cardElevation="@dimen/elevation_card_resting">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stats_weight_title"
+                        android:textSize="@dimen/text_body_lg"
+                        android:textColor="@color/vita_teal"
+                        android:textStyle="bold" />
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_weight"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:contentDescription="@string/stats_weight_title" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/radius_card"
+                app:cardElevation="@dimen/elevation_card_resting">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stats_heart_rate_title"
+                        android:textSize="@dimen/text_body_lg"
+                        android:textColor="@color/vita_teal"
+                        android:textStyle="bold" />
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_heart_rate"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:contentDescription="@string/stats_heart_rate_title" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:cardCornerRadius="@dimen/radius_card"
+                app:cardElevation="@dimen/elevation_card_resting">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_md">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/stats_glucose_title"
+                        android:textSize="@dimen/text_body_lg"
+                        android:textColor="@color/vita_teal"
+                        android:textStyle="bold" />
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:id="@+id/chart_glucose"
+                        android:layout_width="match_parent"
+                        android:layout_height="220dp"
+                        android:contentDescription="@string/stats_glucose_title" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
             <!-- BP LineChart Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_chart_bp"

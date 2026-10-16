@@ -6,6 +6,20 @@ import static org.junit.Assert.*;
 public class DateTimeUtilsTest {
 
     @Test
+    public void sleepStartDate_usesPreviousDayOnlyForOvernightSleep() {
+        assertEquals("2026-10-15", DateTimeUtils.sleepStartDate("2026-10-16", "23:00", "07:00"));
+        assertEquals("2026-10-16", DateTimeUtils.sleepStartDate("2026-10-16", "13:00", "14:00"));
+        assertEquals("2025-12-31", DateTimeUtils.sleepStartDate("2026-01-01", "23:00", "07:00"));
+    }
+
+    @Test
+    public void invalidClockTimes_doNotCreateSleepDuration() {
+        assertEquals(0f, DateTimeUtils.calculateSleepDuration("25:00", "07:00"), 0f);
+        assertEquals(0f, DateTimeUtils.calculateSleepDuration("23:70", "07:00"), 0f);
+        assertEquals(0f, DateTimeUtils.calculateSleepDuration("23:00", "23:00"), 0f);
+    }
+
+    @Test
     public void todayAndTime_matchFormats() {
         assertTrue(DateTimeUtils.getTodayDate().matches("\\d{4}-\\d{2}-\\d{2}"));
         assertTrue(DateTimeUtils.getCurrentTime().matches("\\d{2}:\\d{2}"));

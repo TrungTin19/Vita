@@ -51,6 +51,10 @@ public class AddHealthActivity extends AppCompatActivity {
 
     private MaterialButton btnSave;
 
+    private TextInputEditText etMeasuredTime;
+    private android.widget.Spinner mealContext;
+    private String measuredTime;
+
     private HealthDao healthDao;
     private SessionManager sessionManager;
 
@@ -75,9 +79,29 @@ public class AddHealthActivity extends AppCompatActivity {
         initViews();
         setupListeners();
         loadIntentData();
+        if (savedInstanceState != null) {
+            selectedDate = savedInstanceState.getString("record_date", selectedDate);
+            measuredTime = savedInstanceState.getString("record_time");
+            mealContext.setSelection(savedInstanceState.getInt("meal_context", 0));
+            etDate.setText(DateTimeUtils.formatDisplayDate(selectedDate));
+        }
+        etMeasuredTime.setText(measuredTime == null ? "" : measuredTime);
     }
 
     private void initViews() {
+        etMeasuredTime = findViewById(R.id.et_health_time);
+        mealContext = findViewById(R.id.sp_meal_context);
+        android.widget.ArrayAdapter<CharSequence> mealAdapter = android.widget.ArrayAdapter.createFromResource(
+                this, R.array.meal_contexts, android.R.layout.simple_spinner_item);
+        mealAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mealContext.setAdapter(mealAdapter);
+        etMeasuredTime.setOnClickListener(v -> {
+            String current = measuredTime == null ? DateTimeUtils.getCurrentTime() : measuredTime;
+            new android.app.TimePickerDialog(this, (picker, hour, minute) -> {
+                measuredTime = String.format(Locale.US, "%02d:%02d", hour, minute);
+                etMeasuredTime.setText(measuredTime);
+            }, Integer.parseInt(current.substring(0, 2)), Integer.parseInt(current.substring(3)), true).show();
+        });
         toolbar = findViewById(R.id.toolbar_add_health);
         tilDate = findViewById(R.id.til_add_health_date);
         etDate = findViewById(R.id.et_add_health_date);
@@ -126,7 +150,9 @@ public class AddHealthActivity extends AppCompatActivity {
             // Edit Mode
             toolbar.setTitle(getString(R.string.add_health_title_edit));
             HealthRecord record = healthDao.getById(recordId);
-            if (record != null) {
+            if (record != null && record.getUserId() == sessionManager.getUserId()) {
+                measuredTime = record.getMeasuredTime();
+                mealContext.setSelection(record.getMealContext().ordinal());
                 selectedDate = record.getDate();
                 etDate.setText(DateTimeUtils.formatDisplayDate(selectedDate));
 
@@ -152,6 +178,7 @@ public class AddHealthActivity extends AppCompatActivity {
         } else {
             // Add Mode
             toolbar.setTitle(getString(R.string.add_health_title_add));
+            measuredTime = DateTimeUtils.getCurrentTime();
             selectedDate = DateTimeUtils.getTodayDate();
             etDate.setText(DateTimeUtils.formatDisplayDate(selectedDate));
         }
@@ -292,6 +319,8 @@ public class AddHealthActivity extends AppCompatActivity {
             HealthRecord record = healthDao.getById(recordId);
             if (record != null) {
                 record.setDate(selectedDate);
+                record.setMeasuredTime(measuredTime);
+                record.setMealContext(HealthRecord.MealContext.values()[mealContext.getSelectedItemPosition()].name());
                 record.setSystolic(systolic);
                 record.setDiastolic(diastolic);
                 record.setHeartRate(heartRate);
@@ -310,6 +339,8 @@ public class AddHealthActivity extends AppCompatActivity {
             }
         } else {
             HealthRecord record = new HealthRecord(0, userId, selectedDate, weight, systolic, diastolic, heartRate, bloodSugar, note);
+            record.setMeasuredTime(measuredTime);
+            record.setMealContext(HealthRecord.MealContext.values()[mealContext.getSelectedItemPosition()].name());
             long id = healthDao.insert(record);
             if (id > 0) {
                 Toast.makeText(this, getString(R.string.add_health_success_add), Toast.LENGTH_SHORT).show();
@@ -319,6 +350,14 @@ public class AddHealthActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.add_health_error_save), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putString("record_date", selectedDate);
+        state.putString("record_time", measuredTime);
+        state.putInt("meal_context", mealContext.getSelectedItemPosition());
     }
 
     private String getText(TextInputEditText editText) {

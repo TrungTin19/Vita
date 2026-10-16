@@ -5,6 +5,10 @@ import android.content.SharedPreferences;
 
 public class SessionManager {
 
+    public static boolean matchesUser(long ownerId, long currentUserId) {
+        return currentUserId > 0 && ownerId == currentUserId;
+    }
+
     public static final String PREF_NAME = "vita_user_session";
     public static final String KEY_USER_ID = "session_user_id";
     public static final String KEY_USERNAME = "session_username";

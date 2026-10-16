@@ -30,6 +30,16 @@ public final class WeatherClient {
             + "&current=us_aqi,pm2_5&timezone=auto";
     private static final int TIMEOUT_MS = 5000;
 
+    public static final String[] CITY_NAMES = {
+            "TP. Hồ Chí Minh", "Bình Dương", "Hà Nội", "Đà Nẵng", "Cần Thơ"};
+    public static final double[] CITY_LAT = {10.82, 11.16, 21.02, 16.05, 10.04};
+    public static final double[] CITY_LON = {106.63, 106.65, 105.83, 108.20, 105.78};
+
+    public static String selectedCity(Context context) {
+        int position = context.getSharedPreferences("vita_home", 0).getInt("city_position", 0);
+        return CITY_NAMES[position >= 0 && position < CITY_NAMES.length ? position : 0];
+    }
+
     private static final String PREFS = "vita_weather_cache";
     private static final String KEY_FORECAST = "cache_forecast_json";
     private static final String KEY_AQI = "cache_aqi_json";
@@ -84,17 +94,21 @@ public final class WeatherClient {
 
     public static void fetchWeather(Context context, double lat, double lon,
                                     String cityName, Callback callback) {
+        Context appContext = context.getApplicationContext();
         executor().execute(() -> {
             try {
                 String forecastJson = httpGet(String.format(java.util.Locale.US, FORECAST_URL, lat, lon));
-                String aqiJson = httpGet(String.format(java.util.Locale.US, AQI_URL, lat, lon));
+                String aqiJson = null;
+                try {
+                    aqiJson = httpGet(String.format(java.util.Locale.US, AQI_URL, lat, lon));
+                } catch (Exception ignored) { /* Forecast remains usable without AQI. */ }
                 WeatherData data = parseForecastJson(forecastJson, cityName);
                 if (data == null) throw new IllegalStateException("bad forecast");
                 data.setAqi(parseAqiJson(aqiJson));
-                saveCache(context, forecastJson, aqiJson, cityName);
+                saveCache(appContext, forecastJson, aqiJson, cityName);
                 postSuccess(callback, data);
             } catch (Exception e) {
-                WeatherData cached = loadCache(context);
+                WeatherData cached = loadCachedWeather(appContext, cityName);
                 if (cached != null) {
                     postSuccess(callback, cached);
                 } else {
@@ -131,22 +145,29 @@ public final class WeatherClient {
 
     private static void saveCache(Context context, String forecastJson, String aqiJson, String city) {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
-                .putString(KEY_FORECAST, forecastJson)
-                .putString(KEY_AQI, aqiJson == null ? "" : aqiJson)
-                .putString(KEY_CITY, city)
-                .putString(KEY_TIME, DateTimeUtils.getCurrentTimestamp())
+                .putString(KEY_FORECAST + city, forecastJson)
+                .putString(KEY_AQI + city, aqiJson == null ? "" : aqiJson)
+                .putString(KEY_CITY + city, city)
+                .putString(KEY_TIME + city, DateTimeUtils.getCurrentTimestamp())
                 .apply();
     }
 
-    private static WeatherData loadCache(Context context) {
+    public static WeatherData loadCachedWeather(Context context, String city) {
         SharedPreferences prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-        String forecastJson = prefs.getString(KEY_FORECAST, null);
-        if (forecastJson == null) return null;
-        WeatherData data = parseForecastJson(forecastJson, prefs.getString(KEY_CITY, ""));
+        String suffix = prefs.contains(KEY_FORECAST + city) ? city : "";
+        return parseCachedWeather(prefs.getString(KEY_FORECAST + suffix, null),
+                prefs.getString(KEY_AQI + suffix, null), prefs.getString(KEY_CITY + suffix, ""),
+                city, prefs.getString(KEY_TIME + suffix, ""));
+    }
+
+    public static WeatherData parseCachedWeather(String forecastJson, String aqiJson,
+                                                 String storedCity, String requestedCity, String timestamp) {
+        if (requestedCity == null || !requestedCity.equals(storedCity)) return null;
+        WeatherData data = parseForecastJson(forecastJson, storedCity);
         if (data == null) return null;
-        data.setAqi(parseAqiJson(prefs.getString(KEY_AQI, null)));
+        data.setAqi(parseAqiJson(aqiJson));
         data.setOffline(true);
-        data.setUpdatedAt(prefs.getString(KEY_TIME, ""));
+        data.setUpdatedAt(timestamp);
         return data;
     }
 

@@ -82,7 +82,7 @@ public class VitaSystemIntegrationTest {
         long medId = medicineDao.insert(medicine);
         assertTrue(medId > 0);
         assertEquals(1, medicineDao.getAllByUserId(userId).size());
-        long logId = medicineDao.logMedicineStatus(medId, today, "TAKEN",
+        long logId = medicineDao.logMedicineStatus(medId, today, "08:00", "TAKEN",
                 DateTimeUtils.getCurrentTimestamp());
         assertTrue(logId > 0);
 

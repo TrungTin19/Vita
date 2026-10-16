@@ -31,6 +31,29 @@
                 android:textSize="@dimen/text_h2"
                 android:textStyle="bold" />
 
+            <LinearLayout
+                android:id="@+id/layout_notification_permission"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_md"
+                android:layout_marginBottom="@dimen/spacing_md"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_md"
+                android:background="@color/vita_status_warning_bg">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reminder_notifications_disabled"
+                    android:textColor="@color/vita_text_primary"
+                    android:textSize="@dimen/text_body" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_notification_settings"
+                    style="@style/Widget.Vita.Button.Outlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reminder_notifications_settings" />
+            </LinearLayout>
+
             <!-- Water Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_water_card"
@@ -84,6 +107,14 @@
                         android:textStyle="bold"
                         tools:text="1,500 / 2,000 ml (75%)" />
 
+                    <TextView
+                        android:id="@+id/tv_water_adjustment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/spacing_sm"
+                        android:textSize="@dimen/text_body"
+                        android:textColor="@color/vita_text_secondary" />
+
                     <ProgressBar
                         android:id="@+id/pb_water_progress"
                         style="@android:style/Widget.ProgressBar.Horizontal"
@@ -101,6 +132,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/spacing_md"
                         android:text="@string/reminder_btn_add_water" />
+                    <com.google.android.material.button.MaterialButton android:id="@+id/btn_water_settings" style="@style/Widget.Material3.Button.TextButton" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/water_settings" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

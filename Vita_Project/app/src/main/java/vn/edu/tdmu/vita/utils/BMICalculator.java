@@ -18,6 +18,10 @@ public final class BMICalculator {
         // Prevent instantiation
     }
 
+    public static float currentWeight(Float latestWeight, float baseWeight) {
+        return latestWeight != null ? latestWeight : baseWeight;
+    }
+
     /**
      * Data class holding complete BMI calculation and classification result.
      */
@@ -139,7 +143,8 @@ public final class BMICalculator {
      */
     public static BmiResult calculateAndClassify(float weightKg, float heightCm, String standard) {
         float bmi = calculate(weightKg, heightCm);
-        BmiResult classification = classify(bmi, standard);
+        BmiResult classification = classify(weightKg > 0 && heightCm > 0
+                ? weightKg / ((heightCm / 100f) * (heightCm / 100f)) : 0f, standard);
 
         float minHealthyWeight = 0f;
         float maxHealthyWeight = 0f;

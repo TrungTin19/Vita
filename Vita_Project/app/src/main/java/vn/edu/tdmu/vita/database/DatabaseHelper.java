@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "vita_health.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 4;
 
     // Table: users
     public static final String TABLE_USERS = "users";
@@ -50,6 +50,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_MED_LOG_ID = "id";
     public static final String COL_MED_LOG_MEDICINE_ID = "medicine_id";
     public static final String COL_MED_LOG_DATE = "date";
+    public static final String COL_MED_LOG_TIME = "scheduled_time";
     public static final String COL_MED_LOG_STATUS = "status";
     public static final String COL_MED_LOG_LOGGED_AT = "logged_at";
 
@@ -83,7 +84,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COL_USER_HEIGHT_CM + " REAL, " +
             COL_USER_BASE_WEIGHT_KG + " REAL, " +
             COL_USER_WATER_GOAL_ML + " INTEGER DEFAULT 2000, " +
-            COL_USER_BMI_STANDARD + " TEXT DEFAULT 'ASIAN'" +
+            COL_USER_BMI_STANDARD + " TEXT DEFAULT 'ASIAN', " +
+            "water_start TEXT NOT NULL DEFAULT '07:00', water_end TEXT NOT NULL DEFAULT '22:00', " +
+            "water_amount INTEGER NOT NULL DEFAULT 250, weather_adjustment INTEGER NOT NULL DEFAULT 0" +
             ");";
 
     public static final String CREATE_TABLE_HEALTH_RECORDS =
@@ -91,6 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COL_HEALTH_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COL_HEALTH_USER_ID + " INTEGER NOT NULL, " +
             COL_HEALTH_DATE + " TEXT NOT NULL, " +
+            "measured_time TEXT, meal_context TEXT NOT NULL DEFAULT 'UNSPECIFIED', " +
             COL_HEALTH_WEIGHT_KG + " REAL, " +
             COL_HEALTH_SYSTOLIC + " INTEGER, " +
             COL_HEALTH_DIASTOLIC + " INTEGER, " +
@@ -117,6 +121,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COL_MED_LOG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             COL_MED_LOG_MEDICINE_ID + " INTEGER NOT NULL, " +
             COL_MED_LOG_DATE + " TEXT NOT NULL, " +
+            COL_MED_LOG_TIME + " TEXT NOT NULL, " +
             COL_MED_LOG_STATUS + " TEXT NOT NULL, " +
             COL_MED_LOG_LOGGED_AT + " TEXT NOT NULL, " +
             "FOREIGN KEY(" + COL_MED_LOG_MEDICINE_ID + ") REFERENCES " + TABLE_MEDICINES + "(" + COL_MED_ID + ") ON DELETE CASCADE" +
@@ -175,16 +180,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_INDEX_HEALTH);
         db.execSQL(CREATE_INDEX_WATER);
         db.execSQL(CREATE_INDEX_SLEEP);
+        db.execSQL("CREATE INDEX idx_medicine_dose ON medicine_logs(medicine_id,date,scheduled_time)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SLEEP_LOGS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WATER_LOGS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDICINE_LOGS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEDICINES);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_HEALTH_RECORDS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-        onCreate(db);
+        if (oldVersion < 2 && newVersion >= 2) {
+            db.execSQL("ALTER TABLE medicine_logs ADD COLUMN scheduled_time TEXT NOT NULL DEFAULT ''");
+            db.execSQL("UPDATE medicine_logs SET scheduled_time = COALESCE((SELECT time FROM medicines WHERE medicines.id = medicine_logs.medicine_id), '')");
+            db.execSQL("CREATE INDEX IF NOT EXISTS idx_medicine_dose ON medicine_logs(medicine_id,date,scheduled_time)");
+        }
+        if (oldVersion < 4 && newVersion >= 4) {
+            db.execSQL("ALTER TABLE users ADD COLUMN water_start TEXT NOT NULL DEFAULT '07:00'");
+            db.execSQL("ALTER TABLE users ADD COLUMN water_end TEXT NOT NULL DEFAULT '22:00'");
+            db.execSQL("ALTER TABLE users ADD COLUMN water_amount INTEGER NOT NULL DEFAULT 250");
+            db.execSQL("ALTER TABLE users ADD COLUMN weather_adjustment INTEGER NOT NULL DEFAULT 0");
+        }
+        if (oldVersion < 3 && newVersion >= 3) {
+            db.execSQL("ALTER TABLE health_records ADD COLUMN measured_time TEXT");
+            db.execSQL("ALTER TABLE health_records ADD COLUMN meal_context TEXT NOT NULL DEFAULT 'UNSPECIFIED'");
+        }
     }
 }

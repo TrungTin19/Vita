@@ -231,6 +231,18 @@
                     tools:hint="@string/edit_profile_hint_water_goal" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/water_settings" android:textAppearance="?attr/textAppearanceTitleMedium" />
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginVertical="8dp" android:text="@string/water_settings_help" />
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:hint="@string/water_start" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_edit_water_start" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="none" android:focusable="false" android:clickable="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:hint="@string/water_end" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_edit_water_end" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="none" android:focusable="false" android:clickable="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:hint="@string/water_amount" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/et_edit_water_amount" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:inputType="number"  />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.materialswitch.MaterialSwitch android:id="@+id/switch_water_weather" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="48dp" android:layout_marginBottom="16dp" android:text="@string/water_weather_opt_in" />
             <!-- Save Changes Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_edit_save"

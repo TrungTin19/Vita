@@ -26,20 +26,23 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
     }
 
     public interface OnQuickLogListener {
-        void onQuickLog(Medicine medicine, int position, boolean taken);
+        void onQuickLog(Medicine medicine, String time, boolean taken);
     }
 
     private final List<Medicine> medicines;
-    private java.util.Map<Long, vn.edu.tdmu.vita.models.MedicineLog> todayLogs;
+    private java.util.Map<String, vn.edu.tdmu.vita.models.MedicineLog> todayLogs;
     private OnSwitchChangeListener switchListener;
     private OnQuickLogListener quickLogListener;
+    private java.util.function.Consumer<Medicine> historyListener;
+
+    public void setHistoryListener(java.util.function.Consumer<Medicine> listener) { historyListener = listener; }
     private int contextMenuPosition = -1;
 
     public MedicineAdapter(List<Medicine> medicines) {
         this.medicines = medicines;
     }
 
-    public void setTodayLogs(java.util.Map<Long, vn.edu.tdmu.vita.models.MedicineLog> todayLogs) {
+    public void setTodayLogs(java.util.Map<String, vn.edu.tdmu.vita.models.MedicineLog> todayLogs) {
         this.todayLogs = todayLogs;
     }
 
@@ -94,9 +97,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
         private final MaterialSwitch swActive;
         private final TextView tvTime;
         private final TextView tvDays;
-        private final TextView tvStatus;
-        private final com.google.android.material.button.MaterialButton btnTaken;
-        private final com.google.android.material.button.MaterialButton btnSkipped;
+        private final android.widget.LinearLayout doses;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -105,9 +106,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
             swActive = itemView.findViewById(R.id.sw_med_active);
             tvTime = itemView.findViewById(R.id.tv_med_item_time);
             tvDays = itemView.findViewById(R.id.tv_med_item_days);
-            tvStatus = itemView.findViewById(R.id.tv_med_item_status);
-            btnTaken = itemView.findViewById(R.id.btn_med_taken);
-            btnSkipped = itemView.findViewById(R.id.btn_med_skipped);
+            doses = itemView.findViewById(R.id.layout_med_doses);
 
             itemView.setOnCreateContextMenuListener(this);
         }
@@ -123,7 +122,10 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
             tvDays.setText(itemView.getContext().getString(R.string.reminder_med_days_prefix,
                     formatDaysMask(itemView.getContext(), medicine.getDaysMask())));
 
-            bindTodayStatus(medicine);
+            bindDoses(medicine);
+            itemView.findViewById(R.id.btn_med_history).setOnClickListener(v -> {
+                if (historyListener != null) historyListener.accept(medicine);
+            });
 
             swActive.setOnCheckedChangeListener(null);
             swActive.setChecked(medicine.isActive());
@@ -138,36 +140,35 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
                 return false;
             });
 
-            btnTaken.setOnClickListener(v -> {
-                if (quickLogListener != null) {
-                    quickLogListener.onQuickLog(medicine, getBindingAdapterPosition(), true);
-                }
-            });
-            btnSkipped.setOnClickListener(v -> {
-                if (quickLogListener != null) {
-                    quickLogListener.onQuickLog(medicine, getBindingAdapterPosition(), false);
-                }
-            });
         }
 
-        void bindTodayStatus(Medicine medicine) {
+        void bindDoses(Medicine medicine) {
             android.content.Context context = itemView.getContext();
-            vn.edu.tdmu.vita.models.MedicineLog log =
-                    todayLogs == null ? null : todayLogs.get(medicine.getId());
-            if (log == null) {
-                tvStatus.setText(context.getString(R.string.reminder_med_status_none));
-                tvStatus.setTextColor(androidx.core.content.ContextCompat.getColor(context,
-                        R.color.vita_text_secondary));
-            } else if ("TAKEN".equals(log.getStatus())) {
-                String time = log.getLoggedAt() != null && log.getLoggedAt().length() >= 16
-                        ? log.getLoggedAt().substring(11, 16) : "";
-                tvStatus.setText(context.getString(R.string.reminder_med_status_taken, time));
-                tvStatus.setTextColor(androidx.core.content.ContextCompat.getColor(context,
-                        R.color.vita_status_good));
-            } else {
-                tvStatus.setText(context.getString(R.string.reminder_med_status_skipped));
-                tvStatus.setTextColor(androidx.core.content.ContextCompat.getColor(context,
-                        R.color.vita_status_danger));
+            doses.removeAllViews();
+            for (String time : medicine.getTime().split(",")) {
+                View row = LayoutInflater.from(context).inflate(R.layout.item_medicine_dose, doses, false);
+                ((TextView) row.findViewById(R.id.tv_dose_time)).setText(time);
+                TextView status = row.findViewById(R.id.tv_med_item_status);
+                vn.edu.tdmu.vita.models.MedicineLog log = todayLogs == null ? null
+                        : todayLogs.get(medicine.getId() + "@" + time);
+                if (log == null) {
+                    status.setText(R.string.reminder_med_status_none);
+                    status.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.vita_text_secondary));
+                } else if ("TAKEN".equals(log.getStatus())) {
+                    String logged = log.getLoggedAt() == null || log.getLoggedAt().length() < 16 ? "" : log.getLoggedAt().substring(11, 16);
+                    status.setText(context.getString(R.string.reminder_med_status_taken, logged));
+                    status.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.vita_status_good));
+                } else {
+                    status.setText(R.string.reminder_med_status_skipped);
+                    status.setTextColor(androidx.core.content.ContextCompat.getColor(context, R.color.vita_status_danger));
+                }
+                View taken = row.findViewById(R.id.btn_med_taken);
+                View skipped = row.findViewById(R.id.btn_med_skipped);
+                taken.setContentDescription(medicine.getName() + " " + time + ": " + context.getString(R.string.reminder_quick_taken));
+                skipped.setContentDescription(medicine.getName() + " " + time + ": " + context.getString(R.string.reminder_quick_skipped));
+                taken.setOnClickListener(v -> { if (quickLogListener != null) quickLogListener.onQuickLog(medicine, time, true); });
+                skipped.setOnClickListener(v -> { if (quickLogListener != null) quickLogListener.onQuickLog(medicine, time, false); });
+                doses.addView(row);
             }
         }
 

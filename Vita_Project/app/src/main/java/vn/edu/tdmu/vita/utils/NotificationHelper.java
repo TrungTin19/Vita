@@ -56,14 +56,15 @@ public final class NotificationHelper {
         manager.createNotificationChannel(channel);
     }
 
-    public static void showMedicineNotification(Context context, Medicine medicine) {
+    public static void showMedicineNotification(Context context, Medicine medicine, String date, String time) {
+        if (!canNotify(context)) return;
         ensureChannel(context);
-        int notificationId = (int) medicine.getId();
+        int notificationId = doseNotificationId(medicine.getId(), date, time);
 
         PendingIntent takenIntent = actionPendingIntent(context, medicine.getId(),
-                NotificationActionReceiver.ACTION_TAKEN, (int) (medicine.getId() * 100 + 1));
+                NotificationActionReceiver.ACTION_TAKEN, date, time);
         PendingIntent skippedIntent = actionPendingIntent(context, medicine.getId(),
-                NotificationActionReceiver.ACTION_SKIPPED, (int) (medicine.getId() * 100 + 2));
+                NotificationActionReceiver.ACTION_SKIPPED, date, time);
 
         Intent openReminder = new Intent(context,
                 vn.edu.tdmu.vita.activities.MainActivity.class);
@@ -76,7 +77,7 @@ public final class NotificationHelper {
                 ? "đúng liều" : medicine.getDosage();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_nav_medicines)
-                .setContentTitle("Đã đến giờ uống thuốc: " + medicine.getName())
+                .setContentTitle(time + " • " + medicine.getName())
                 .setContentText("Liều dùng: " + dosage + ". Bạn đã uống chưa?")
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(
                         "Liều dùng: " + dosage + ". Hãy uống thuốc đúng giờ nhé!"))
@@ -90,20 +91,37 @@ public final class NotificationHelper {
                 .addAction(R.drawable.ic_check, "Đã uống", takenIntent)
                 .addAction(R.drawable.ic_cancel, "Bỏ qua", skippedIntent);
 
-        NotificationManagerCompat.from(context).notify(notificationId, builder.build());
+        try {
+            NotificationManagerCompat.from(context).notify(notificationId, builder.build());
+        } catch (SecurityException revoked) {
+            // Notification access can be revoked after canNotify().
+            return;
+        }
     }
 
     private static PendingIntent actionPendingIntent(Context context, long medicineId,
-                                                     String action, int requestCode) {
+                                                     String action, String date, String time) {
         Intent intent = new Intent(context, NotificationActionReceiver.class);
         intent.setAction(action);
+        intent.setData(android.net.Uri.parse("vita://dose/" + medicineId + "/" + date + "/" + time));
+        intent.putExtra(vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver.EXTRA_DOSE_DATE, date);
+        intent.putExtra(vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver.EXTRA_DOSE_TIME, time);
         intent.putExtra(NotificationActionReceiver.EXTRA_MEDICINE_ID, medicineId);
-        return PendingIntent.getBroadcast(context, requestCode, intent,
+        return PendingIntent.getBroadcast(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
+    public static int doseNotificationId(long medicineId, String date, String time) {
+        return (medicineId + "/" + date + "/" + time).hashCode();
+    }
+
     public static void showWaterReminder(Context context, int notificationId) {
+        if (!canNotify(context)) return;
         ensureWaterChannel(context);
+        vn.edu.tdmu.vita.models.User user = new vn.edu.tdmu.vita.database.UserDao(context)
+                .getUserById(new SessionManager(context).getUserId());
+        if (user == null) return;
+        int amount = user.getWaterAmount();
 
         Intent openApp = new Intent(context, vn.edu.tdmu.vita.activities.MainActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, openApp,
@@ -112,6 +130,9 @@ public final class NotificationHelper {
         Intent drinked = new Intent(context,
                 vn.edu.tdmu.vita.receivers.WaterReminderReceiver.class);
         drinked.setAction(vn.edu.tdmu.vita.receivers.WaterReminderReceiver.ACTION_DRINKED);
+        drinked.putExtra(vn.edu.tdmu.vita.receivers.WaterReminderReceiver.EXTRA_USER_ID,
+                new SessionManager(context).getUserId());
+        drinked.putExtra(vn.edu.tdmu.vita.receivers.WaterReminderReceiver.EXTRA_AMOUNT, amount);
         PendingIntent drinkedIntent = PendingIntent.getBroadcast(context, 9002, drinked,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
@@ -124,9 +145,21 @@ public final class NotificationHelper {
                 .setAutoCancel(true)
                 .setColor(0xFF00ACC1)
                 .addAction(R.drawable.ic_water_drop,
-                        context.getString(R.string.water_reminder_action), drinkedIntent);
+                        context.getString(R.string.water_reminder_action, amount), drinkedIntent);
 
-        NotificationManagerCompat.from(context).notify(notificationId, builder.build());
+        try {
+            NotificationManagerCompat.from(context).notify(notificationId, builder.build());
+        } catch (SecurityException revoked) {
+            // Notification access can be revoked after canNotify().
+            return;
+        }
+    }
+
+    public static boolean canNotify(Context context) {
+        return NotificationManagerCompat.from(context).areNotificationsEnabled()
+                && (Build.VERSION.SDK_INT < 33 || androidx.core.content.ContextCompat.checkSelfPermission(
+                        context, android.Manifest.permission.POST_NOTIFICATIONS)
+                        == android.content.pm.PackageManager.PERMISSION_GRANTED);
     }
 
     private static void ensureWaterChannel(Context context) {

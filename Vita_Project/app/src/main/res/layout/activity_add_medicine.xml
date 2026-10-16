@@ -118,6 +118,15 @@
                     android:textSize="@dimen/text_body_lg"
                     tools:hint="08:00" />
             </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="@string/med_times_help" android:textSize="@dimen/text_body"
+                android:textColor="@color/vita_text_secondary" />
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chips_med_times"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                app:chipSpacingHorizontal="8dp" app:chipSpacingVertical="8dp" />
+
 
             <!-- Days Section Label -->
             <TextView

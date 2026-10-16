@@ -4,6 +4,7 @@ public class MedicineLog {
     private long id;
     private long medicineId;
     private String date;
+    private String scheduledTime;
     private String status; // 'TAKEN' or 'SKIPPED'
     private String loggedAt;
 
@@ -25,6 +26,9 @@ public class MedicineLog {
 
     public String getDate() { return date; }
     public void setDate(String date) { this.date = date; }
+
+    public String getScheduledTime() { return scheduledTime; }
+    public void setScheduledTime(String time) { scheduledTime = time; }
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }

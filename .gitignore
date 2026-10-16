@@ -41,3 +41,6 @@ Thumbs.db
 /superpowers/
 /ponytail/
 
+
+/.audit-cache/
+/opencode.json

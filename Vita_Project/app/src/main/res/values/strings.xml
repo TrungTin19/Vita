@@ -226,8 +226,8 @@
     <!-- Reminder Screen (Medicines + Water) -->
     <string name="reminder_title">Nhắc nhở &amp; Thói quen hàng ngày</string>
     <string name="reminder_water_title">Tiến độ uống nước hôm nay</string>
-    <string name="reminder_water_progress_format">%,d / %,d ml (%d%%)</string>
-    <string name="reminder_btn_add_water">Nạp 250 ml nước</string>
+    <string name="reminder_water_progress_format">%1$,d / %2$,d ml (%3$d%%)</string>
+    <string name="reminder_btn_add_water">Nạp %1$d ml nước</string>
     <string name="reminder_water_reached">Tuyệt vời! Bạn đã hoàn thành mục tiêu uống nước hôm nay.</string>
     <string name="reminder_section_medicines">DANH SÁCH LỊCH UỐNG THUỐC</string>
     <string name="reminder_empty_title">Chưa có đơn thuốc nào</string>
@@ -276,7 +276,7 @@
     <string name="stats_bp_dia_label">Tâm trương</string>
     <string name="stats_bp_legend">Đường liền: Tâm thu • Đường đứt: Tâm trương</string>
     <string name="stats_water_title">Lượng nước uống mỗi ngày (ml)</string>
-    <string name="stats_water_goal_format">Mục tiêu: %,d ml/ngày</string>
+    <string name="stats_water_goal_format">Mục tiêu hôm nay: %,d ml (đường tham chiếu)</string>
     <string name="stats_sleep_chart_title">Thời lượng ngủ mỗi đêm (giờ)</string>
     <string name="stats_sleep_section">NHẬT KÝ GIẤC NGỦ GẦN ĐÂY</string>
     <string name="stats_sleep_empty">Chưa có dữ liệu giấc ngủ</string>
@@ -342,9 +342,38 @@
     <!-- Water Reminder -->
     <string name="water_reminder_title">Đến giờ uống nước</string>
     <string name="water_reminder_text">Uống một ly nước để cơ thể tỉnh táo nhé!</string>
-    <string name="water_reminder_action">Đã uống 250 ml</string>
+    <string name="water_reminder_action">Đã uống %1$d ml</string>
 
     <!-- Exact Alarm Permission -->
     <string name="exact_alarm_needed">Vita cần quyền Báo thức chính xác để nhắc thuốc đúng giờ</string>
     <string name="exact_alarm_open_settings">Mở cài đặt</string>
+    <string name="stats_weight_title">Cân nặng (kg)</string>
+    <string name="stats_heart_rate_title">Nhịp tim (bpm)</string>
+    <string name="health_filter_range_title">Chọn khoảng ngày</string>
+    <string name="health_filter_range_format">%1$s – %2$s</string>
+    <string name="water_heat_adjustment">Đã cộng 300 ml vào mục tiêu hôm nay vì trời nóng.</string>
+    <string name="water_base_goal">Mục tiêu cơ bản trong hồ sơ.</string>
+    <string name="water_goal_today">Mục tiêu hôm nay: %,d ml.</string>
+    <string name="reminder_notifications_disabled">Thông báo đang tắt. Bật thông báo để nhận nhắc uống thuốc và nước.</string>
+    <string name="reminder_notifications_settings">Mở cài đặt thông báo</string>
+    <string name="med_times_help">Chạm ô giờ để thêm cữ. Chạm một giờ bên dưới để sửa, bấm dấu × để bỏ.</string>
+    <string name="med_remove_time">Bỏ cữ %1$s</string>
+    <string name="med_time_required">Chọn ít nhất một giờ uống thuốc.</string>
+    <string name="med_history">Lịch sử từng cữ</string>
+    <string name="med_history_empty">Chưa có lần xác nhận nào.</string>
+    <string name="measurement_time">Giờ đo</string>
+    <string name="measurement_time_unknown">Chưa ghi giờ</string>
+    <string name="meal_context_title">Bối cảnh đo đường huyết</string>
+    <string name="stats_glucose_title">Đường huyết (mg/dL)</string>
+    <string-array name="meal_contexts">
+        <item>Chưa xác định</item><item>Lúc đói</item><item>Trước ăn</item><item>Sau ăn</item>
+    </string-array>
+    <string name="water_added">Đã ghi nhận %1$d ml nước</string>
+    <string name="water_settings">Cài đặt nhắc uống nước</string>
+    <string name="water_start">Bắt đầu nhắc</string>
+    <string name="water_end">Kết thúc nhắc</string>
+    <string name="water_amount">Lượng uống mỗi lần (ml)</string>
+    <string name="water_weather_opt_in">Cho phép cộng 300 ml khi trời từ 33°C</string>
+    <string name="water_settings_help">Nhắc định kỳ khoảng 2 giờ trong khung giờ đã chọn, dừng khi đạt mục tiêu ngày. Mục tiêu bạn nhập luôn được giữ nguyên. Nếu có chỉ định hạn chế dịch, hãy dùng mục tiêu của nhân viên y tế và tắt điều chỉnh thời tiết.</string>
+    <string name="water_settings_invalid">Chọn hai giờ khác nhau và lượng uống từ 50 đến 2.000 ml.</string>
 </resources>

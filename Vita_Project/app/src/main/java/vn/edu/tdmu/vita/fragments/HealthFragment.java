@@ -1,6 +1,5 @@
 package vn.edu.tdmu.vita.fragments;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -23,9 +22,13 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
+import java.util.Collections;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.TimeZone;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.activities.AddHealthActivity;
@@ -50,7 +53,8 @@ public class HealthFragment extends Fragment {
     private List<HealthRecord> records;
     private HealthRecordAdapter adapter;
 
-    private String currentDateFilter = null;
+    private String startDate;
+    private String endDate;
 
     private ActivityResultLauncher<Intent> addHealthLauncher;
 
@@ -84,6 +88,11 @@ public class HealthFragment extends Fragment {
         initViews(view);
         setupRecyclerView();
         setupListeners();
+        if (savedInstanceState != null) {
+            startDate = savedInstanceState.getString("filter_start");
+            endDate = savedInstanceState.getString("filter_end");
+        }
+        renderFilter();
         loadData();
     }
 
@@ -121,9 +130,8 @@ public class HealthFragment extends Fragment {
         btnFilterDate.setOnClickListener(v -> showDateFilterPicker());
 
         btnClearFilter.setOnClickListener(v -> {
-            currentDateFilter = null;
-            btnFilterDate.setText(getString(R.string.health_filter_all_dates));
-            btnClearFilter.setVisibility(View.GONE);
+            startDate = endDate = null;
+            renderFilter();
             loadData();
         });
 
@@ -134,25 +142,34 @@ public class HealthFragment extends Fragment {
     }
 
     private void showDateFilterPicker() {
-        Calendar calendar = Calendar.getInstance();
-
-        if (currentDateFilter != null && currentDateFilter.matches("\\d{4}-\\d{2}-\\d{2}")) {
-            String[] parts = currentDateFilter.split("-");
-            try {
-                calendar.set(Calendar.YEAR, Integer.parseInt(parts[0]));
-                calendar.set(Calendar.MONTH, Integer.parseInt(parts[1]) - 1);
-                calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(parts[2]));
-            } catch (NumberFormatException ignored) {}
-        }
-
-        DatePickerDialog dialog = new DatePickerDialog(requireContext(), (view, year, month, day) -> {
-            currentDateFilter = String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day);
-            btnFilterDate.setText(DateTimeUtils.formatDisplayDate(currentDateFilter));
-            btnClearFilter.setVisibility(View.VISIBLE);
+        MaterialDatePicker<androidx.core.util.Pair<Long, Long>> picker =
+                MaterialDatePicker.Builder.dateRangePicker()
+                        .setTitleText(R.string.health_filter_range_title).build();
+        picker.addOnPositiveButtonClickListener(selection -> {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            startDate = format.format(new Date(selection.first));
+            endDate = format.format(new Date(selection.second));
+            renderFilter();
             loadData();
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+        });
+        picker.show(getParentFragmentManager(), "health_date_range");
+    }
 
-        dialog.show();
+    private void renderFilter() {
+        boolean filtered = startDate != null && endDate != null;
+        btnFilterDate.setText(filtered
+                ? getString(R.string.health_filter_range_format,
+                        DateTimeUtils.formatDisplayDate(startDate), DateTimeUtils.formatDisplayDate(endDate))
+                : getString(R.string.health_filter_all_dates));
+        btnClearFilter.setVisibility(filtered ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("filter_start", startDate);
+        outState.putString("filter_end", endDate);
     }
 
     private void loadData() {
@@ -160,7 +177,12 @@ public class HealthFragment extends Fragment {
         if (userId <= 0) return;
 
         records.clear();
-        records.addAll(healthDao.getAllByUserId(userId, currentDateFilter));
+        if (startDate != null && endDate != null) {
+            records.addAll(healthDao.getRecordsRange(userId, startDate, endDate));
+            Collections.reverse(records);
+        } else {
+            records.addAll(healthDao.getAllByUserId(userId, null));
+        }
         adapter.notifyDataSetChanged();
 
         updateEmptyState();

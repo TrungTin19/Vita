@@ -27,6 +27,7 @@ import vn.edu.tdmu.vita.models.User;
 import vn.edu.tdmu.vita.models.WeatherData;
 import vn.edu.tdmu.vita.network.WeatherClient;
 import vn.edu.tdmu.vita.utils.BMICalculator;
+import vn.edu.tdmu.vita.utils.HydrationGoal;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class HomeFragment extends Fragment {
@@ -34,10 +35,10 @@ public class HomeFragment extends Fragment {
     private static final String PREFS_HOME = "vita_home";
     private static final String KEY_CITY = "city_position";
 
-    private static final String[] CITY_NAMES = {
-            "TP. Hồ Chí Minh", "Bình Dương", "Hà Nội", "Đà Nẵng", "Cần Thơ"};
-    private static final double[] CITY_LAT = {10.82, 11.16, 21.02, 16.05, 10.04};
-    private static final double[] CITY_LON = {106.63, 106.65, 105.83, 108.20, 105.78};
+    private static final String[] CITY_NAMES = WeatherClient.CITY_NAMES;
+    private static final double[] CITY_LAT = WeatherClient.CITY_LAT;
+    private static final double[] CITY_LON = WeatherClient.CITY_LON;
+    private int weatherRequest;
 
     private TextView tvGreeting;
     private TextView tvBmiValue;
@@ -90,7 +91,6 @@ public class HomeFragment extends Fragment {
 
         setupCitySpinner();
         loadBmiCard();
-        fetchWeather(currentCity());
     }
 
     @Override
@@ -148,7 +148,7 @@ public class HomeFragment extends Fragment {
 
         float height = user.getHeightCm();
         Float latestWeight = healthDao.getLatestWeight(userId);
-        float weight = (latestWeight != null) ? latestWeight : user.getBaseWeightKg();
+        float weight = BMICalculator.currentWeight(latestWeight, user.getBaseWeightKg());
         boolean isInitial = latestWeight == null;
 
         if (height > 0 && weight > 0) {
@@ -183,17 +183,24 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchWeather(int cityPos) {
+        int request = ++weatherRequest;
+        tvTemp.setText("--");
+        tvHumidity.setText("--");
+        tvAqi.setText("--");
+        tvAqiLabel.setText(R.string.home_aqi_unknown);
+        tvUpdated.setText("");
+        tvOffline.setVisibility(View.GONE);
         WeatherClient.fetchWeather(requireContext(), CITY_LAT[cityPos], CITY_LON[cityPos],
                 CITY_NAMES[cityPos], new WeatherClient.Callback() {
                     @Override
                     public void onSuccess(WeatherData data) {
-                        if (!isAdded()) return;
+                        if (!isAdded() || getView() == null || request != weatherRequest) return;
                         renderWeather(data);
                     }
 
                     @Override
                     public void onError() {
-                        if (!isAdded()) return;
+                        if (!isAdded() || getView() == null || request != weatherRequest) return;
                         Toast.makeText(requireContext(), getString(R.string.home_weather_error),
                                 Toast.LENGTH_SHORT).show();
                         tvAdvice.setText(getString(R.string.home_advice_good));
@@ -207,7 +214,7 @@ public class HomeFragment extends Fragment {
         tvHumidity.setText(String.format(Locale.getDefault(),
                 getString(R.string.home_humidity_format), data.getHumidity()));
         tvUpdated.setText(String.format(Locale.getDefault(),
-                getString(R.string.home_updated_format), shortTime(data.getUpdatedAt())));
+                getString(R.string.home_updated_format), data.getUpdatedAt()));
         tvOffline.setVisibility(data.isOffline() ? View.VISIBLE : View.GONE);
 
         int aqi = data.getAqi();
@@ -237,9 +244,14 @@ public class HomeFragment extends Fragment {
             tvAqiLabel.setText(getString(labelRes));
         }
 
-        if (data.getTemperature() >= 33) {
+        User user = userDao.getUserById(sessionManager.getUserId());
+        int base = user != null ? user.getWaterGoalMl() : 2000;
+        int goal = HydrationGoal.forDay(base, data, CITY_NAMES[currentCity()],
+                vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate(), user != null && user.isWeatherAdjustmentEnabled());
+        if (goal > base) {
             tvAdvice.setText(String.format(Locale.getDefault(),
-                    getString(R.string.home_advice_heat), data.getTemperature()));
+                    getString(R.string.home_advice_heat), data.getTemperature())
+                    + "\n" + getString(R.string.water_goal_today, goal));
         } else if (aqi > 100) {
             tvAdvice.setText(String.format(Locale.getDefault(),
                     getString(R.string.home_advice_air), aqi));
@@ -248,10 +260,9 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private String shortTime(String timestamp) {
-        if (timestamp != null && timestamp.length() >= 16) {
-            return timestamp.substring(11, 16);
-        }
-        return timestamp == null ? "" : timestamp;
+    @Override
+    public void onDestroyView() {
+        weatherRequest++;
+        super.onDestroyView();
     }
 }

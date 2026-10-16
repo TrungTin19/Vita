@@ -7,6 +7,22 @@ import vn.edu.tdmu.vita.models.WeatherData;
 
 public class WeatherClientTest {
 
+    @Test
+    public void cache_doesNotShowAnotherCity() {
+        assertNull(WeatherClient.parseCachedWeather(FORECAST_JSON, AQI_JSON,
+                "Hà Nội", "Đà Nẵng", "2026-10-14 10:00:00"));
+    }
+
+    @Test
+    public void cache_preservesOriginalTimestampAndOfflineState() {
+        WeatherData data = WeatherClient.parseCachedWeather(FORECAST_JSON, AQI_JSON,
+                "Hà Nội", "Hà Nội", "2026-10-14 10:00:00");
+        assertNotNull(data);
+        assertTrue(data.isOffline());
+        assertEquals("2026-10-14 10:00:00", data.getUpdatedAt());
+        assertEquals(120, data.getAqi());
+    }
+
     private static final String FORECAST_JSON =
             "{\"latitude\":10.82,\"longitude\":106.63,"
             + "\"current\":{\"time\":\"2026-10-14T10:00\","

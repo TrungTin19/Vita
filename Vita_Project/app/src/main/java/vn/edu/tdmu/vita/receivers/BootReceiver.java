@@ -18,7 +18,7 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (!Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) return;
         MedicineDao dao = new MedicineDao(context);
-        List<Medicine> active = dao.getAllActiveMedicinesAcrossAllUsers();
+        List<Medicine> active = dao.getActiveMedicines(new vn.edu.tdmu.vita.utils.SessionManager(context).getUserId());
         for (Medicine medicine : active) {
             MedicineAlarmReceiver.schedule(context, medicine);
         }

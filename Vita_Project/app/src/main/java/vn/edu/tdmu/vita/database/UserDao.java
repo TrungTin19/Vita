@@ -51,6 +51,10 @@ public class UserDao {
         values.put(DatabaseHelper.COL_USER_USERNAME, user.getUsername().trim());
         values.put(DatabaseHelper.COL_USER_PASSWORD_HASH, hash);
         values.put(DatabaseHelper.COL_USER_SALT, salt);
+        values.put("water_start", user.getWaterStart());
+        values.put("water_end", user.getWaterEnd());
+        values.put("water_amount", user.getWaterAmount());
+        values.put("weather_adjustment", user.isWeatherAdjustmentEnabled() ? 1 : 0);
         values.put(DatabaseHelper.COL_USER_FULLNAME, user.getFullname());
         values.put(DatabaseHelper.COL_USER_BIRTH_YEAR, user.getBirthYear());
         values.put(DatabaseHelper.COL_USER_GENDER, user.getGender());
@@ -113,6 +117,10 @@ public class UserDao {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put("water_start", user.getWaterStart());
+        values.put("water_end", user.getWaterEnd());
+        values.put("water_amount", user.getWaterAmount());
+        values.put("weather_adjustment", user.isWeatherAdjustmentEnabled() ? 1 : 0);
         values.put(DatabaseHelper.COL_USER_FULLNAME, user.getFullname());
         values.put(DatabaseHelper.COL_USER_BIRTH_YEAR, user.getBirthYear());
         values.put(DatabaseHelper.COL_USER_GENDER, user.getGender());
@@ -158,6 +166,10 @@ public class UserDao {
         u.setBaseWeightKg(cursor.getFloat(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_USER_BASE_WEIGHT_KG)));
         u.setWaterGoalMl(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_USER_WATER_GOAL_ML)));
         u.setBmiStandard(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_USER_BMI_STANDARD)));
+        u.setWaterStart(cursor.getString(cursor.getColumnIndexOrThrow("water_start")));
+        u.setWaterEnd(cursor.getString(cursor.getColumnIndexOrThrow("water_end")));
+        u.setWaterAmount(cursor.getInt(cursor.getColumnIndexOrThrow("water_amount")));
+        u.setWeatherAdjustmentEnabled(cursor.getInt(cursor.getColumnIndexOrThrow("weather_adjustment")) == 1);
         return u;
     }
 }

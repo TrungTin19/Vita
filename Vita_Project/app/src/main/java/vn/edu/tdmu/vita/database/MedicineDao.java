@@ -126,75 +126,47 @@ public class MedicineDao {
         return list;
     }
 
-    public List<Medicine> getAllActiveMedicinesAcrossAllUsers() {
-        List<Medicine> list = new ArrayList<>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
-                DatabaseHelper.TABLE_MEDICINES,
-                null,
-                DatabaseHelper.COL_MED_IS_ACTIVE + " = 1",
-                null,
-                null, null,
-                DatabaseHelper.COL_MED_TIME + " ASC"
-        );
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                list.add(cursorToMedicine(cursor));
-            }
-            cursor.close();
-        }
-        return list;
-    }
-
-    // Medicine Logs
-    public long logMedicineStatus(long medicineId, String date, String status, String loggedAt) {
+    public long logMedicineStatus(long medicineId, String date, String scheduledTime, String status, String loggedAt) {
+        if (!"TAKEN".equals(status) && !"SKIPPED".equals(status)) throw new IllegalArgumentException("Invalid dose status");
+        if (scheduledTime == null || !scheduledTime.matches("([01]\\d|2[0-3]):[0-5]\\d")) throw new IllegalArgumentException("Invalid dose time");
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COL_MED_LOG_MEDICINE_ID, medicineId);
         values.put(DatabaseHelper.COL_MED_LOG_DATE, date);
+        values.put(DatabaseHelper.COL_MED_LOG_TIME, scheduledTime);
         values.put(DatabaseHelper.COL_MED_LOG_STATUS, status);
         values.put(DatabaseHelper.COL_MED_LOG_LOGGED_AT, loggedAt);
-
-        // Check if log exists for this medicine and date, update if so
-        Cursor cursor = db.query(
-                DatabaseHelper.TABLE_MEDICINE_LOGS,
-                new String[]{DatabaseHelper.COL_MED_LOG_ID},
-                DatabaseHelper.COL_MED_LOG_MEDICINE_ID + " = ? AND " + DatabaseHelper.COL_MED_LOG_DATE + " = ?",
-                new String[]{String.valueOf(medicineId), date},
-                null, null, null
-        );
-        if (cursor != null && cursor.moveToFirst()) {
-            long existingId = cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_LOG_ID));
-            cursor.close();
-            db.update(
-                    DatabaseHelper.TABLE_MEDICINE_LOGS,
-                    values,
-                    DatabaseHelper.COL_MED_LOG_ID + " = ?",
-                    new String[]{String.valueOf(existingId)}
-            );
-            return existingId;
-        }
-        if (cursor != null) cursor.close();
-
-        return db.insert(DatabaseHelper.TABLE_MEDICINE_LOGS, null, values);
+        db.beginTransaction();
+        try {
+            MedicineLog previous = getLogForDose(medicineId, date, scheduledTime);
+            long id;
+            if (previous == null) id = db.insertOrThrow(DatabaseHelper.TABLE_MEDICINE_LOGS, null, values);
+            else {
+                id = previous.getId();
+                db.update(DatabaseHelper.TABLE_MEDICINE_LOGS, values, "id = ?", new String[]{String.valueOf(id)});
+            }
+            db.setTransactionSuccessful();
+            return id;
+        } finally { db.endTransaction(); }
     }
 
-    public MedicineLog getLogForMedicine(long medicineId, String date) {
+    public MedicineLog getLogForDose(long medicineId, String date, String time) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
-                DatabaseHelper.TABLE_MEDICINE_LOGS,
-                null,
-                DatabaseHelper.COL_MED_LOG_MEDICINE_ID + " = ? AND " + DatabaseHelper.COL_MED_LOG_DATE + " = ?",
-                new String[]{String.valueOf(medicineId), date},
-                null, null, null
-        );
-        if (cursor != null && cursor.moveToFirst()) {
-            MedicineLog log = cursorToLog(cursor);
-            cursor.close();
-            return log;
+        try (Cursor cursor = db.query(DatabaseHelper.TABLE_MEDICINE_LOGS, null,
+                "medicine_id = ? AND date = ? AND scheduled_time = ?",
+                new String[]{String.valueOf(medicineId), date, time}, null, null, "id DESC", "1")) {
+            return cursor.moveToFirst() ? cursorToLog(cursor) : null;
         }
-        if (cursor != null) cursor.close();
-        return null;
+    }
+
+    public List<MedicineLog> getHistory(long medicineId) {
+        List<MedicineLog> logs = new ArrayList<>();
+        try (Cursor cursor = dbHelper.getReadableDatabase().query(DatabaseHelper.TABLE_MEDICINE_LOGS,
+                null, "medicine_id = ?", new String[]{String.valueOf(medicineId)},
+                null, null, "date DESC, scheduled_time DESC, id DESC")) {
+            while (cursor.moveToNext()) logs.add(cursorToLog(cursor));
+        }
+        return logs;
     }
 
     private ContentValues toContentValues(Medicine med) {
@@ -202,7 +174,7 @@ public class MedicineDao {
         values.put(DatabaseHelper.COL_MED_USER_ID, med.getUserId());
         values.put(DatabaseHelper.COL_MED_NAME, med.getName());
         values.put(DatabaseHelper.COL_MED_DOSAGE, med.getDosage());
-        values.put(DatabaseHelper.COL_MED_TIME, med.getTime());
+        values.put(DatabaseHelper.COL_MED_TIME, vn.edu.tdmu.vita.utils.MedicineSchedule.normalizeTimes(med.getTime()));
         values.put(DatabaseHelper.COL_MED_DAYS_MASK, med.getDaysMask());
         values.put(DatabaseHelper.COL_MED_IS_ACTIVE, med.isActive() ? 1 : 0);
         return values;
@@ -225,6 +197,7 @@ public class MedicineDao {
         log.setId(cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_LOG_ID)));
         log.setMedicineId(cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_LOG_MEDICINE_ID)));
         log.setDate(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_LOG_DATE)));
+        log.setScheduledTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_LOG_TIME)));
         log.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_LOG_STATUS)));
         log.setLoggedAt(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_LOG_LOGGED_AT)));
         return log;

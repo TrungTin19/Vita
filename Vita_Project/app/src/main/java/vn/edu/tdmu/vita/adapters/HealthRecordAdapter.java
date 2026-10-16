@@ -89,7 +89,7 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
 
         void bind(HealthRecord record, int position) {
             // Date
-            tvDate.setText(DateTimeUtils.formatDisplayDate(record.getDate()));
+            tvDate.setText(vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(itemView.getContext(), record));
 
             // Blood Pressure
             if (record.getSystolic() != null && record.getDiastolic() != null) {

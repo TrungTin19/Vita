@@ -40,6 +40,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextInputEditText etWeight;
     private TextInputEditText etWaterGoal;
 
+    private TextInputEditText etWaterStart, etWaterEnd, etWaterAmount;
+    private com.google.android.material.materialswitch.MaterialSwitch switchWeather;
     private MaterialButton btnSave;
     private MaterialButton btnLogout;
 
@@ -76,6 +78,12 @@ public class EditProfileActivity extends AppCompatActivity {
         etWeight = findViewById(R.id.et_edit_weight);
         etWaterGoal = findViewById(R.id.et_edit_water_goal);
 
+        etWaterStart = findViewById(R.id.et_edit_water_start);
+        etWaterEnd = findViewById(R.id.et_edit_water_end);
+        etWaterAmount = findViewById(R.id.et_edit_water_amount);
+        switchWeather = findViewById(R.id.switch_water_weather);
+        etWaterStart.setOnClickListener(v -> pickTime(etWaterStart));
+        etWaterEnd.setOnClickListener(v -> pickTime(etWaterEnd));
         btnSave = findViewById(R.id.btn_edit_save);
         btnLogout = findViewById(R.id.btn_edit_logout);
     }
@@ -99,6 +107,10 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
+        etWaterStart.setText(currentUser.getWaterStart());
+        etWaterEnd.setText(currentUser.getWaterEnd());
+        etWaterAmount.setText(String.valueOf(currentUser.getWaterAmount()));
+        switchWeather.setChecked(currentUser.isWeatherAdjustmentEnabled());
         if (currentUser.getFullname() != null) {
             etFullname.setText(currentUser.getFullname());
         }
@@ -135,7 +147,23 @@ public class EditProfileActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(v -> showLogoutConfirmDialog());
     }
 
+    private void pickTime(TextInputEditText field) {
+        String time = field.getText().toString();
+        new android.app.TimePickerDialog(this, (view, hour, minute) ->
+                field.setText(String.format(java.util.Locale.US, "%02d:%02d", hour, minute)),
+                Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3)), true).show();
+    }
+
     private void handleSave() {
+        if (currentUser == null || sessionManager.getUserId() != currentUser.getId()) return;
+        int amount;
+        try { amount = Integer.parseInt(etWaterAmount.getText().toString()); }
+        catch (NumberFormatException e) { amount = 0; }
+        String start = etWaterStart.getText().toString(), end = etWaterEnd.getText().toString();
+        if (!vn.edu.tdmu.vita.utils.WaterReminderPolicy.validSettings(start, end, amount)) {
+            etWaterAmount.setError(getString(R.string.water_settings_invalid));
+            return;
+        }
         String fullname = etFullname.getText() != null ? etFullname.getText().toString().trim() : "";
         String birthYearStr = etBirthYear.getText() != null ? etBirthYear.getText().toString().trim() : "";
         String heightStr = etHeight.getText() != null ? etHeight.getText().toString().trim() : "";
@@ -228,6 +256,10 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
+        currentUser.setWaterStart(start);
+        currentUser.setWaterEnd(end);
+        currentUser.setWaterAmount(amount);
+        currentUser.setWeatherAdjustmentEnabled(switchWeather.isChecked());
         currentUser.setFullname(fullname);
         currentUser.setGender(gender);
         currentUser.setBirthYear(birthYear);
@@ -237,6 +269,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
         boolean success = userDao.updateProfile(currentUser);
         if (success) {
+            vn.edu.tdmu.vita.receivers.WaterReminderReceiver.cancel(this);
+            vn.edu.tdmu.vita.receivers.WaterReminderReceiver.schedule(this);
+            androidx.core.app.NotificationManagerCompat.from(this).cancel(9001);
             sessionManager.saveSession(currentUser.getId(), currentUser.getUsername(), currentUser.getFullname());
             Toast.makeText(this, R.string.edit_profile_save_success, Toast.LENGTH_SHORT).show();
             finish();
@@ -250,6 +285,12 @@ public class EditProfileActivity extends AppCompatActivity {
                 .setTitle(R.string.edit_profile_logout_dialog_title)
                 .setMessage(R.string.edit_profile_logout_dialog_msg)
                 .setPositiveButton(R.string.edit_profile_btn_logout, (dialog, which) -> {
+                    for (vn.edu.tdmu.vita.models.Medicine medicine :
+                            new vn.edu.tdmu.vita.database.MedicineDao(this).getActiveMedicines(sessionManager.getUserId())) {
+                        vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver.cancel(this, medicine);
+                    }
+                    vn.edu.tdmu.vita.receivers.WaterReminderReceiver.cancel(this);
+                    androidx.core.app.NotificationManagerCompat.from(this).cancelAll();
                     sessionManager.clearSession();
                     Toast.makeText(EditProfileActivity.this, R.string.edit_profile_logout_toast, Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(EditProfileActivity.this, LoginActivity.class);

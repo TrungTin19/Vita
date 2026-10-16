@@ -44,11 +44,13 @@ import vn.edu.tdmu.vita.models.Medicine;
 import vn.edu.tdmu.vita.models.User;
 import vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver;
 import vn.edu.tdmu.vita.utils.DateTimeUtils;
+import vn.edu.tdmu.vita.utils.HydrationGoal;
 import vn.edu.tdmu.vita.utils.SessionManager;
+import vn.edu.tdmu.vita.utils.NotificationHelper;
 
 public class ReminderFragment extends Fragment {
 
-    private static final int QUICK_ADD_ML = 250;
+    private int quickAddMl = 250;
 
     private TextView tvWaterProgress;
     private ProgressBar pbWaterProgress;
@@ -81,7 +83,7 @@ public class ReminderFragment extends Fragment {
         );
         notificationPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
-                granted -> { /* silent: chuông vẫn đặt, chỉ không hiện popup */ }
+                granted -> updateNotificationState()
         );
     }
 
@@ -107,6 +109,8 @@ public class ReminderFragment extends Fragment {
         vn.edu.tdmu.vita.receivers.WaterReminderReceiver.schedule(requireContext());
         loadWaterProgress(false);
         loadMedicines();
+        updateNotificationState();
+        requestNotificationPermissionIfNeeded();
     }
 
     @Override
@@ -115,6 +119,7 @@ public class ReminderFragment extends Fragment {
         loadWaterProgress(false);
         loadMedicines();
         promptExactAlarmIfNeeded();
+        updateNotificationState();
     }
 
     private void promptExactAlarmIfNeeded() {
@@ -150,15 +155,32 @@ public class ReminderFragment extends Fragment {
         adapter = new MedicineAdapter(medicines);
         adapter.setOnSwitchChangeListener(this::handleSwitchChanged);
         adapter.setOnQuickLogListener(this::handleQuickLog);
+        adapter.setHistoryListener(medicine -> {
+            java.util.List<vn.edu.tdmu.vita.models.MedicineLog> logs = medicineDao.getHistory(medicine.getId());
+            if (logs.isEmpty()) {
+                new AlertDialog.Builder(requireContext()).setTitle(medicine.getName())
+                        .setMessage(R.string.med_history_empty).setPositiveButton(android.R.string.ok, null).show();
+                return;
+            }
+            String[] lines = new String[logs.size()];
+            for (int i = 0; i < logs.size(); i++) {
+                vn.edu.tdmu.vita.models.MedicineLog log = logs.get(i);
+                lines[i] = DateTimeUtils.formatDisplayDate(log.getDate()) + " " + log.getScheduledTime()
+                        + " — " + getString("TAKEN".equals(log.getStatus())
+                        ? R.string.reminder_quick_taken : R.string.reminder_quick_skipped);
+            }
+            new AlertDialog.Builder(requireContext()).setTitle(medicine.getName())
+                    .setItems(lines, null).setPositiveButton(android.R.string.ok, null).show();
+        });
         rvMedicines.setLayoutManager(new LinearLayoutManager(requireContext()));
         rvMedicines.setAdapter(adapter);
         registerForContextMenu(rvMedicines);
     }
 
     private void setupListeners() {
+        requireView().findViewById(R.id.btn_water_settings).setOnClickListener(v -> startActivity(new Intent(requireContext(), vn.edu.tdmu.vita.activities.EditProfileActivity.class)));
         btnQuickAddWater.setOnClickListener(v -> handleQuickAddWater());
         fabAddMedicine.setOnClickListener(v -> {
-            requestNotificationPermissionIfNeeded();
             Intent intent = new Intent(requireContext(), AddMedicineActivity.class);
             medicineFormLauncher.launch(intent);
         });
@@ -168,8 +190,29 @@ public class ReminderFragment extends Fragment {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return;
         if (ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            android.content.SharedPreferences prefs = requireContext().getSharedPreferences("vita_permissions", 0);
+            if (!prefs.getBoolean("notification_requested", false)) {
+                prefs.edit().putBoolean("notification_requested", true).apply();
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            }
         }
+    }
+
+    private void updateNotificationState() {
+        if (getView() == null) return;
+        View banner = getView().findViewById(R.id.layout_notification_permission);
+        banner.setVisibility(NotificationHelper.canNotify(requireContext()) ? View.GONE : View.VISIBLE);
+        getView().findViewById(R.id.btn_notification_settings).setOnClickListener(v -> {
+            Intent settings;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                settings = new Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+                settings.putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, requireContext().getPackageName());
+            } else {
+                settings = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        android.net.Uri.parse("package:" + requireContext().getPackageName()));
+            }
+            startActivity(settings);
+        });
     }
 
     private void loadWaterProgress(boolean animate) {
@@ -177,7 +220,12 @@ public class ReminderFragment extends Fragment {
         if (userId <= 0) return;
 
         User user = userDao.getUserById(userId);
-        waterGoalMl = (user != null && user.getWaterGoalMl() > 0) ? user.getWaterGoalMl() : 2000;
+        int baseGoal = user != null && user.getWaterGoalMl() > 0 ? user.getWaterGoalMl() : 2000;
+        waterGoalMl = HydrationGoal.current(requireContext(), user);
+        quickAddMl = user != null ? user.getWaterAmount() : 250;
+        btnQuickAddWater.setText(getString(R.string.reminder_btn_add_water, quickAddMl));
+        TextView adjustment = requireView().findViewById(R.id.tv_water_adjustment);
+        adjustment.setText(waterGoalMl > baseGoal ? R.string.water_heat_adjustment : R.string.water_base_goal);
 
         int total = waterDao.getDailyTotal(userId, DateTimeUtils.getTodayDate());
         int oldProgress = pbWaterProgress.getProgress();
@@ -203,13 +251,14 @@ public class ReminderFragment extends Fragment {
 
         String today = DateTimeUtils.getTodayDate();
         int before = waterDao.getDailyTotal(userId, today);
-        long id = waterDao.addWater(userId, today, QUICK_ADD_ML, DateTimeUtils.getCurrentTimestamp());
+        long id = waterDao.addWater(userId, today, quickAddMl, DateTimeUtils.getCurrentTimestamp());
         if (id <= 0) {
             Toast.makeText(requireContext(), getString(R.string.add_med_error_save), Toast.LENGTH_SHORT).show();
             return;
         }
         loadWaterProgress(true);
-        int after = before + QUICK_ADD_ML;
+        int after = before + quickAddMl;
+        if (after >= waterGoalMl) androidx.core.app.NotificationManagerCompat.from(requireContext()).cancel(9001);
         if (before < waterGoalMl && after >= waterGoalMl) {
             Toast.makeText(requireContext(), getString(R.string.reminder_water_reached), Toast.LENGTH_SHORT).show();
         }
@@ -221,12 +270,13 @@ public class ReminderFragment extends Fragment {
 
         medicines.clear();
         medicines.addAll(medicineDao.getAllByUserId(userId));
-        java.util.Map<Long, vn.edu.tdmu.vita.models.MedicineLog> logs = new java.util.HashMap<>();
+        java.util.Map<String, vn.edu.tdmu.vita.models.MedicineLog> logs = new java.util.HashMap<>();
         String today = vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate();
         for (Medicine medicine : medicines) {
-            vn.edu.tdmu.vita.models.MedicineLog log =
-                    medicineDao.getLogForMedicine(medicine.getId(), today);
-            if (log != null) logs.put(medicine.getId(), log);
+            for (String time : medicine.getTime().split(",")) {
+                vn.edu.tdmu.vita.models.MedicineLog log = medicineDao.getLogForDose(medicine.getId(), today, time);
+                if (log != null) logs.put(medicine.getId() + "@" + time, log);
+            }
         }
         adapter.setTodayLogs(logs);
         adapter.notifyDataSetChanged();
@@ -240,10 +290,10 @@ public class ReminderFragment extends Fragment {
         }
     }
 
-    private void handleQuickLog(Medicine medicine, int position, boolean taken) {
+    private void handleQuickLog(Medicine medicine, String time, boolean taken) {
         String status = taken ? "TAKEN" : "SKIPPED";
         medicineDao.logMedicineStatus(medicine.getId(),
-                vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate(), status,
+                vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate(), time, status,
                 vn.edu.tdmu.vita.utils.DateTimeUtils.getCurrentTimestamp());
         loadMedicines();
         int msgRes = taken ? R.string.reminder_quick_taken_toast
@@ -262,7 +312,7 @@ public class ReminderFragment extends Fragment {
         if (isActive) {
             MedicineAlarmReceiver.schedule(requireContext(), medicine);
         } else {
-            MedicineAlarmReceiver.cancel(requireContext(), medicine.getId());
+            MedicineAlarmReceiver.cancel(requireContext(), medicine);
         }
         View rootView = getView();
         if (rootView != null) {
@@ -275,7 +325,7 @@ public class ReminderFragment extends Fragment {
                             if (revert) {
                                 MedicineAlarmReceiver.schedule(requireContext(), medicine);
                             } else {
-                                MedicineAlarmReceiver.cancel(requireContext(), medicine.getId());
+                                MedicineAlarmReceiver.cancel(requireContext(), medicine);
                             }
                             adapter.notifyItemChanged(position);
                         }
@@ -313,7 +363,7 @@ public class ReminderFragment extends Fragment {
                 .setMessage(getString(R.string.reminder_delete_dialog_msg, medicine.getName()))
                 .setNegativeButton(getString(R.string.btn_cancel), null)
                 .setPositiveButton(getString(R.string.btn_delete), (dialog, which) -> {
-                    MedicineAlarmReceiver.cancel(requireContext(), medicine.getId());
+                    MedicineAlarmReceiver.cancel(requireContext(), medicine);
                     boolean deleted = medicineDao.delete(medicine.getId());
                     if (deleted) {
                         medicines.remove(position);

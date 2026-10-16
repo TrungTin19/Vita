@@ -63,6 +63,12 @@ public class AddMedicineActivity extends AppCompatActivity {
         initViews();
         setupListeners();
         loadIntentData();
+        if (savedInstanceState != null) {
+            selectedTime = savedInstanceState.getString("times", selectedTime);
+            daysMask = savedInstanceState.getInt("days", daysMask);
+            renderTimes();
+            refreshDayButtons();
+        }
     }
 
     private void initViews() {
@@ -116,20 +122,21 @@ public class AddMedicineActivity extends AppCompatActivity {
         if (medicineId > 0) {
             toolbar.setTitle(getString(R.string.add_med_title_edit));
             Medicine medicine = medicineDao.getById(medicineId);
-            if (medicine != null) {
+            if (medicine != null && medicine.getUserId() == sessionManager.getUserId()) {
                 etName.setText(medicine.getName());
                 if (medicine.getDosage() != null) etDosage.setText(medicine.getDosage());
                 selectedTime = medicine.getTime();
                 daysMask = medicine.getDaysMask();
             } else {
-                selectedTime = nextHourDefault();
+                finish();
+                return;
             }
         } else {
             toolbar.setTitle(getString(R.string.add_med_title_add));
             selectedTime = nextHourDefault();
             daysMask = 127;
         }
-        etTime.setText(selectedTime);
+        renderTimes();
         refreshDayButtons();
     }
 
@@ -141,11 +148,13 @@ public class AddMedicineActivity extends AppCompatActivity {
                 c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE));
     }
 
-    private void showTimePicker() {
+    private void showTimePicker() { showTimePicker(null); }
+
+    private void showTimePicker(String editing) {
         int hour = 8;
         int minute = 0;
-        if (selectedTime != null && selectedTime.matches("\\d{1,2}:\\d{2}")) {
-            String[] parts = selectedTime.split(":");
+        if (editing != null && editing.matches("\\d{1,2}:\\d{2}")) {
+            String[] parts = editing.split(":");
             try {
                 hour = Integer.parseInt(parts[0]);
                 minute = Integer.parseInt(parts[1]);
@@ -153,10 +162,37 @@ public class AddMedicineActivity extends AppCompatActivity {
         }
         TimePickerDialog dialog = new TimePickerDialog(this,
                 (view, h, m) -> {
-                    selectedTime = String.format(Locale.US, "%02d:%02d", h, m);
-                    etTime.setText(selectedTime);
+                    java.util.List<String> times = new java.util.ArrayList<>();
+                    if (selectedTime != null && !selectedTime.isEmpty()) times.addAll(java.util.Arrays.asList(selectedTime.split(",")));
+                    if (editing != null) times.remove(editing);
+                    times.add(String.format(Locale.US, "%02d:%02d", h, m));
+                    selectedTime = vn.edu.tdmu.vita.utils.MedicineSchedule.normalizeTimes(android.text.TextUtils.join(",", times));
+                    renderTimes();
                 }, hour, minute, true);
         dialog.show();
+    }
+
+    private void renderTimes() {
+        etTime.setText(selectedTime == null ? "" : selectedTime.replace(",", " · "));
+        com.google.android.material.chip.ChipGroup group = findViewById(R.id.chips_med_times);
+        group.removeAllViews();
+        if (selectedTime == null || selectedTime.isEmpty()) return;
+        for (String time : selectedTime.split(",")) {
+            com.google.android.material.chip.Chip chip = new com.google.android.material.chip.Chip(this);
+            chip.setText(time);
+            chip.setEnsureMinTouchTargetSize(true);
+            chip.setCloseIconResource(R.drawable.ic_cancel);
+            chip.setCloseIconVisible(true);
+            chip.setCloseIconContentDescription(getString(R.string.med_remove_time, time));
+            chip.setOnClickListener(v -> showTimePicker(time));
+            chip.setOnCloseIconClickListener(v -> {
+                java.util.List<String> times = new java.util.ArrayList<>(java.util.Arrays.asList(selectedTime.split(",")));
+                times.remove(time);
+                selectedTime = android.text.TextUtils.join(",", times);
+                renderTimes();
+            });
+            group.addView(chip);
+        }
     }
 
     private void refreshDayButtons() {
@@ -191,6 +227,11 @@ public class AddMedicineActivity extends AppCompatActivity {
             tilName.setError(getString(R.string.add_med_error_empty_name));
             return;
         }
+        if (selectedTime == null || selectedTime.isEmpty()) {
+            tilTime.setError(getString(R.string.med_time_required));
+            return;
+        }
+        tilTime.setError(null);
         if (daysMask == 0) {
             Toast.makeText(this, getString(R.string.add_med_error_no_days), Toast.LENGTH_SHORT).show();
             return;
@@ -202,15 +243,17 @@ public class AddMedicineActivity extends AppCompatActivity {
 
         if (medicineId > 0) {
             medicine = medicineDao.getById(medicineId);
-            if (medicine == null) {
+            if (medicine == null || medicine.getUserId() != userId) {
                 Toast.makeText(this, getString(R.string.add_med_error_update), Toast.LENGTH_SHORT).show();
                 return;
             }
+            MedicineAlarmReceiver.cancel(this, medicine);
             medicine.setName(name);
             medicine.setDosage(dosage.isEmpty() ? null : dosage);
             medicine.setTime(selectedTime);
             medicine.setDaysMask(daysMask);
             success = medicineDao.update(medicine);
+            if (!success) MedicineAlarmReceiver.schedule(this, medicineDao.getById(medicineId));
             if (success) {
                 Toast.makeText(this, getString(R.string.add_med_success_edit), Toast.LENGTH_SHORT).show();
             }
@@ -230,13 +273,20 @@ public class AddMedicineActivity extends AppCompatActivity {
             if (medicine.isActive()) {
                 MedicineAlarmReceiver.schedule(this, medicine);
             } else {
-                MedicineAlarmReceiver.cancel(this, medicine.getId());
+                MedicineAlarmReceiver.cancel(this, medicine);
             }
             setResult(RESULT_OK);
             finish();
         } else if (medicineId <= 0) {
             Toast.makeText(this, getString(R.string.add_med_error_save), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putString("times", selectedTime);
+        state.putInt("days", daysMask);
     }
 
     private String getText(TextInputEditText editText) {

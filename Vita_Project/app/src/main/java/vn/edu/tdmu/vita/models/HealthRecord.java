@@ -10,6 +10,19 @@ public class HealthRecord {
     private Integer heartRate;
     private Float bloodSugar;
     private String note;
+    public enum MealContext { UNSPECIFIED, FASTING, BEFORE_MEAL, AFTER_MEAL }
+    private String measuredTime;
+    private MealContext mealContext = MealContext.UNSPECIFIED;
+
+    public String getMeasuredTime() { return measuredTime; }
+    public void setMeasuredTime(String time) {
+        if (time != null && !time.matches("([01]\\d|2[0-3]):[0-5]\\d")) throw new IllegalArgumentException("Invalid measurement time");
+        measuredTime = time;
+    }
+    public MealContext getMealContext() { return mealContext; }
+    public void setMealContext(String context) {
+        mealContext = context == null ? MealContext.UNSPECIFIED : MealContext.valueOf(context);
+    }
 
     public HealthRecord() {}
 

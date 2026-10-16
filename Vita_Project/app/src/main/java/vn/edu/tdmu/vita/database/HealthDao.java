@@ -91,7 +91,7 @@ public class HealthDao {
                 selection,
                 selectionArgs,
                 null, null,
-                DatabaseHelper.COL_HEALTH_DATE + " DESC, " + DatabaseHelper.COL_HEALTH_ID + " DESC"
+                DatabaseHelper.COL_HEALTH_DATE + " DESC, COALESCE(measured_time, '') DESC, " + DatabaseHelper.COL_HEALTH_ID + " DESC"
         );
 
         if (cursor != null) {
@@ -114,7 +114,7 @@ public class HealthDao {
                         DatabaseHelper.COL_HEALTH_DATE + " <= ?",
                 new String[]{String.valueOf(userId), startDate, endDate},
                 null, null,
-                DatabaseHelper.COL_HEALTH_DATE + " ASC, " + DatabaseHelper.COL_HEALTH_ID + " ASC"
+                DatabaseHelper.COL_HEALTH_DATE + " ASC, COALESCE(measured_time, '') ASC, " + DatabaseHelper.COL_HEALTH_ID + " ASC"
         );
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -133,7 +133,7 @@ public class HealthDao {
                 DatabaseHelper.COL_HEALTH_USER_ID + " = ? AND " + DatabaseHelper.COL_HEALTH_WEIGHT_KG + " IS NOT NULL",
                 new String[]{String.valueOf(userId)},
                 null, null,
-                DatabaseHelper.COL_HEALTH_DATE + " DESC, " + DatabaseHelper.COL_HEALTH_ID + " DESC",
+                DatabaseHelper.COL_HEALTH_DATE + " DESC, COALESCE(measured_time, '') DESC, " + DatabaseHelper.COL_HEALTH_ID + " DESC",
                 "1"
         );
 
@@ -150,6 +150,8 @@ public class HealthDao {
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COL_HEALTH_USER_ID, record.getUserId());
         values.put(DatabaseHelper.COL_HEALTH_DATE, record.getDate());
+        values.put("measured_time", record.getMeasuredTime());
+        values.put("meal_context", record.getMealContext().name());
 
         if (record.getWeightKg() != null) values.put(DatabaseHelper.COL_HEALTH_WEIGHT_KG, record.getWeightKg());
         else values.putNull(DatabaseHelper.COL_HEALTH_WEIGHT_KG);
@@ -175,6 +177,8 @@ public class HealthDao {
         r.setId(cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HEALTH_ID)));
         r.setUserId(cursor.getLong(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HEALTH_USER_ID)));
         r.setDate(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HEALTH_DATE)));
+        r.setMeasuredTime(cursor.getString(cursor.getColumnIndexOrThrow("measured_time")));
+        r.setMealContext(cursor.getString(cursor.getColumnIndexOrThrow("meal_context")));
 
         int weightIdx = cursor.getColumnIndexOrThrow(DatabaseHelper.COL_HEALTH_WEIGHT_KG);
         r.setWeightKg(cursor.isNull(weightIdx) ? null : cursor.getFloat(weightIdx));

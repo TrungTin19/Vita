@@ -12,6 +12,19 @@ public class User {
     private float baseWeightKg;
     private int waterGoalMl;
     private String bmiStandard;
+    private String waterStart = "07:00";
+    private String waterEnd = "22:00";
+    private int waterAmount = 250;
+    private boolean weatherAdjustmentEnabled;
+
+    public String getWaterStart() { return waterStart; }
+    public void setWaterStart(String value) { waterStart = value; }
+    public String getWaterEnd() { return waterEnd; }
+    public void setWaterEnd(String value) { waterEnd = value; }
+    public int getWaterAmount() { return waterAmount; }
+    public void setWaterAmount(int value) { waterAmount = value; }
+    public boolean isWeatherAdjustmentEnabled() { return weatherAdjustmentEnabled; }
+    public void setWeatherAdjustmentEnabled(boolean value) { weatherAdjustmentEnabled = value; }
 
     public User() {
         this.waterGoalMl = 2000;

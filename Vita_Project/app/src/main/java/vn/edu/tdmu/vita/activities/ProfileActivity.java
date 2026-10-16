@@ -18,8 +18,9 @@ import java.util.Locale;
 
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.UserDao;
+import vn.edu.tdmu.vita.database.HealthDao;
 import vn.edu.tdmu.vita.models.User;
-import vn.edu.tdmu.vita.utils.BmiUtils;
+import vn.edu.tdmu.vita.utils.BMICalculator;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -89,8 +90,8 @@ public class ProfileActivity extends AppCompatActivity {
                 return;
             }
             String selectedStandard = (checkedId == R.id.rb_bmi_who)
-                    ? BmiUtils.STANDARD_WHO
-                    : BmiUtils.STANDARD_ASIAN;
+                    ? BMICalculator.STANDARD_WHO
+                    : BMICalculator.STANDARD_ASIAN;
             userDao.updateBmiStandard(currentUser.getId(), selectedStandard);
             currentUser.setBmiStandard(selectedStandard);
 
@@ -140,14 +141,14 @@ public class ProfileActivity extends AppCompatActivity {
         tvWaterGoal.setText(getString(R.string.profile_water_goal_format, currentUser.getWaterGoalMl()));
 
         String standard = (currentUser.getBmiStandard() != null && !currentUser.getBmiStandard().trim().isEmpty())
-                ? currentUser.getBmiStandard() : BmiUtils.STANDARD_ASIAN;
+                ? currentUser.getBmiStandard() : BMICalculator.STANDARD_ASIAN;
 
         // Render BMI Card
         renderBmiCard(standard);
 
         // BMI Standard radio selection
         isInitialCheck = true;
-        if (BmiUtils.STANDARD_WHO.equalsIgnoreCase(standard)) {
+        if (BMICalculator.STANDARD_WHO.equalsIgnoreCase(standard)) {
             rbWho.setChecked(true);
         } else {
             rbAsian.setChecked(true);
@@ -160,16 +161,18 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-        double heightCm = currentUser.getHeightCm();
-        double weightKg = currentUser.getBaseWeightKg();
+        float heightCm = currentUser.getHeightCm();
+        float weightKg = BMICalculator.currentWeight(
+                new HealthDao(this).getLatestWeight(currentUser.getId()), currentUser.getBaseWeightKg());
 
         if (heightCm > 0 && weightKg > 0) {
-            double bmi = BmiUtils.calculateBmi(heightCm, weightKg);
+            BMICalculator.BmiResult result = BMICalculator.calculateAndClassify(weightKg, heightCm, standard);
+            float bmi = result.getBmi();
             tvBmiValue.setText(String.format(Locale.getDefault(), "%.1f", bmi));
 
-            String category = BmiUtils.classifyBmi(bmi, standard);
+            String category = result.getCategory();
             tvBmiCategory.setText(category);
-            int colorRes = BmiUtils.getStatusColorRes(bmi, standard);
+            int colorRes = result.getColorRes();
             tvBmiCategory.setTextColor(ContextCompat.getColor(this, colorRes));
 
             if (colorRes == R.color.vita_status_good) {
@@ -182,8 +185,8 @@ public class ProfileActivity extends AppCompatActivity {
                 tvBmiCategory.setBackgroundResource(R.drawable.bg_badge_neutral);
             }
 
-            double[] healthyRange = BmiUtils.getHealthyWeightRange(heightCm, standard);
-            tvHealthyWeight.setText(getString(R.string.profile_healthy_weight_format, healthyRange[0], healthyRange[1]));
+            tvHealthyWeight.setText(getString(R.string.profile_healthy_weight_format,
+                    result.getMinHealthyWeight(), result.getMaxHealthyWeight()));
         } else {
             tvBmiValue.setText("--");
             tvBmiCategory.setText(getString(R.string.profile_bmi_no_metrics));

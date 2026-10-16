@@ -15,40 +15,72 @@ import vn.edu.tdmu.vita.utils.NotificationHelper;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 /**
- * Nhắc uống nước mỗi 2h + nút "+250 ml" ghi thẳng vào nhật ký.
+ * Checks the profile reminder window and goal on the existing two-hour cadence.
  */
 public class WaterReminderReceiver extends BroadcastReceiver {
 
     public static final String ACTION_DRINKED = "vn.edu.tdmu.vita.ACTION_WATER_DRINKED";
+    public static final String EXTRA_AMOUNT = "water_amount";
+    public static final String EXTRA_USER_ID = "water_user_id";
     private static final int NOTIFICATION_ID = 9001;
     private static final int REQUEST_CODE = 9001;
-    private static final long INTERVAL_MS = 2L * 60 * 60 * 1000;
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        SessionManager session = new SessionManager(context);
+        if (!session.isLoggedIn()) return;
         if (ACTION_DRINKED.equals(intent.getAction())) {
-            SessionManager session = new SessionManager(context);
             long userId = session.getUserId();
-            if (userId > 0) {
+            if (SessionManager.matchesUser(intent.getLongExtra(EXTRA_USER_ID, -1), userId)) {
                 WaterDao waterDao = new WaterDao(context);
-                waterDao.addWater(userId, DateTimeUtils.getTodayDate(), 250,
+                int amount = intent.getIntExtra(EXTRA_AMOUNT, 250);
+                if (amount < 50 || amount > 2000) return;
+                long saved = waterDao.addWater(userId, DateTimeUtils.getTodayDate(), amount,
                         DateTimeUtils.getCurrentTimestamp());
-                Toast.makeText(context, "Đã ghi nhận 250 ml nước!", Toast.LENGTH_SHORT).show();
+                if (saved > 0) Toast.makeText(context, context.getString(vn.edu.tdmu.vita.R.string.water_added, amount), Toast.LENGTH_SHORT).show();
             }
             NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID);
             return;
         }
-        NotificationHelper.showWaterReminder(context, NOTIFICATION_ID);
+        vn.edu.tdmu.vita.models.User user = new vn.edu.tdmu.vita.database.UserDao(context).getUserById(session.getUserId());
+        if (user == null) return;
+        cancel(context);
+        schedule(context);
+        java.util.Calendar now = java.util.Calendar.getInstance();
+        int minute = now.get(java.util.Calendar.HOUR_OF_DAY) * 60 + now.get(java.util.Calendar.MINUTE);
+        int total = new WaterDao(context).getDailyTotal(user.getId(), DateTimeUtils.getTodayDate());
+        if (vn.edu.tdmu.vita.utils.WaterReminderPolicy.shouldNotify(user.getWaterStart(), user.getWaterEnd(),
+                minute, total, vn.edu.tdmu.vita.utils.HydrationGoal.current(context, user))) {
+            NotificationHelper.showWaterReminder(context, NOTIFICATION_ID);
+        } else {
+            NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID);
+        }
     }
 
     public static void schedule(Context context) {
+        if (!new SessionManager(context).isLoggedIn()) return;
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager == null) return;
         Intent intent = new Intent(context, WaterReminderReceiver.class);
+        // App resumes keep the pending check; each delivery schedules the next allowed check.
+        if (PendingIntent.getBroadcast(context, REQUEST_CODE, intent,
+                PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE) != null) return;
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + INTERVAL_MS, INTERVAL_MS, pendingIntent);
+        vn.edu.tdmu.vita.models.User user = new vn.edu.tdmu.vita.database.UserDao(context)
+                .getUserById(new SessionManager(context).getUserId());
+        if (user == null) { pendingIntent.cancel(); return; }
+        long next = vn.edu.tdmu.vita.utils.WaterReminderPolicy.nextTriggerMillis(user.getWaterStart(),user.getWaterEnd(),System.currentTimeMillis());
+        if (next < 0) { pendingIntent.cancel(); return; }
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= 31 && !alarmManager.canScheduleExactAlarms()) {
+                alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,next,pendingIntent);
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,next,pendingIntent);
+            }
+        } catch (SecurityException e) {
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP,next,pendingIntent);
+        }
     }
 
     public static void cancel(Context context) {
@@ -58,5 +90,6 @@ public class WaterReminderReceiver extends BroadcastReceiver {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         alarmManager.cancel(pendingIntent);
+        pendingIntent.cancel();
     }
 }

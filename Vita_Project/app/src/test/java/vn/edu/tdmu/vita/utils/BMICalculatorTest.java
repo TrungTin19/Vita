@@ -6,6 +6,19 @@ import static org.junit.Assert.*;
 public class BMICalculatorTest {
 
     @Test
+    public void latestWeight_replacesRegistrationWeight() {
+        assertEquals(75f, BMICalculator.currentWeight(75f, 68f), 0f);
+        assertEquals(68f, BMICalculator.currentWeight(null, 68f), 0f);
+    }
+
+    @Test
+    public void classification_usesUnroundedMeasurement() {
+        // 66.46 / 1.7^2 = 22.9965: rounding must not move it into overweight.
+        assertEquals("Bình thường",
+                BMICalculator.calculateAndClassify(66.46f, 170f, "ASIAN").getCategory());
+    }
+
+    @Test
     public void testCalculate_ValidInputs() {
         // Height: 170cm, Weight: 68kg
         // BMI = 68 / (1.7 * 1.7) = 23.529...
