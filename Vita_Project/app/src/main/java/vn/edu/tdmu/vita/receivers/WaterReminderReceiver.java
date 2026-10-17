@@ -70,7 +70,7 @@ public class WaterReminderReceiver extends BroadcastReceiver {
         vn.edu.tdmu.vita.models.User user = new vn.edu.tdmu.vita.database.UserDao(context)
                 .getUserById(new SessionManager(context).getUserId());
         if (user == null) { pendingIntent.cancel(); return; }
-        long next = vn.edu.tdmu.vita.utils.WaterReminderPolicy.nextTriggerMillis(user.getWaterStart(),user.getWaterEnd(),System.currentTimeMillis());
+        long next = vn.edu.tdmu.vita.utils.WaterReminderPolicy.nextTriggerMillis(user.getWaterStart(),user.getWaterEnd(),user.getWaterTimes(),System.currentTimeMillis());
         if (next < 0) { pendingIntent.cancel(); return; }
         try {
             if (android.os.Build.VERSION.SDK_INT >= 31 && !alarmManager.canScheduleExactAlarms()) {

@@ -153,9 +153,11 @@ public class HomeFragment extends Fragment {
 
         if (height > 0 && weight > 0) {
             BMICalculator.BmiResult result = BMICalculator.calculateAndClassify(
-                    weight, height, user.getBmiStandard());
+                    weight, height, user.getBmiStandard(), user.getBirthYear(),
+                    Calendar.getInstance().get(Calendar.YEAR));
             tvBmiValue.setText(String.format(Locale.getDefault(), "%.1f", result.getBmi()));
-            tvBmiBadge.setText(result.getCategory());
+            boolean adultClassification = !result.getCategory().isEmpty();
+            tvBmiBadge.setText(adultClassification ? result.getCategory() : getString(R.string.bmi_numeric_only));
             int colorRes = result.getColorRes();
             tvBmiValue.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
             tvBmiBadge.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
@@ -166,8 +168,10 @@ public class HomeFragment extends Fragment {
             String standard = BMICalculator.STANDARD_WHO.equals(user.getBmiStandard())
                     ? getString(R.string.home_bmi_standard_who)
                     : getString(R.string.home_bmi_standard_asian);
-            tvBmiStandard.setText(String.format(Locale.getDefault(),
-                    getString(R.string.home_bmi_standard_format), standard));
+            tvBmiStandard.setText(adultClassification
+                    ? getString(R.string.home_bmi_standard_format, standard)
+                            + "\n" + getString(R.string.bmi_adult_scope)
+                    : getString(R.string.bmi_outside_adult_scope));
         } else {
             tvBmiValue.setText("--");
             tvBmiBadge.setText("");
@@ -190,6 +194,7 @@ public class HomeFragment extends Fragment {
         tvAqiLabel.setText(R.string.home_aqi_unknown);
         tvUpdated.setText("");
         tvOffline.setVisibility(View.GONE);
+        tvAdvice.setText(R.string.weather_advice_loading);
         WeatherClient.fetchWeather(requireContext(), CITY_LAT[cityPos], CITY_LON[cityPos],
                 CITY_NAMES[cityPos], new WeatherClient.Callback() {
                     @Override
@@ -203,7 +208,7 @@ public class HomeFragment extends Fragment {
                         if (!isAdded() || getView() == null || request != weatherRequest) return;
                         Toast.makeText(requireContext(), getString(R.string.home_weather_error),
                                 Toast.LENGTH_SHORT).show();
-                        tvAdvice.setText(getString(R.string.home_advice_good));
+                        tvAdvice.setText(R.string.weather_advice_unavailable);
                     }
                 });
     }
@@ -248,16 +253,18 @@ public class HomeFragment extends Fragment {
         int base = user != null ? user.getWaterGoalMl() : 2000;
         int goal = HydrationGoal.forDay(base, data, CITY_NAMES[currentCity()],
                 vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate(), user != null && user.isWeatherAdjustmentEnabled());
-        if (goal > base) {
-            tvAdvice.setText(String.format(Locale.getDefault(),
-                    getString(R.string.home_advice_heat), data.getTemperature())
-                    + "\n" + getString(R.string.water_goal_today, goal));
-        } else if (aqi > 100) {
-            tvAdvice.setText(String.format(Locale.getDefault(),
-                    getString(R.string.home_advice_air), aqi));
-        } else {
-            tvAdvice.setText(getString(R.string.home_advice_good));
+        String advice = "";
+        if (Float.isFinite(data.getTemperature()) && data.getTemperature() >= 33f) {
+            advice = getString(R.string.weather_advice_heat, data.getTemperature());
         }
+        if (aqi > 100) {
+            advice += (advice.isEmpty() ? "" : "\n") + getString(R.string.home_advice_air, aqi);
+        }
+        if (goal > (base > 0 ? base : 2000)) {
+            advice += (advice.isEmpty() ? "" : "\n") + getString(R.string.water_heat_adjustment)
+                    + "\n" + getString(R.string.water_goal_today, goal);
+        }
+        tvAdvice.setText(advice.isEmpty() ? getString(R.string.weather_advice_general) : advice);
     }
 
     @Override

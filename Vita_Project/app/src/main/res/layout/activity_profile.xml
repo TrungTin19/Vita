@@ -398,6 +398,14 @@
                 android:layout_marginBottom="@dimen/spacing_md"
                 android:text="@string/profile_btn_edit" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_profile_water_settings" style="@style/Widget.Vita.Button.Outlined"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:minHeight="48dp" android:text="@string/water_settings" />
+            <TextView android:id="@+id/tv_profile_water_schedule" android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:layout_marginTop="8dp"
+                android:textColor="@color/vita_text_secondary" android:textSize="@dimen/text_body" />
+
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

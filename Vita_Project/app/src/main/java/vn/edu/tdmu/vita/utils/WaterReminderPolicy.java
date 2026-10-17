@@ -7,19 +7,36 @@ public final class WaterReminderPolicy {
         return Integer.parseInt(time.substring(0, 2)) * 60 + Integer.parseInt(time.substring(3));
     }
     public static long nextTriggerMillis(String start, String end, long now) {
-        if (!validSettings(start, end, 250)) return -1;
-        java.util.Calendar current = java.util.Calendar.getInstance(); current.setTimeInMillis(now);
-        int nowMinute = current.get(java.util.Calendar.HOUR_OF_DAY) * 60 + current.get(java.util.Calendar.MINUTE);
-        java.util.Calendar candidate = (java.util.Calendar) current.clone();
-        candidate.add(java.util.Calendar.HOUR_OF_DAY, 2);
-        int nextMinute = candidate.get(java.util.Calendar.HOUR_OF_DAY) * 60 + candidate.get(java.util.Calendar.MINUTE);
-        if (shouldNotify(start, end, nowMinute, 0, 1) && shouldNotify(start, end, nextMinute, 0, 1))
-            return candidate.getTimeInMillis();
-        current.set(java.util.Calendar.HOUR_OF_DAY, minute(start) / 60);
-        current.set(java.util.Calendar.MINUTE, minute(start) % 60);
-        current.set(java.util.Calendar.SECOND, 0); current.set(java.util.Calendar.MILLISECOND, 0);
-        if (current.getTimeInMillis() <= now) current.add(java.util.Calendar.DAY_OF_YEAR, 1);
-        return current.getTimeInMillis();
+        return nextTriggerMillis(start, end, "", now);
+    }
+
+    public static String normalizeTimes(String start, String end, String times) {
+        if (!validSettings(start, end, 250) || times == null) throw new IllegalArgumentException("Invalid window");
+        if (times.isEmpty()) return "";
+        String normalized = MedicineSchedule.normalizeTimes(times);
+        for (String time : normalized.split(",")) {
+            if (!shouldNotify(start, end, minute(time), 0, 1)) throw new IllegalArgumentException("Time outside window");
+        }
+        return normalized;
+    }
+
+    public static long nextTriggerMillis(String start, String end, String times, long now) {
+        try {
+            String schedule = normalizeTimes(start, end, times);
+            if (schedule.isEmpty()) {
+                int from = minute(start), duration = (minute(end) - from + 1440) % 1440;
+                StringBuilder slots = new StringBuilder();
+                for (int offset = 0; offset <= duration; offset += 120) {
+                    int slot = (from + offset) % 1440;
+                    if (slots.length() > 0) slots.append(',');
+                    slots.append(String.format(java.util.Locale.US, "%02d:%02d", slot / 60, slot % 60));
+                }
+                schedule = slots.toString();
+            }
+            return MedicineSchedule.computeNextTriggerMillis(schedule, 127, now);
+        } catch (IllegalArgumentException invalid) {
+            return -1;
+        }
     }
 
     public static boolean validSettings(String start, String end, int amount) {
@@ -30,6 +47,6 @@ public final class WaterReminderPolicy {
         int from = minute(start), to = minute(end);
         if (from < 0 || to < 0 || from == to || nowMinute < 0 || nowMinute >= 1440
                 || goal <= 0 || total >= goal) return false;
-        return from < to ? nowMinute >= from && nowMinute < to : nowMinute >= from || nowMinute < to;
+        return from < to ? nowMinute >= from && nowMinute <= to : nowMinute >= from || nowMinute <= to;
     }
 }

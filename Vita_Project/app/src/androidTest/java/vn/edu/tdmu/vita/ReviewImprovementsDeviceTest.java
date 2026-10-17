@@ -73,7 +73,7 @@ public class ReviewImprovementsDeviceTest {
     }
     @Test public void waterAction_customAmountAndReachedGoalSuppressesReminder() {
         UserDao users=new UserDao(context); User user=users.getUserById(owner);
-        user.setWaterAmount(350); user.setWaterGoalMl(350); users.updateProfile(user);
+        user.setWaterAmount(350); user.setWaterGoalMl(350); users.updateWaterSettings(owner,350,user.getWaterStart(),user.getWaterEnd(),350,false,"");
         Intent action=new Intent(WaterReminderReceiver.ACTION_DRINKED).putExtra(WaterReminderReceiver.EXTRA_USER_ID,owner).putExtra(WaterReminderReceiver.EXTRA_AMOUNT,350);
         androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().runOnMainSync(()->new WaterReminderReceiver().onReceive(context,action));
         assertEquals(350,new WaterDao(context).getDailyTotal(owner,DateTimeUtils.getTodayDate()));
@@ -100,7 +100,7 @@ public class ReviewImprovementsDeviceTest {
         }
     }
     @Test public void waterSettingsScreen_savesCustomPreferences() {
-        try(ActivityScenario<EditProfileActivity> activity=ActivityScenario.launch(EditProfileActivity.class)) {
+        try(ActivityScenario<EditProfileActivity> activity=ActivityScenario.launch(new Intent(context,EditProfileActivity.class).putExtra(EditProfileActivity.EXTRA_WATER_SETTINGS_ONLY,true))) {
             activity.onActivity(screen->{
                 ((TextView)screen.findViewById(R.id.et_edit_water_start)).setText("08:00");
                 ((TextView)screen.findViewById(R.id.et_edit_water_end)).setText("20:00");

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="water_schedule_mode">Cách nhắc uống nước</string>
+    <string name="water_every_two_hours">Mỗi 2 giờ, tính từ giờ bắt đầu</string>
+    <string name="water_custom_times">Chọn các mốc giờ riêng</string>
+    <string name="water_add_time">Thêm giờ nhắc</string>
+    <string name="water_custom_help">Các mốc phải nằm trong khung giờ đã chọn, gồm cả giờ kết thúc. Chạm mốc để sửa; bấm dấu × để xóa. Khung qua nửa đêm vẫn được hỗ trợ.</string>
+    <string name="water_times_error">Chọn ít nhất một mốc trong khung %1$s–%2$s.</string>
+    <string name="water_remove_time">Xóa giờ nhắc %1$s</string>
+    <string name="water_custom_summary">Giờ riêng: %1$s</string>
+    <string name="water_added_undo">Đã ghi %1$d ml nước.</string>
+    <string name="water_undo_error">Chưa thể hoàn tác. Vui lòng thử lại.</string>
+    <string name="water_weather_help">Gợi ý theo thời tiết dùng dữ liệu Open-Meteo theo thành phố và quy tắc cố định, không phải phép tính nhu cầu dịch cá nhân. Nếu có chỉ định hạn chế dịch, hãy dùng mục tiêu của nhân viên y tế và tắt điều chỉnh thời tiết.</string>
+</resources>

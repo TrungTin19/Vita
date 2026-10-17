@@ -16,6 +16,10 @@ public class User {
     private String waterEnd = "22:00";
     private int waterAmount = 250;
     private boolean weatherAdjustmentEnabled;
+    private String waterTimes = "";
+
+    public String getWaterTimes() { return waterTimes; }
+    public void setWaterTimes(String value) { waterTimes = value; }
 
     public String getWaterStart() { return waterStart; }
     public void setWaterStart(String value) { waterStart = value; }

@@ -109,8 +109,11 @@ public final class BMICalculator {
             } else if (bmi < 35.0f) {
                 category = "Béo phì độ I";
                 colorRes = R.color.vita_status_danger;
-            } else {
+            } else if (bmi < 40.0f) {
                 category = "Béo phì độ II";
+                colorRes = R.color.vita_status_danger;
+            } else {
+                category = "Béo phì độ III";
                 colorRes = R.color.vita_status_danger;
             }
         } else {
@@ -141,6 +144,16 @@ public final class BMICalculator {
      * @param standard "ASIAN" or "WHO"
      * @return complete BmiResult
      */
+    public static BmiResult calculateAndClassify(float weightKg, float heightCm, String standard,
+                                                int birthYear, int currentYear) {
+        int approximateAge = currentYear - birthYear;
+        // shortcut: year-only age is approximate; use a full birth date if exact age is needed.
+        if (birthYear <= 0 || approximateAge < 20 || approximateAge > 120) {
+            return new BmiResult(calculate(weightKg, heightCm), "", R.color.vita_text_secondary, 0f, 0f);
+        }
+        return calculateAndClassify(weightKg, heightCm, standard);
+    }
+
     public static BmiResult calculateAndClassify(float weightKg, float heightCm, String standard) {
         float bmi = calculate(weightKg, heightCm);
         BmiResult classification = classify(weightKg > 0 && heightCm > 0

@@ -46,7 +46,7 @@
     <string name="register_hint_confirm">Xác nhận lại mật khẩu *</string>
     <string name="register_hint_fullname">Họ và tên</string>
     <string name="register_hint_birth_year">Năm sinh</string>
-    <string name="register_helper_birth_year">Ví dụ: 2000</string>
+    <string name="register_helper_birth_year">Có thể để trống</string>
     <string name="register_hint_gender">Giới tính</string>
     <string name="register_hint_height">Chiều cao (cm) *</string>
     <string name="register_helper_height">50 – 250 cm</string>
@@ -105,14 +105,14 @@
 
     <!-- Edit Profile Screen -->
     <string name="edit_profile_toolbar_title">Chỉnh sửa hồ sơ</string>
-    <string name="edit_profile_subtitle">Cập nhật thông tin thể trạng và mục tiêu sức khỏe</string>
+    <string name="edit_profile_subtitle">Thông tin cá nhân và thể trạng. Năm sinh có thể để trống.</string>
     <string name="edit_profile_hint_fullname">Họ và tên</string>
     <string name="edit_profile_hint_birth_year">Năm sinh</string>
     <string name="edit_profile_hint_gender">Giới tính</string>
     <string name="edit_profile_hint_height">Chiều cao (cm) *</string>
     <string name="edit_profile_hint_weight">Cân nặng cơ sở (kg) *</string>
     <string name="edit_profile_hint_water_goal">Mục tiêu nước mỗi ngày (ml) *</string>
-    <string name="edit_profile_helper_water_goal">Khuyến nghị: 2,000 ml / ngày</string>
+    <string name="edit_profile_helper_water_goal">Mục tiêu riêng của bạn, từ 100 đến 10.000 ml/ngày</string>
     <string name="edit_profile_suffix_ml">ml</string>
     <string name="edit_profile_btn_save">Lưu thay đổi</string>
     <string name="edit_profile_btn_logout">Đăng xuất</string>
@@ -327,9 +327,7 @@
     <string name="home_offline_label">Ngoại tuyến</string>
     <string name="home_weather_error">Không tải được thời tiết. Kiểm tra mạng nhé.</string>
     <string name="home_advice_title">GỢI Ý CHĂM SÓC HÔM NAY</string>
-    <string name="home_advice_heat">Hôm nay trời nắng nóng %1$.0f°C. Vita gợi ý bạn nên bổ sung thêm 300 ml nước để thanh lọc cơ thể nhé.</string>
     <string name="home_advice_air">Chất lượng không khí kém (AQI %1$d). Hãy đeo khẩu trang khi ra ngoài và hạn chế vận động mạnh nhé.</string>
-    <string name="home_advice_good">Hôm nay thời tiết dễ chịu. Hãy duy trì uống đủ nước và vận động nhẹ nhàng nhé.</string>
 
     <!-- Main Navigation -->
     <string name="nav_home">Trang chủ</string>
@@ -351,7 +349,7 @@
     <string name="stats_heart_rate_title">Nhịp tim (bpm)</string>
     <string name="health_filter_range_title">Chọn khoảng ngày</string>
     <string name="health_filter_range_format">%1$s – %2$s</string>
-    <string name="water_heat_adjustment">Đã cộng 300 ml vào mục tiêu hôm nay vì trời nóng.</string>
+    <string name="water_heat_adjustment">Gợi ý theo thời tiết: cộng 300 ml theo quy tắc tùy chọn của ứng dụng, không phải nhu cầu dịch được kê riêng cho bạn.</string>
     <string name="water_base_goal">Mục tiêu cơ bản trong hồ sơ.</string>
     <string name="water_goal_today">Mục tiêu hôm nay: %,d ml.</string>
     <string name="reminder_notifications_disabled">Thông báo đang tắt. Bật thông báo để nhận nhắc uống thuốc và nước.</string>
@@ -374,6 +372,15 @@
     <string name="water_end">Kết thúc nhắc</string>
     <string name="water_amount">Lượng uống mỗi lần (ml)</string>
     <string name="water_weather_opt_in">Cho phép cộng 300 ml khi trời từ 33°C</string>
-    <string name="water_settings_help">Nhắc định kỳ khoảng 2 giờ trong khung giờ đã chọn, dừng khi đạt mục tiêu ngày. Mục tiêu bạn nhập luôn được giữ nguyên. Nếu có chỉ định hạn chế dịch, hãy dùng mục tiêu của nhân viên y tế và tắt điều chỉnh thời tiết.</string>
+    <string name="water_settings_help">Chọn nhắc mỗi 2 giờ hoặc các mốc giờ riêng trong khung đã đặt. Nhắc dừng khi đạt mục tiêu ngày. Mục tiêu gốc luôn được giữ nguyên.</string>
     <string name="water_settings_invalid">Chọn hai giờ khác nhau và lượng uống từ 50 đến 2.000 ml.</string>
+    <string name="profile_water_schedule">Khung giờ %1$s – %2$s · %3$d ml/lần</string>
+    <string name="profile_management">Quản lý hồ sơ</string>
+    <string name="profile_delete_title">Xóa hồ sơ</string>
+    <string name="profile_delete_message">Xóa vĩnh viễn hồ sơ này cùng nhật ký sức khỏe, thuốc, nước uống, giấc ngủ và cài đặt. Hồ sơ khác được giữ nguyên. Không thể hoàn tác.\n\nNhập mật khẩu để xác nhận.</string>
+    <string name="profile_delete_password">Mật khẩu</string>
+    <string name="profile_delete_confirm">Xóa vĩnh viễn</string>
+    <string name="profile_delete_password_error">Mật khẩu chưa chính xác.</string>
+    <string name="profile_delete_success">Đã xóa hồ sơ.</string>
+    <string name="profile_delete_error">Chưa thể xóa hồ sơ. Dữ liệu được giữ nguyên, vui lòng thử lại.</string>
 </resources>

@@ -95,13 +95,13 @@ public class WaterDao {
         return totals;
     }
 
-    public boolean deleteLog(long id) {
-        if (id <= 0) return false;
+    public boolean deleteLog(long id, long userId) {
+        if (id <= 0 || userId <= 0) return false;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int rows = db.delete(
                 DatabaseHelper.TABLE_WATER_LOGS,
-                DatabaseHelper.COL_WATER_ID + " = ?",
-                new String[]{String.valueOf(id)}
+                DatabaseHelper.COL_WATER_ID + " = ? AND " + DatabaseHelper.COL_WATER_USER_ID + " = ?",
+                new String[]{String.valueOf(id), String.valueOf(userId)}
         );
         return rows > 0;
     }

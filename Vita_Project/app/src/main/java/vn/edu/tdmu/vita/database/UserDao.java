@@ -54,6 +54,7 @@ public class UserDao {
         values.put("water_start", user.getWaterStart());
         values.put("water_end", user.getWaterEnd());
         values.put("water_amount", user.getWaterAmount());
+        values.put("water_times", user.getWaterTimes());
         values.put("weather_adjustment", user.isWeatherAdjustmentEnabled() ? 1 : 0);
         values.put(DatabaseHelper.COL_USER_FULLNAME, user.getFullname());
         values.put(DatabaseHelper.COL_USER_BIRTH_YEAR, user.getBirthYear());
@@ -117,16 +118,11 @@ public class UserDao {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("water_start", user.getWaterStart());
-        values.put("water_end", user.getWaterEnd());
-        values.put("water_amount", user.getWaterAmount());
-        values.put("weather_adjustment", user.isWeatherAdjustmentEnabled() ? 1 : 0);
         values.put(DatabaseHelper.COL_USER_FULLNAME, user.getFullname());
         values.put(DatabaseHelper.COL_USER_BIRTH_YEAR, user.getBirthYear());
         values.put(DatabaseHelper.COL_USER_GENDER, user.getGender());
         values.put(DatabaseHelper.COL_USER_HEIGHT_CM, user.getHeightCm());
         values.put(DatabaseHelper.COL_USER_BASE_WEIGHT_KG, user.getBaseWeightKg());
-        values.put(DatabaseHelper.COL_USER_WATER_GOAL_ML, user.getWaterGoalMl());
 
         int rows = db.update(
                 DatabaseHelper.TABLE_USERS,
@@ -135,6 +131,34 @@ public class UserDao {
                 new String[]{String.valueOf(user.getId())}
         );
         return rows > 0;
+    }
+
+    public boolean updateWaterSettings(long userId, int goal, String start, String end,
+                                       int amount, boolean weatherAdjustment, String times) {
+        if (userId <= 0 || !vn.edu.tdmu.vita.utils.InputValidator.isValidWaterGoal(goal)
+                || !vn.edu.tdmu.vita.utils.WaterReminderPolicy.validSettings(start, end, amount)) return false;
+        String normalized;
+        try { normalized = vn.edu.tdmu.vita.utils.WaterReminderPolicy.normalizeTimes(start, end, times); }
+        catch (IllegalArgumentException invalid) { return false; }
+        ContentValues values = new ContentValues();
+        values.put("water_times", normalized);
+        values.put(DatabaseHelper.COL_USER_WATER_GOAL_ML, goal);
+        values.put("water_start", start);
+        values.put("water_end", end);
+        values.put("water_amount", amount);
+        values.put("weather_adjustment", weatherAdjustment ? 1 : 0);
+        return dbHelper.getWritableDatabase().update(DatabaseHelper.TABLE_USERS, values,
+                DatabaseHelper.COL_USER_ID + " = ?", new String[]{String.valueOf(userId)}) == 1;
+    }
+
+    public boolean deleteProfileWithPassword(long userId, String password) {
+        if (userId <= 0 || password == null || password.isEmpty()) return false;
+        User user = getUserById(userId);
+        if (user == null || user.getPasswordHash() == null || !user.getPasswordHash().equals(
+                SecurityUtils.hashPassword(password, user.getSalt()))) return false;
+        return dbHelper.getWritableDatabase().delete(DatabaseHelper.TABLE_USERS,
+                DatabaseHelper.COL_USER_ID + " = ? AND " + DatabaseHelper.COL_USER_PASSWORD_HASH + " = ?",
+                new String[]{String.valueOf(userId), user.getPasswordHash()}) == 1;
     }
 
     public boolean updateBmiStandard(long userId, String standard) {
@@ -169,6 +193,7 @@ public class UserDao {
         u.setWaterStart(cursor.getString(cursor.getColumnIndexOrThrow("water_start")));
         u.setWaterEnd(cursor.getString(cursor.getColumnIndexOrThrow("water_end")));
         u.setWaterAmount(cursor.getInt(cursor.getColumnIndexOrThrow("water_amount")));
+        u.setWaterTimes(cursor.getString(cursor.getColumnIndexOrThrow("water_times")));
         u.setWeatherAdjustmentEnabled(cursor.getInt(cursor.getColumnIndexOrThrow("weather_adjustment")) == 1);
         return u;
     }

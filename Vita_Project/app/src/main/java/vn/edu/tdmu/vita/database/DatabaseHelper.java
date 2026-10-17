@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "vita_health.db";
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
 
     // Table: users
     public static final String TABLE_USERS = "users";
@@ -86,7 +86,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COL_USER_WATER_GOAL_ML + " INTEGER DEFAULT 2000, " +
             COL_USER_BMI_STANDARD + " TEXT DEFAULT 'ASIAN', " +
             "water_start TEXT NOT NULL DEFAULT '07:00', water_end TEXT NOT NULL DEFAULT '22:00', " +
-            "water_amount INTEGER NOT NULL DEFAULT 250, weather_adjustment INTEGER NOT NULL DEFAULT 0" +
+            "water_amount INTEGER NOT NULL DEFAULT 250, weather_adjustment INTEGER NOT NULL DEFAULT 0, " +
+            "water_times TEXT NOT NULL DEFAULT ''" +
             ");";
 
     public static final String CREATE_TABLE_HEALTH_RECORDS =
@@ -185,6 +186,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 5 && newVersion >= 5) {
+            db.execSQL("ALTER TABLE users ADD COLUMN water_times TEXT NOT NULL DEFAULT ''");
+        }
         if (oldVersion < 2 && newVersion >= 2) {
             db.execSQL("ALTER TABLE medicine_logs ADD COLUMN scheduled_time TEXT NOT NULL DEFAULT ''");
             db.execSQL("UPDATE medicine_logs SET scheduled_time = COALESCE((SELECT time FROM medicines WHERE medicines.id = medicine_logs.medicine_id), '')");

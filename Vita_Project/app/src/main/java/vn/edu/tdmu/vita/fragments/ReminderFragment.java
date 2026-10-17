@@ -178,7 +178,8 @@ public class ReminderFragment extends Fragment {
     }
 
     private void setupListeners() {
-        requireView().findViewById(R.id.btn_water_settings).setOnClickListener(v -> startActivity(new Intent(requireContext(), vn.edu.tdmu.vita.activities.EditProfileActivity.class)));
+        requireView().findViewById(R.id.btn_water_settings).setOnClickListener(v -> startActivity(new Intent(requireContext(), vn.edu.tdmu.vita.activities.EditProfileActivity.class)
+                .putExtra(vn.edu.tdmu.vita.activities.EditProfileActivity.EXTRA_WATER_SETTINGS_ONLY, true)));
         btnQuickAddWater.setOnClickListener(v -> handleQuickAddWater());
         fabAddMedicine.setOnClickListener(v -> {
             Intent intent = new Intent(requireContext(), AddMedicineActivity.class);
@@ -262,6 +263,18 @@ public class ReminderFragment extends Fragment {
         if (before < waterGoalMl && after >= waterGoalMl) {
             Toast.makeText(requireContext(), getString(R.string.reminder_water_reached), Toast.LENGTH_SHORT).show();
         }
+        Snackbar.make(requireView(), getString(R.string.water_added_undo, quickAddMl), Snackbar.LENGTH_LONG)
+                .setAction(R.string.reminder_undo, view -> {
+                    if (!SessionManager.matchesUser(userId, sessionManager.getUserId())) return;
+                    try {
+                        if (waterDao.deleteLog(id, userId)) {
+                            loadWaterProgress(true);
+                            vn.edu.tdmu.vita.receivers.WaterReminderReceiver.schedule(requireContext());
+                        } else Toast.makeText(requireContext(), R.string.water_undo_error, Toast.LENGTH_SHORT).show();
+                    } catch (android.database.sqlite.SQLiteException error) {
+                        Toast.makeText(requireContext(), R.string.water_undo_error, Toast.LENGTH_SHORT).show();
+                    }
+                }).show();
     }
 
     private void loadMedicines() {

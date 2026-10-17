@@ -103,6 +103,8 @@ public class ProfileActivity extends AppCompatActivity {
             Snackbar.make(rgBmiStandard, message, Snackbar.LENGTH_SHORT).show();
         });
 
+        findViewById(R.id.btn_profile_water_settings).setOnClickListener(v -> startActivity(
+                new Intent(this, EditProfileActivity.class).putExtra(EditProfileActivity.EXTRA_WATER_SETTINGS_ONLY, true)));
         btnEdit.setOnClickListener(v -> {
             Intent intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
             startActivity(intent);
@@ -139,6 +141,10 @@ public class ProfileActivity extends AppCompatActivity {
         tvHeight.setText(getString(R.string.profile_height_format, currentUser.getHeightCm()));
         tvBaseWeight.setText(getString(R.string.profile_weight_format, currentUser.getBaseWeightKg()));
         tvWaterGoal.setText(getString(R.string.profile_water_goal_format, currentUser.getWaterGoalMl()));
+        ((TextView) findViewById(R.id.tv_profile_water_schedule)).setText(getString(R.string.profile_water_schedule,
+                currentUser.getWaterStart(), currentUser.getWaterEnd(), currentUser.getWaterAmount()) + "\n"
+                + (currentUser.getWaterTimes().isEmpty() ? getString(R.string.water_every_two_hours)
+                : getString(R.string.water_custom_summary, currentUser.getWaterTimes().replace(",", " · "))));
 
         String standard = (currentUser.getBmiStandard() != null && !currentUser.getBmiStandard().trim().isEmpty())
                 ? currentUser.getBmiStandard() : BMICalculator.STANDARD_ASIAN;
@@ -166,12 +172,14 @@ public class ProfileActivity extends AppCompatActivity {
                 new HealthDao(this).getLatestWeight(currentUser.getId()), currentUser.getBaseWeightKg());
 
         if (heightCm > 0 && weightKg > 0) {
-            BMICalculator.BmiResult result = BMICalculator.calculateAndClassify(weightKg, heightCm, standard);
+            BMICalculator.BmiResult result = BMICalculator.calculateAndClassify(weightKg, heightCm, standard,
+                    currentUser.getBirthYear(), Calendar.getInstance().get(Calendar.YEAR));
             float bmi = result.getBmi();
             tvBmiValue.setText(String.format(Locale.getDefault(), "%.1f", bmi));
 
             String category = result.getCategory();
-            tvBmiCategory.setText(category);
+            boolean adultClassification = !category.isEmpty();
+            tvBmiCategory.setText(adultClassification ? category : getString(R.string.bmi_numeric_only));
             int colorRes = result.getColorRes();
             tvBmiCategory.setTextColor(ContextCompat.getColor(this, colorRes));
 
@@ -185,8 +193,11 @@ public class ProfileActivity extends AppCompatActivity {
                 tvBmiCategory.setBackgroundResource(R.drawable.bg_badge_neutral);
             }
 
-            tvHealthyWeight.setText(getString(R.string.profile_healthy_weight_format,
-                    result.getMinHealthyWeight(), result.getMaxHealthyWeight()));
+            tvHealthyWeight.setText(adultClassification
+                    ? getString(R.string.profile_healthy_weight_format,
+                            result.getMinHealthyWeight(), result.getMaxHealthyWeight())
+                            + "\n" + getString(R.string.bmi_adult_scope)
+                    : getString(R.string.bmi_outside_adult_scope));
         } else {
             tvBmiValue.setText("--");
             tvBmiCategory.setText(getString(R.string.profile_bmi_no_metrics));

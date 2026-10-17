@@ -6,6 +6,46 @@ import static org.junit.Assert.*;
 public class BMICalculatorTest {
 
     @Test
+    public void whoObesity_preservesClassTwoBelowFortyAndStartsClassThreeAtForty() {
+        assertEquals("Béo phì độ II", BMICalculator.classify(35f, "WHO").getCategory());
+        assertEquals("Béo phì độ II", BMICalculator.classify(39.99f, "WHO").getCategory());
+        assertEquals("Béo phì độ III", BMICalculator.classify(40f, "WHO").getCategory());
+        assertEquals("Béo phì độ III", BMICalculator.classify(45f, "WHO").getCategory());
+        assertEquals("Béo phì độ II", BMICalculator.classify(40f, "ASIAN").getCategory());
+    }
+
+    @Test
+    public void ageAwareBmi_underTwentyHasOnlyNumericValue() {
+        assertNumericOnly(BMICalculator.calculateAndClassify(68f, 170f, "WHO", 2007, 2026));
+        assertNumericOnly(BMICalculator.calculateAndClassify(68f, 170f, "ASIAN", 2016, 2026));
+    }
+
+    @Test
+    public void ageAwareBmi_unknownOrInvalidBirthYearHasOnlyNumericValue() {
+        assertNumericOnly(BMICalculator.calculateAndClassify(68f, 170f, "WHO", 0, 2026));
+        assertNumericOnly(BMICalculator.calculateAndClassify(68f, 170f, "ASIAN", -1, 2026));
+        assertNumericOnly(BMICalculator.calculateAndClassify(68f, 170f, "WHO", 2027, 2026));
+        assertNumericOnly(BMICalculator.calculateAndClassify(68f, 170f, "ASIAN", 1905, 2026));
+    }
+
+    @Test
+    public void ageAwareBmi_twentyAndOlderRetainsAdultClassificationAndRange() {
+        BMICalculator.BmiResult result = BMICalculator.calculateAndClassify(68f, 170f, "WHO", 2006, 2026);
+        assertEquals("Bình thường", result.getCategory());
+        assertEquals(53.5f, result.getMinHealthyWeight(), 0.01f);
+        assertEquals(72f, result.getMaxHealthyWeight(), 0.01f);
+        assertEquals("Thừa cân", BMICalculator.calculateAndClassify(68f, 170f, "ASIAN", 1980, 2026).getCategory());
+    }
+
+    private static void assertNumericOnly(BMICalculator.BmiResult result) {
+        assertEquals(23.53f, result.getBmi(), 0.01f);
+        assertEquals("", result.getCategory());
+        assertEquals(vn.edu.tdmu.vita.R.color.vita_text_secondary, result.getColorRes());
+        assertEquals(0f, result.getMinHealthyWeight(), 0f);
+        assertEquals(0f, result.getMaxHealthyWeight(), 0f);
+    }
+
+    @Test
     public void latestWeight_replacesRegistrationWeight() {
         assertEquals(75f, BMICalculator.currentWeight(75f, 68f), 0f);
         assertEquals(68f, BMICalculator.currentWeight(null, 68f), 0f);

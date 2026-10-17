@@ -17,7 +17,7 @@ public class WaterSettingsDeviceTest {
                 @Override public SQLiteDatabase getWritableDatabase() { return db; }
                 @Override public SQLiteDatabase getReadableDatabase() { return db; }
             };
-            helper.onUpgrade(db,3,4);
+            helper.onUpgrade(db,3,5);
             UserDao dao = new UserDao(helper);
             User user = dao.getUserById(7);
             assertEquals(1500,user.getWaterGoalMl());
@@ -25,7 +25,7 @@ public class WaterSettingsDeviceTest {
             assertEquals("07:00",user.getWaterStart());
             user.setWaterStart("20:00"); user.setWaterEnd("06:00");
             user.setWaterAmount(350); user.setWeatherAdjustmentEnabled(true);
-            assertTrue(dao.updateProfile(user));
+            assertTrue(dao.updateWaterSettings(user.getId(),user.getWaterGoalMl(),user.getWaterStart(),user.getWaterEnd(),user.getWaterAmount(),user.isWeatherAdjustmentEnabled(),""));
             user=dao.getUserById(7);
             assertEquals(350,user.getWaterAmount());
             assertEquals("20:00",user.getWaterStart());

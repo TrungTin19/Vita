@@ -1,6 +1,7 @@
 package vn.edu.tdmu.vita.activities;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,14 +18,20 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.Calendar;
+import java.util.List;
 
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.UserDao;
+import vn.edu.tdmu.vita.database.MedicineDao;
+import vn.edu.tdmu.vita.models.Medicine;
 import vn.edu.tdmu.vita.models.User;
 import vn.edu.tdmu.vita.utils.InputValidator;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class EditProfileActivity extends AppCompatActivity {
+    public static final String EXTRA_WATER_SETTINGS_ONLY = "water_settings_only";
+    private boolean waterSettingsOnly;
+    private String selectedWaterTimes = "";
 
     private MaterialToolbar toolbar;
     private TextInputLayout tilFullname;
@@ -57,10 +64,17 @@ public class EditProfileActivity extends AppCompatActivity {
         userDao = new UserDao(this);
         sessionManager = new SessionManager(this);
 
+        waterSettingsOnly = getIntent().getBooleanExtra(EXTRA_WATER_SETTINGS_ONLY, false);
         initViews();
         setupSpinner();
         loadCurrentProfile();
+        if (currentUser == null) return;
+        findViewById(R.id.group_profile_fields).setVisibility(waterSettingsOnly ? android.view.View.GONE : android.view.View.VISIBLE);
+        findViewById(R.id.group_water_settings).setVisibility(waterSettingsOnly ? android.view.View.VISIBLE : android.view.View.GONE);
+        findViewById(R.id.group_profile_actions).setVisibility(waterSettingsOnly ? android.view.View.GONE : android.view.View.VISIBLE);
+        if (waterSettingsOnly) toolbar.setTitle(R.string.water_settings);
         setupListeners();
+        setupWaterSchedule(savedInstanceState);
     }
 
     private void initViews() {
@@ -80,6 +94,12 @@ public class EditProfileActivity extends AppCompatActivity {
 
         etWaterStart = findViewById(R.id.et_edit_water_start);
         etWaterEnd = findViewById(R.id.et_edit_water_end);
+        etWaterStart.setKeyListener(null);
+        etWaterEnd.setKeyListener(null);
+        etWaterStart.setFocusableInTouchMode(true);
+        etWaterEnd.setFocusableInTouchMode(true);
+        etWaterStart.setShowSoftInputOnFocus(false);
+        etWaterEnd.setShowSoftInputOnFocus(false);
         etWaterAmount = findViewById(R.id.et_edit_water_amount);
         switchWeather = findViewById(R.id.switch_water_weather);
         etWaterStart.setOnClickListener(v -> pickTime(etWaterStart));
@@ -145,6 +165,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         btnSave.setOnClickListener(v -> handleSave());
         btnLogout.setOnClickListener(v -> showLogoutConfirmDialog());
+        findViewById(R.id.btn_edit_delete).setOnClickListener(v -> showDeleteConfirmDialog());
     }
 
     private void pickTime(TextInputEditText field) {
@@ -154,21 +175,61 @@ public class EditProfileActivity extends AppCompatActivity {
                 Integer.parseInt(time.substring(0, 2)), Integer.parseInt(time.substring(3)), true).show();
     }
 
+    private void setupWaterSchedule(Bundle state) {
+        selectedWaterTimes = state == null ? currentUser.getWaterTimes() : state.getString("water_times_draft", "");
+        android.widget.RadioGroup modes = findViewById(R.id.rg_water_schedule);
+        modes.setOnCheckedChangeListener((group, checked) -> findViewById(R.id.group_water_custom_times)
+                .setVisibility(checked == R.id.rb_water_custom_times ? android.view.View.VISIBLE : android.view.View.GONE));
+        boolean custom = state == null ? !selectedWaterTimes.isEmpty() : state.getBoolean("water_custom_draft");
+        modes.check(custom ? R.id.rb_water_custom_times : R.id.rb_water_every_two_hours);
+        findViewById(R.id.btn_add_water_time).setOnClickListener(v -> pickWaterTime(null));
+        renderWaterTimes();
+    }
+
+    private void pickWaterTime(String editing) {
+        String seed = editing == null ? etWaterStart.getText().toString() : editing;
+        new android.app.TimePickerDialog(this, (picker, hour, minute) -> {
+            java.util.List<String> times = new java.util.ArrayList<>();
+            if (!selectedWaterTimes.isEmpty()) times.addAll(java.util.Arrays.asList(selectedWaterTimes.split(",")));
+            if (editing != null) times.remove(editing);
+            times.add(String.format(java.util.Locale.US, "%02d:%02d", hour, minute));
+            selectedWaterTimes = vn.edu.tdmu.vita.utils.MedicineSchedule.normalizeTimes(android.text.TextUtils.join(",", times));
+            renderWaterTimes();
+        }, Integer.parseInt(seed.substring(0, 2)), Integer.parseInt(seed.substring(3)), true).show();
+    }
+
+    private void renderWaterTimes() {
+        com.google.android.material.chip.ChipGroup group = findViewById(R.id.chips_water_times);
+        group.removeAllViews();
+        findViewById(R.id.tv_water_times_error).setVisibility(android.view.View.GONE);
+        if (selectedWaterTimes.isEmpty()) return;
+        for (String time : selectedWaterTimes.split(",")) {
+            com.google.android.material.chip.Chip chip = new com.google.android.material.chip.Chip(this);
+            chip.setText(time); chip.setEnsureMinTouchTargetSize(true);
+            chip.setCloseIconResource(R.drawable.ic_cancel); chip.setCloseIconVisible(true);
+            chip.setCloseIconContentDescription(getString(R.string.water_remove_time, time));
+            chip.setOnClickListener(v -> pickWaterTime(time));
+            chip.setOnCloseIconClickListener(v -> {
+                java.util.List<String> times = new java.util.ArrayList<>(java.util.Arrays.asList(selectedWaterTimes.split(",")));
+                times.remove(time); selectedWaterTimes = android.text.TextUtils.join(",", times); renderWaterTimes();
+            });
+            group.addView(chip);
+        }
+    }
+
+    @Override protected void onSaveInstanceState(Bundle state) {
+        state.putString("water_times_draft", selectedWaterTimes);
+        state.putBoolean("water_custom_draft", ((android.widget.RadioGroup)findViewById(R.id.rg_water_schedule)).getCheckedRadioButtonId() == R.id.rb_water_custom_times);
+        super.onSaveInstanceState(state);
+    }
+
     private void handleSave() {
         if (currentUser == null || sessionManager.getUserId() != currentUser.getId()) return;
-        int amount;
-        try { amount = Integer.parseInt(etWaterAmount.getText().toString()); }
-        catch (NumberFormatException e) { amount = 0; }
-        String start = etWaterStart.getText().toString(), end = etWaterEnd.getText().toString();
-        if (!vn.edu.tdmu.vita.utils.WaterReminderPolicy.validSettings(start, end, amount)) {
-            etWaterAmount.setError(getString(R.string.water_settings_invalid));
-            return;
-        }
+        if (waterSettingsOnly) { saveWaterSettings(); return; }
         String fullname = etFullname.getText() != null ? etFullname.getText().toString().trim() : "";
         String birthYearStr = etBirthYear.getText() != null ? etBirthYear.getText().toString().trim() : "";
         String heightStr = etHeight.getText() != null ? etHeight.getText().toString().trim() : "";
         String weightStr = etWeight.getText() != null ? etWeight.getText().toString().trim() : "";
-        String waterGoalStr = etWaterGoal.getText() != null ? etWaterGoal.getText().toString().trim() : "";
         String gender = actGender.getText() != null && !actGender.getText().toString().trim().isEmpty()
                 ? actGender.getText().toString().trim() : "Nam";
 
@@ -217,7 +278,7 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
         // Birth year validation
-        int birthYear = currentUser.getBirthYear();
+        int birthYear = 0;
         if (!birthYearStr.isEmpty()) {
             try {
                 birthYear = Integer.parseInt(birthYearStr);
@@ -234,49 +295,70 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         }
 
-        // Water goal validation
-        int waterGoal = 2000;
-        if (!waterGoalStr.isEmpty()) {
-            try {
-                waterGoal = Integer.parseInt(waterGoalStr);
-                if (!InputValidator.isValidWaterGoal(waterGoal)) {
-                    tilWaterGoal.setError(getString(R.string.edit_profile_error_invalid_water_goal,
-                            InputValidator.MIN_WATER_GOAL_ML, InputValidator.MAX_WATER_GOAL_ML));
-                    hasError = true;
-                } else {
-                    tilWaterGoal.setError(null);
-                }
-            } catch (NumberFormatException e) {
-                tilWaterGoal.setError(getString(R.string.edit_profile_error_nan_water_goal));
-                hasError = true;
-            }
-        }
-
         if (hasError) {
+            focusFirstError(tilBirthYear, tilHeight, tilWeight);
             return;
         }
 
-        currentUser.setWaterStart(start);
-        currentUser.setWaterEnd(end);
-        currentUser.setWaterAmount(amount);
-        currentUser.setWeatherAdjustmentEnabled(switchWeather.isChecked());
         currentUser.setFullname(fullname);
         currentUser.setGender(gender);
         currentUser.setBirthYear(birthYear);
         currentUser.setHeightCm(height);
         currentUser.setBaseWeightKg(weight);
-        currentUser.setWaterGoalMl(waterGoal);
 
         boolean success = userDao.updateProfile(currentUser);
         if (success) {
+            showSaved();
+        } else {
+            Toast.makeText(this, R.string.edit_profile_save_error, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void saveWaterSettings() {
+        TextInputLayout tilStart = findViewById(R.id.til_edit_water_start);
+        TextInputLayout tilEnd = findViewById(R.id.til_edit_water_end);
+        TextInputLayout tilAmount = findViewById(R.id.til_edit_water_amount);
+        tilWaterGoal.setError(null); tilStart.setError(null); tilEnd.setError(null); tilAmount.setError(null);
+        int goal = 0, amount = 0;
+        try { goal = Integer.parseInt(etWaterGoal.getText().toString().trim()); } catch (NumberFormatException ignored) {}
+        try { amount = Integer.parseInt(etWaterAmount.getText().toString().trim()); } catch (NumberFormatException ignored) {}
+        String start = etWaterStart.getText().toString(), end = etWaterEnd.getText().toString();
+        if (!InputValidator.isValidWaterGoal(goal)) tilWaterGoal.setError(getString(R.string.edit_profile_error_invalid_water_goal,
+                InputValidator.MIN_WATER_GOAL_ML, InputValidator.MAX_WATER_GOAL_ML));
+        if (!vn.edu.tdmu.vita.utils.WaterReminderPolicy.validSettings(start, end, amount)) {
+            (start.equals(end) ? tilEnd : tilAmount).setError(getString(R.string.water_settings_invalid));
+        }
+        if (tilWaterGoal.getError() != null || tilEnd.getError() != null || tilAmount.getError() != null) {
+            focusFirstError(tilWaterGoal, tilStart, tilEnd, tilAmount); return;
+        }
+        String times = "";
+        boolean custom = ((android.widget.RadioGroup)findViewById(R.id.rg_water_schedule)).getCheckedRadioButtonId() == R.id.rb_water_custom_times;
+        try {
+            if (custom && selectedWaterTimes.isEmpty()) throw new IllegalArgumentException("Choose a time");
+            times = vn.edu.tdmu.vita.utils.WaterReminderPolicy.normalizeTimes(start, end, custom ? selectedWaterTimes : "");
+        } catch (IllegalArgumentException invalid) {
+            android.widget.TextView error = findViewById(R.id.tv_water_times_error);
+            error.setText(getString(R.string.water_times_error, start, end)); error.setVisibility(android.view.View.VISIBLE);
+            findViewById(R.id.btn_add_water_time).requestFocus(); return;
+        }
+        if (userDao.updateWaterSettings(currentUser.getId(), goal, start, end, amount, switchWeather.isChecked(), times)) {
             vn.edu.tdmu.vita.receivers.WaterReminderReceiver.cancel(this);
             vn.edu.tdmu.vita.receivers.WaterReminderReceiver.schedule(this);
             androidx.core.app.NotificationManagerCompat.from(this).cancel(9001);
-            sessionManager.saveSession(currentUser.getId(), currentUser.getUsername(), currentUser.getFullname());
-            Toast.makeText(this, R.string.edit_profile_save_success, Toast.LENGTH_SHORT).show();
-            finish();
-        } else {
-            Toast.makeText(this, R.string.edit_profile_save_error, Toast.LENGTH_SHORT).show();
+            showSaved();
+        } else Toast.makeText(this, R.string.edit_profile_save_error, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showSaved() {
+        User saved = userDao.getUserById(currentUser.getId());
+        sessionManager.saveSession(saved.getId(), saved.getUsername(), saved.getFullname());
+        Toast.makeText(this, R.string.edit_profile_save_success, Toast.LENGTH_SHORT).show();
+        setResult(RESULT_OK); finish();
+    }
+
+    private void focusFirstError(TextInputLayout... fields) {
+        for (TextInputLayout field : fields) if (field.getError() != null && field.getEditText() != null) {
+            field.getEditText().requestFocus(); return;
         }
     }
 
@@ -285,21 +367,60 @@ public class EditProfileActivity extends AppCompatActivity {
                 .setTitle(R.string.edit_profile_logout_dialog_title)
                 .setMessage(R.string.edit_profile_logout_dialog_msg)
                 .setPositiveButton(R.string.edit_profile_btn_logout, (dialog, which) -> {
-                    for (vn.edu.tdmu.vita.models.Medicine medicine :
-                            new vn.edu.tdmu.vita.database.MedicineDao(this).getActiveMedicines(sessionManager.getUserId())) {
-                        vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver.cancel(this, medicine);
-                    }
-                    vn.edu.tdmu.vita.receivers.WaterReminderReceiver.cancel(this);
-                    androidx.core.app.NotificationManagerCompat.from(this).cancelAll();
-                    sessionManager.clearSession();
-                    Toast.makeText(EditProfileActivity.this, R.string.edit_profile_logout_toast, Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(EditProfileActivity.this, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
+                    if (!ownsSession()) { finish(); return; }
+                    finishSession(new MedicineDao(this).getAllByUserId(currentUser.getId()), R.string.edit_profile_logout_toast);
                 })
                 .setNegativeButton(R.string.btn_cancel, (dialog, which) -> dialog.dismiss())
                 .show();
+    }
+
+    private boolean ownsSession() {
+        return currentUser != null && sessionManager.getUserId() == currentUser.getId();
+    }
+
+    private void showDeleteConfirmDialog() {
+        if (!ownsSession()) { finish(); return; }
+        android.view.View form = getLayoutInflater().inflate(R.layout.dialog_delete_profile, null);
+        TextInputLayout passwordLayout = form.findViewById(R.id.til_delete_profile_password);
+        TextInputEditText password = form.findViewById(R.id.et_delete_profile_password);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.profile_delete_title)
+                .setMessage(R.string.profile_delete_message)
+                .setView(form)
+                .setPositiveButton(R.string.profile_delete_confirm, null)
+                .setNegativeButton(R.string.btn_cancel, null)
+                .create();
+        dialog.setOnDismissListener(ignored -> password.setText(null));
+        dialog.setOnShowListener(ignored -> dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            if (!ownsSession()) { dialog.dismiss(); finish(); return; }
+            String entered = password.getText() == null ? "" : password.getText().toString();
+            try {
+                List<Medicine> medicines = new MedicineDao(this).getAllByUserId(currentUser.getId());
+                if (!userDao.deleteProfileWithPassword(currentUser.getId(), entered)) {
+                    passwordLayout.setError(getString(R.string.profile_delete_password_error));
+                    password.requestFocus();
+                    return;
+                }
+                dialog.dismiss();
+                finishSession(medicines, R.string.profile_delete_success);
+            } catch (SQLiteException error) {
+                Toast.makeText(this, R.string.profile_delete_error, Toast.LENGTH_LONG).show();
+            }
+        }));
+        dialog.show();
+    }
+
+    private void finishSession(List<Medicine> medicines, int message) {
+        for (Medicine medicine : medicines) {
+            vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver.cancel(this, medicine);
+        }
+        vn.edu.tdmu.vita.receivers.WaterReminderReceiver.cancel(this);
+        androidx.core.app.NotificationManagerCompat.from(this).cancelAll();
+        sessionManager.clearSession();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, LoginActivity.class)
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+        finish();
     }
 
     private static class SimpleTextWatcher implements TextWatcher {

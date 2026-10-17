@@ -245,7 +245,7 @@ public class RegisterActivity extends AppCompatActivity {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setFullname(fullname);
-        newUser.setBirthYear(birthYear > 0 ? birthYear : 2000);
+        newUser.setBirthYear(birthYear);
         newUser.setGender(gender);
         newUser.setHeightCm(height);
         newUser.setBaseWeightKg(weight);
