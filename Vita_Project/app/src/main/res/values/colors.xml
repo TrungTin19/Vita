@@ -3,12 +3,10 @@
     <!-- Brand Primary Teal -->
     <color name="vita_teal">#00897B</color>
     <color name="vita_teal_dark">#005B4F</color>
-    <color name="vita_teal_light">#4EBAAA</color>
     <color name="vita_teal_50">#E0F2F1</color>
 
     <!-- Brand Secondary Aqua -->
     <color name="vita_aqua">#00ACC1</color>
-    <color name="vita_aqua_dark">#007C91</color>
     <color name="vita_aqua_light">#E0F7FA</color>
 
     <!-- Neutrals & Surfaces -->
@@ -39,6 +37,5 @@
     <color name="card_stroke">@color/vita_divider</color>
     <color name="bottom_nav_active">@color/vita_teal</color>
     <color name="bottom_nav_inactive">@color/vita_text_secondary</color>
-    <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

@@ -1,22 +1,14 @@
 <resources>
     <!-- App Brand & Identity -->
     <string name="app_name">Vita</string>
-    <string name="app_slogan">Sức sống mỗi ngày, an tâm tại nhà</string>
-    <string name="app_version_default">Phiên bản 1.0 - ĐH Thủ Dầu Một</string>
     <string name="app_logo_content_desc">Biểu tượng ứng dụng quản lý sức khỏe Vita</string>
 
     <!-- Common Button Actions (Sentence Case) -->
-    <string name="btn_save">Lưu</string>
     <string name="btn_cancel">Hủy bỏ</string>
     <string name="btn_delete">Xóa</string>
-    <string name="btn_edit">Chỉnh sửa</string>
-    <string name="btn_close">Đóng</string>
-    <string name="btn_confirm">Xác nhận</string>
-    <string name="btn_see_all">Xem tất cả</string>
 
     <!-- Accessibility Descriptions -->
     <string name="a11y_navigate_back">Quay lại</string>
-    <string name="a11y_delete_record">Xóa bản ghi</string>
 
     <!-- Splash Screen -->
     <string name="splash_title">Vita</string>
@@ -122,7 +114,6 @@
     <string name="edit_profile_save_success">Đã lưu thay đổi hồ sơ thành công!</string>
     <string name="edit_profile_save_error">Không thể cập nhật hồ sơ. Vui lòng thử lại.</string>
     <string name="edit_profile_error_invalid_water_goal">Mục tiêu nước từ %1$,d đến %2$,d ml / ngày</string>
-    <string name="edit_profile_error_nan_water_goal">Mục tiêu nước không hợp lệ</string>
 
     <!-- Health Log List (HealthFragment & Adapter) -->
     <string name="health_list_title">Nhật ký chỉ số sức khỏe</string>
@@ -139,7 +130,6 @@
     <string name="health_delete_success">Đã xóa bản ghi thành công</string>
     <string name="health_delete_error">Không thể xóa bản ghi. Vui lòng thử lại.</string>
     <string name="health_item_bp_label">Huyết áp: </string>
-    <string name="health_item_bp_format">%1$d/%2$d mmHg</string>
     <string name="health_item_weight_format">Cân nặng: %1$.1f kg</string>
     <string name="health_item_hr_format">Tim: %1$d bpm</string>
     <string name="health_item_sugar_format">Đường huyết: %1$.0f mg/dL</string>
@@ -234,7 +224,6 @@
     <string name="reminder_empty_desc">Nhấn nút + để thêm lịch nhắc uống thuốc</string>
     <string name="reminder_fab_desc">Thêm lịch uống thuốc mới</string>
     <string name="reminder_switch_desc">Bật hoặc tắt báo thức thuốc này</string>
-    <string name="reminder_med_time_format">%1$s • %2$s</string>
     <string name="reminder_med_days_prefix">Lặp lại: %1$s</string>
     <string name="reminder_med_days_daily">Hằng ngày</string>
     <string name="reminder_context_menu_title">Tùy chọn</string>
