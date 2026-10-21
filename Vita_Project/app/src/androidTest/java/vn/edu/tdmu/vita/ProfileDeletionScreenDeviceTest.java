@@ -8,7 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import com.google.android.material.textfield.TextInputLayout;
-import vn.edu.tdmu.vita.activities.EditProfileActivity;
+import vn.edu.tdmu.vita.activities.ProfileActivity;
 import vn.edu.tdmu.vita.database.*;
 import vn.edu.tdmu.vita.models.*;
 import vn.edu.tdmu.vita.receivers.*;
@@ -40,9 +40,9 @@ public class ProfileDeletionScreenDeviceTest {
         WaterReminderReceiver.cancel(context); session.clearSession(); context.getSystemService(NotificationManager.class).cancelAll();
     }
     private int id(String name) { return context.getResources().getIdentifier(name,"id",context.getPackageName()); }
-    private void openDelete(ActivityScenario<EditProfileActivity> screen) {
+    private void openDelete(ActivityScenario<ProfileActivity> screen) {
         screen.onActivity(activity->{
-            View button=activity.findViewById(id("btn_edit_delete"));
+            View button=activity.findViewById(id("btn_profile_delete"));
             assertNotNull("Profile deletion action is missing",button); button.performClick();
         });
     }
@@ -51,13 +51,13 @@ public class ProfileDeletionScreenDeviceTest {
         onView(withId(android.R.id.button1)).perform(click());
     }
     @Test public void cancellingDeletion_keepsProfileAndSession() {
-        try(ActivityScenario<EditProfileActivity> screen=ActivityScenario.launch(EditProfileActivity.class)) {
+        try(ActivityScenario<ProfileActivity> screen=ActivityScenario.launch(ProfileActivity.class)) {
             openDelete(screen); onView(withId(android.R.id.button2)).perform(click());
             assertNotNull(users.getUserById(owner)); assertTrue(session.isLoggedIn());
         }
     }
     @Test public void incorrectPassword_keepsProfileAndShowsInlineError() {
-        try(ActivityScenario<EditProfileActivity> screen=ActivityScenario.launch(EditProfileActivity.class)) {
+        try(ActivityScenario<ProfileActivity> screen=ActivityScenario.launch(ProfileActivity.class)) {
             openDelete(screen); confirm("incorrect");
             onView(withId(id("til_delete_profile_password"))).check((view,error)->assertNotNull(((TextInputLayout)view).getError()));
             assertNotNull(users.getUserById(owner)); assertTrue(session.isLoggedIn());
@@ -71,12 +71,12 @@ public class ProfileDeletionScreenDeviceTest {
         assertTrue("Enable notifications for this test",NotificationHelper.canNotify(context));
         NotificationHelper.showMedicineNotification(context,med,"2026-10-17","07:00");
         new HealthDao(context).insert(new HealthRecord(0,other,"2026-10-17",60f,null,null,null,null,null));
-        try(ActivityScenario<EditProfileActivity> screen=ActivityScenario.launch(EditProfileActivity.class)) {
+        try(ActivityScenario<ProfileActivity> screen=ActivityScenario.launch(ProfileActivity.class)) {
             openDelete(screen); confirm("test-password");
         }
         assertNull(users.getUserById(owner)); assertNotNull(users.getUserById(other));
         assertEquals(1,new HealthDao(context).getRecordsRange(other,"2026-10-17","2026-10-17").size());
-        assertNull(medicines.getById(med.getId())); assertFalse(session.isLoggedIn());
+        assertNull(medicines.getById(med.getId(),owner)); assertFalse(session.isLoggedIn());
         for(String time:new String[]{"07:00","19:00"}) {
             Intent intent=new Intent(context,MedicineAlarmReceiver.class).setData(android.net.Uri.parse("vita://alarm/"+med.getId()+"/"+time));
             assertNull(PendingIntent.getBroadcast(context,0,intent,PendingIntent.FLAG_NO_CREATE|PendingIntent.FLAG_IMMUTABLE));
@@ -85,7 +85,7 @@ public class ProfileDeletionScreenDeviceTest {
         assertEquals(0,context.getSystemService(NotificationManager.class).getActiveNotifications().length);
     }
     @Test public void changedSession_doesNotDeleteOrSignOutAnotherProfile() {
-        try(ActivityScenario<EditProfileActivity> screen=ActivityScenario.launch(EditProfileActivity.class)) {
+        try(ActivityScenario<ProfileActivity> screen=ActivityScenario.launch(ProfileActivity.class)) {
             openDelete(screen); session.saveSession(other,users.getUserById(other).getUsername(),"Other");
             confirm("test-password");
         }

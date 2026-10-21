@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="sp_health_metric_group" type="id" />
+    <string name="figma_health_title">Chỉ số</string>
+    <string name="figma_health_profile">Mở hồ sơ</string>
+    <string name="figma_health_subtitle">Nhật ký sức khỏe</string>
+    <string name="figma_health_choose_range">Chọn khoảng</string>
+    <string name="figma_health_record">Ghi chỉ số</string>
+    <string name="figma_health_weight_value">%1$.1f kg</string>
+    <string name="figma_health_hr_value">%1$d bpm</string>
+    <string name="figma_health_sugar_value">%1$.0f mg/dL</string>
+    <string name="figma_health_question">Bạn muốn ghi nhận điều gì?</string>
+    <string name="figma_health_detail_title">Chi tiết lần đo</string>
+    <string name="figma_health_bp">Huyết áp · mmHg</string>
+    <string name="figma_health_bp_label">HUYẾT ÁP</string>
+    <string name="figma_health_weight_label">CÂN NẶNG</string>
+    <string name="figma_health_hr_label">NHỊP TIM</string>
+    <string name="figma_health_sugar_label">ĐƯỜNG HUYẾT</string>
+    <string name="figma_health_hr_detail">%1$d bpm · %2$s</string>
+    <string name="figma_stats_title">Xu hướng</string>
+    <string-array name="figma_health_groups">
+        <item>Tất cả</item><item>Huyết áp</item><item>Nhịp tim</item><item>Cân nặng</item><item>Đường huyết</item>
+    </string-array>
+    <string name="figma_stats_subtitle">Nhìn lại những thay đổi</string>
+    <string name="figma_stats_metric">Chỉ số đang xem</string>
+    <string name="figma_stats_latest">GẦN NHẤT</string>
+    <string name="figma_stats_data_title">Dữ liệu %1$s</string>
+    <string name="figma_stats_data_period">%1$s–%2$s · %3$d lần ghi</string>
+    <string name="figma_stats_water_data_period">%1$s–%2$s · %3$d ngày</string>
+    <style name="Widget.Vita.Health.Input" parent="Widget.Vita.AuthInput">
+        <item name="errorIconDrawable">@null</item>
+        <item name="boxBackgroundColor">@color/vita_surface</item>
+        <item name="boxStrokeColor">@color/vita_input_stroke</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="hintTextColor">@color/vita_text_secondary</item>
+        <item name="android:textColorHint">@color/vita_text_secondary</item>
+    </style>
+    <string name="figma_chart_weight">Cân nặng · kg</string>
+    <string name="figma_chart_hr">Nhịp tim · bpm</string>
+    <string name="figma_chart_sugar">Diễn biến đường huyết · mg/dL</string>
+    <string name="figma_chart_bp">Huyết áp · mmHg</string>
+    <string name="figma_chart_water">Nước · ml</string>
+    <string name="figma_stats_record_count">%1$d lần ghi nhận</string>
+    <string name="figma_health_previous">Trước: %1$s · %2$s\nChênh lệch: %3$s %4$s</string>
+    <style name="Widget.Vita.Health.Segment" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textSize">12sp</item><item name="android:textColor">@color/vita_teal</item>
+        <item name="strokeWidth">0dp</item><item name="cornerRadius">12dp</item>
+        <item name="backgroundTint">@color/figma_health_segment</item>
+        <item name="android:insetTop">6dp</item><item name="android:insetBottom">6dp</item>
+    </style>
+    <style name="Widget.Vita.Health.DataButton" parent="Widget.Vita.Button.Outlined">
+        <item name="backgroundTint">@color/vita_mint</item><item name="strokeWidth">0dp</item>
+    </style>
+    <string name="figma_health_sugar_context">Đường huyết · %1$s</string>
+    <string name="figma_stats_context">Bối cảnh bữa ăn</string>
+    <string name="figma_stats_bp_note">Đường liền: tâm thu · Đường đứt: tâm trương. Chỉ lấy các lần đo đủ hai vế.</string>
+    <string name="figma_stats_point_note">%1$d lần đo · Chọn điểm để xem giá trị và thời điểm.</string>
+    <string name="figma_health_advice_toggle">Chạm để mở hoặc đóng hướng dẫn</string>
+    <string name="figma_health_date_label">Ngày đo</string>
+    <string name="figma_health_sys_label">Tâm thu</string>
+    <string name="figma_health_dia_label">Tâm trương</string>
+    <string name="figma_stats_range_7">7 ngày</string>
+    <string name="figma_stats_range_30">30 ngày</string>
+</resources>

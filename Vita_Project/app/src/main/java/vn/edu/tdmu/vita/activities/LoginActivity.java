@@ -53,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
+        ((com.google.android.material.appbar.MaterialToolbar) findViewById(R.id.toolbar_login)).setNavigationOnClickListener(v -> finish());
         etUsername.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {

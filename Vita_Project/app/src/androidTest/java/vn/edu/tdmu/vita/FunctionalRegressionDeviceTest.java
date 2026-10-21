@@ -97,7 +97,7 @@ public class FunctionalRegressionDeviceTest {
         Intent taken = new Intent(NotificationActionReceiver.ACTION_TAKEN)
                 .putExtra(NotificationActionReceiver.EXTRA_MEDICINE_ID, med);
         new NotificationActionReceiver().onReceive(context, taken);
-        assertNull(medicines.getLogForDose(med, DateTimeUtils.getTodayDate(), "08:00"));
+        assertNull(medicines.getLogForDose(med, owner, DateTimeUtils.getTodayDate(), "08:00"));
         Intent drink = new Intent(WaterReminderReceiver.ACTION_DRINKED)
                 .putExtra(WaterReminderReceiver.EXTRA_USER_ID, owner);
         new WaterReminderReceiver().onReceive(context, drink);

@@ -15,7 +15,6 @@ public class User {
     private String waterStart = "07:00";
     private String waterEnd = "22:00";
     private int waterAmount = 250;
-    private boolean weatherAdjustmentEnabled;
     private String waterTimes = "";
 
     public String getWaterTimes() { return waterTimes; }
@@ -27,8 +26,6 @@ public class User {
     public void setWaterEnd(String value) { waterEnd = value; }
     public int getWaterAmount() { return waterAmount; }
     public void setWaterAmount(int value) { waterAmount = value; }
-    public boolean isWeatherAdjustmentEnabled() { return weatherAdjustmentEnabled; }
-    public void setWeatherAdjustmentEnabled(boolean value) { weatherAdjustmentEnabled = value; }
 
     public User() {
         this.waterGoalMl = 2000;

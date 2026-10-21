@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.Vita.Figma.EditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:background">@null</item>
+        <item name="android:minHeight">72dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/vita_text_primary</item>
+    </style>
+    <style name="TextAppearance.Vita.Figma.Toolbar" parent="TextAppearance.Vita.Title">
+        <item name="android:textSize">20sp</item>
+        <item name="lineHeight">28sp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    <style name="Widget.Vita.Figma.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:minHeight">48dp</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Vita.Figma.Toolbar</item>
+        <item name="navigationIconTint">@color/vita_teal</item>
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetEnd">0dp</item>
+        <item name="contentInsetStartWithNavigation">56dp</item>
+        <item name="titleMarginStart">8dp</item>
+        <item name="android:paddingStart">24dp</item>
+        <item name="android:paddingEnd">24dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+    </style>
+    <style name="Widget.Vita.Figma.Back" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:background">@drawable/figma_avatar_bg</item>
+    </style>
+    <style name="TextAppearance.Vita.Figma.Title" parent="TextAppearance.Vita.Title">
+        <item name="android:textSize">28sp</item>
+        <item name="lineHeight">39.2sp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    <style name="TextAppearance.Vita.Figma.Navigation" parent="TextAppearance.Vita.Caption">
+        <item name="android:textSize">11sp</item>
+        <item name="lineHeight">15.4sp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    <style name="Widget.Vita.Figma.NavigationIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:width">52dp</item>
+        <item name="android:height">32dp</item>
+        <item name="android:color">@color/vita_mint</item>
+        <item name="marginHorizontal">0dp</item>
+    </style>
+</resources>

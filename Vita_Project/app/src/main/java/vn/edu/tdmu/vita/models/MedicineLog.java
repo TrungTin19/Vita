@@ -7,6 +7,16 @@ public class MedicineLog {
     private String scheduledTime;
     private String status; // 'TAKEN' or 'SKIPPED'
     private String loggedAt;
+    private String medicineNameSnapshot;
+    private String dosageSnapshot;
+    private boolean snapshotInherited;
+
+    public String getMedicineNameSnapshot() { return medicineNameSnapshot; }
+    public void setMedicineNameSnapshot(String name) { medicineNameSnapshot = name; }
+    public String getDosageSnapshot() { return dosageSnapshot; }
+    public void setDosageSnapshot(String dosage) { dosageSnapshot = dosage; }
+    public boolean isSnapshotInherited() { return snapshotInherited; }
+    public void setSnapshotInherited(boolean inherited) { snapshotInherited = inherited; }
 
     public MedicineLog() {}
 

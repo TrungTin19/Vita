@@ -25,7 +25,7 @@ public class WaterDao {
     }
 
     public long addWater(long userId, String date, int amountMl, String loggedAt) {
-        if (amountMl <= 0) return -1;
+        if (userId <= 0 || amountMl < 50 || amountMl > 2000) return -1;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COL_WATER_USER_ID, userId);
@@ -61,7 +61,7 @@ public class WaterDao {
                 DatabaseHelper.COL_WATER_USER_ID + " = ? AND " + DatabaseHelper.COL_WATER_DATE + " = ?",
                 new String[]{String.valueOf(userId), date},
                 null, null,
-                DatabaseHelper.COL_WATER_LOGGED_AT + " DESC"
+                "CASE WHEN length(logged_at) <= 8 THEN logged_at ELSE substr(logged_at,12) END DESC, id DESC"
         );
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -104,6 +104,27 @@ public class WaterDao {
                 new String[]{String.valueOf(id), String.valueOf(userId)}
         );
         return rows > 0;
+    }
+
+    public boolean updateLog(long id, long userId, int amountMl, String loggedAt) {
+        if (id <= 0 || userId <= 0 || amountMl < 50 || amountMl > 2000 || loggedAt == null) return false;
+        java.text.SimpleDateFormat format = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss", java.util.Locale.US);
+        format.setLenient(false);
+        java.text.ParsePosition position = new java.text.ParsePosition(0);
+        if (format.parse(loggedAt, position) == null || position.getIndex() != loggedAt.length()) return false;
+        ContentValues values = new ContentValues();
+        values.put(DatabaseHelper.COL_WATER_AMOUNT_ML, amountMl);
+        values.put(DatabaseHelper.COL_WATER_LOGGED_AT, loggedAt);
+        return dbHelper.getWritableDatabase().update(DatabaseHelper.TABLE_WATER_LOGS, values,
+                "id = ? AND user_id = ? AND date = ? AND date <= ?",
+                new String[]{String.valueOf(id), String.valueOf(userId), loggedAt.substring(0, 10),
+                        vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate()}) == 1;
+    }
+
+    public boolean undoUnchangedLog(long id, long userId, int amountMl, String loggedAt) {
+        return dbHelper.getWritableDatabase().delete(DatabaseHelper.TABLE_WATER_LOGS,
+                "id = ? AND user_id = ? AND amount_ml = ? AND logged_at = ?",
+                new String[]{String.valueOf(id), String.valueOf(userId), String.valueOf(amountMl), loggedAt}) == 1;
     }
 
     private WaterLog cursorToLog(Cursor cursor) {

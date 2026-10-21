@@ -1,215 +1,372 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_stats"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/vita_bg">
-
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_stats"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:paddingBottom="@dimen/spacing_scroll_pad">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <!-- Header title -->
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/spacing_md"
-                android:paddingTop="@dimen/spacing_md"
-                android:paddingBottom="@dimen/spacing_sm"
-                android:text="@string/stats_title"
-                android:textColor="@color/vita_text_primary"
-                android:textSize="@dimen/text_h2"
-                android:textStyle="bold" />
-
-            <!-- Time Range Toggle -->
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="24dp"
+                android:paddingBottom="24dp"
+                android:minHeight="100dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/figma_stats_title"
+                        android:textColor="@color/vita_text_primary"
+                        android:textSize="28sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/figma_stats_subtitle"
+                        android:textSize="12sp"
+                        android:textColor="@color/vita_text_secondary"
+                        android:layout_marginTop="6dp" />
+                </LinearLayout>
+                <ImageButton
+                    android:id="@+id/btn_stats_profile"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="12dp"
+                    android:src="@drawable/figma_ic_profile"
+                    android:background="@drawable/figma_avatar_bg"
+                    android:contentDescription="@string/figma_health_profile"
+                    app:tint="@color/vita_teal" />
+            </LinearLayout>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardBackgroundColor="@color/vita_surface"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/vita_divider"
+                app:cardUseCompatPadding="false"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="8dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/figma_stats_metric"
+                        android:textSize="12sp"
+                        android:textColor="@color/vita_text_secondary" />
+                    <Spinner
+                        android:id="@+id/sp_stats_metric"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="48dp"
+                        android:contentDescription="@string/stats_choose_metric"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginEnd="0dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/toggle_time_range"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_md"
                 android:layout_marginBottom="@dimen/spacing_md"
                 app:checkedButton="@+id/btn_range_7"
                 app:selectionRequired="true"
-                app:singleSelection="true">
-
+                app:singleSelection="true"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp">
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_range_7"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    style="@style/Widget.Vita.Health.Segment"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/min_touch_target"
                     android:layout_weight="1"
-                    android:text="@string/stats_range_7" />
-
+                    android:text="@string/figma_stats_range_7" />
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_range_30"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    style="@style/Widget.Vita.Health.Segment"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/min_touch_target"
                     android:layout_weight="1"
-                    android:text="@string/stats_range_30" />
+                    android:text="@string/figma_stats_range_30" />
             </com.google.android.material.button.MaterialButtonToggleGroup>
-
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_health_input"
+                android:paddingTop="12dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/figma_stats_context"
+                    android:textSize="12sp"
+                    android:textColor="@color/vita_text_secondary" />
+                <Spinner
+                    android:id="@+id/sp_stats_context"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp"
+                    android:contentDescription="@string/stats_choose_context" />
+            </LinearLayout>
+            <include
+                layout="@layout/stats_empty_state" />
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_md"
-                android:layout_marginBottom="@dimen/spacing_md"
-                app:cardCornerRadius="@dimen/radius_card"
-                app:cardElevation="@dimen/elevation_card_resting">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/vita_surface"
+                app:cardUseCompatPadding="false"
+                android:id="@+id/card_stats_latest"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="20dp">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/stats_weight_title"
-                        android:textSize="@dimen/text_body_lg"
+                        android:text="@string/figma_stats_latest"
+                        android:textSize="12sp"
+                        android:textColor="@color/vita_text_secondary" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:orientation="vertical"
+                        android:layout_marginTop="12dp">
+                        <TextView
+                            android:id="@+id/tv_stats_latest_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="36sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/vita_text_primary" />
+                        <TextView
+                            android:id="@+id/tv_stats_latest_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="@color/vita_text_secondary"
+                            android:layout_marginTop="4dp" />
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_stats_summary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:textColor="@color/vita_text_secondary"
+                        android:textSize="14sp"
+                        android:lineSpacingExtra="4dp" />
+                    <TextView
+                        android:id="@+id/tv_stats_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_badge_good"
                         android:textColor="@color/vita_teal"
-                        android:textStyle="bold" />
+                        android:textSize="14sp"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_md"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="false"
+                app:cardBackgroundColor="@color/vita_surface"
+                app:strokeWidth="0dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/figma_chart_weight"
+                        android:textSize="@dimen/text_body_lg"
+                        android:textColor="@color/vita_text_primary"
+                        android:textStyle="bold"
+                        android:id="@+id/tv_stats_weight_chart_title" />
                     <com.github.mikephil.charting.charts.LineChart
                         android:id="@+id/chart_weight"
                         android:layout_width="match_parent"
-                        android:layout_height="220dp"
+                        android:layout_height="180dp"
                         android:contentDescription="@string/stats_weight_title" />
+                    <TextView
+                        android:id="@+id/tv_stats_weight_note"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:text="@string/figma_stats_one_help"
+                        android:textAppearance="@style/TextAppearance.Vita.Caption"
+                        android:layout_marginTop="8dp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_md"
                 android:layout_marginBottom="@dimen/spacing_md"
-                app:cardCornerRadius="@dimen/radius_card"
-                app:cardElevation="@dimen/elevation_card_resting">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="false"
+                app:cardBackgroundColor="@color/vita_surface"
+                app:strokeWidth="0dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="20dp">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/stats_heart_rate_title"
+                        android:text="@string/figma_chart_hr"
                         android:textSize="@dimen/text_body_lg"
-                        android:textColor="@color/vita_teal"
+                        android:textColor="@color/vita_text_primary"
                         android:textStyle="bold" />
                     <com.github.mikephil.charting.charts.LineChart
                         android:id="@+id/chart_heart_rate"
                         android:layout_width="match_parent"
-                        android:layout_height="220dp"
+                        android:layout_height="180dp"
                         android:contentDescription="@string/stats_heart_rate_title" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_md"
                 android:layout_marginBottom="@dimen/spacing_md"
-                app:cardCornerRadius="@dimen/radius_card"
-                app:cardElevation="@dimen/elevation_card_resting">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="false"
+                app:cardBackgroundColor="@color/vita_surface"
+                app:strokeWidth="0dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
+                    android:padding="20dp">
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/stats_glucose_title"
+                        android:text="@string/figma_chart_sugar"
                         android:textSize="@dimen/text_body_lg"
-                        android:textColor="@color/vita_teal"
+                        android:textColor="@color/vita_text_primary"
                         android:textStyle="bold" />
                     <com.github.mikephil.charting.charts.LineChart
                         android:id="@+id/chart_glucose"
                         android:layout_width="match_parent"
-                        android:layout_height="220dp"
+                        android:layout_height="180dp"
                         android:contentDescription="@string/stats_glucose_title" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-            <!-- BP LineChart Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_chart_bp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_md"
                 android:layout_marginBottom="@dimen/spacing_md"
-                app:cardCornerRadius="@dimen/radius_card"
-                app:cardElevation="@dimen/elevation_card_resting"
-                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="false"
                 app:strokeColor="@color/card_stroke"
-                app:strokeWidth="0.5dp">
-
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/vita_surface"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
-
+                    android:padding="20dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_xs"
-                        android:text="@string/stats_bp_title"
-                        android:textColor="@color/vita_teal"
-                        android:textSize="@dimen/text_caption"
+                        android:text="@string/figma_chart_bp"
+                        android:textColor="@color/vita_text_primary"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/spacing_sm"
-                        android:text="@string/stats_bp_legend"
-                        android:textColor="@color/vita_text_secondary"
-                        android:textSize="@dimen/text_caption" />
-
                     <com.github.mikephil.charting.charts.LineChart
                         android:id="@+id/chart_bp"
                         android:layout_width="match_parent"
-                        android:layout_height="220dp" />
+                        android:layout_height="180dp"
+                        android:contentDescription="@string/stats_bp_title" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <!-- Water BarChart Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_chart_water"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_md"
                 android:layout_marginBottom="@dimen/spacing_md"
-                app:cardCornerRadius="@dimen/radius_card"
-                app:cardElevation="@dimen/elevation_card_resting"
-                app:cardUseCompatPadding="true"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                app:cardUseCompatPadding="false"
                 app:strokeColor="@color/card_stroke"
-                app:strokeWidth="0.5dp">
-
+                app:strokeWidth="0dp"
+                app:cardBackgroundColor="@color/vita_surface"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
-
+                    android:padding="20dp">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/spacing_xs"
-                        android:text="@string/stats_water_title"
-                        android:textColor="@color/vita_teal"
-                        android:textSize="@dimen/text_caption"
+                        android:text="@string/figma_chart_water"
+                        android:textColor="@color/vita_text_primary"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
-
                     <TextView
                         android:id="@+id/tv_water_goal"
                         android:layout_width="wrap_content"
@@ -218,94 +375,33 @@
                         android:textColor="@color/vita_text_secondary"
                         android:textSize="@dimen/text_caption"
                         tools:text="Mục tiêu: 2,000 ml/ngày" />
-
                     <com.github.mikephil.charting.charts.BarChart
                         android:id="@+id/chart_water"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp" />
+                        android:layout_height="180dp"
+                        android:contentDescription="@string/stats_water_title" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-
-            <!-- Sleep BarChart Card -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cv_chart_sleep"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/spacing_md"
-                android:layout_marginBottom="@dimen/spacing_md"
-                app:cardCornerRadius="@dimen/radius_card"
-                app:cardElevation="@dimen/elevation_card_resting"
-                app:cardUseCompatPadding="true"
-                app:strokeColor="@color/card_stroke"
-                app:strokeWidth="0.5dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/spacing_md">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/spacing_sm"
-                        android:text="@string/stats_sleep_chart_title"
-                        android:textColor="@color/vita_sleep"
-                        android:textSize="@dimen/text_caption"
-                        android:textStyle="bold" />
-
-                    <com.github.mikephil.charting.charts.BarChart
-                        android:id="@+id/chart_sleep"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- Sleep History Section -->
             <TextView
+                android:id="@+id/tv_stats_chart_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/spacing_md"
-                android:paddingBottom="@dimen/spacing_sm"
-                android:text="@string/stats_sleep_section"
-                android:textColor="@color/vita_teal"
-                android:textSize="@dimen/text_caption"
-                android:textStyle="bold" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_sleep_records"
+                android:layout_marginBottom="16dp"
+                android:padding="20dp"
+                android:background="@drawable/bg_badge_rounded"
+                android:textSize="14sp"
+                android:textColor="@color/vita_text_secondary"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_stats_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"
-                tools:listitem="@layout/item_sleep_record" />
-
-            <TextView
-                android:id="@+id/tv_sleep_empty"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:padding="@dimen/spacing_lg"
-                android:text="@string/stats_sleep_empty"
-                android:textColor="@color/vita_text_disabled"
-                android:textSize="@dimen/text_body"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
+                android:text="@string/stats_view_data"
+                style="@style/Widget.Vita.Health.DataButton"
+                android:layout_marginBottom="24dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-    <!-- FAB -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_sleep"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/spacing_md"
-        android:layout_marginBottom="@dimen/spacing_scroll_pad"
-        android:contentDescription="@string/stats_fab_desc"
-        app:backgroundTint="@color/btn_fab_bg"
-        app:elevation="@dimen/elevation_fab"
-        app:srcCompat="@drawable/ic_bedtime"
-        app:tint="@color/white" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

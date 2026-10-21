@@ -56,6 +56,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         initViews();
         setupListeners();
+        boolean bmiScreen = this instanceof BmiActivity;
+        findViewById(R.id.group_profile_summary).setVisibility(bmiScreen ? android.view.View.GONE : android.view.View.VISIBLE);
+        findViewById(R.id.group_profile_bmi).setVisibility(bmiScreen ? android.view.View.VISIBLE : android.view.View.GONE);
+        findViewById(R.id.group_profile_account_actions).setVisibility(bmiScreen ? android.view.View.GONE : android.view.View.VISIBLE);
+        if (bmiScreen) toolbar.setTitle(R.string.figma_profile_bmi_title);
     }
 
     @Override
@@ -84,6 +89,10 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void setupListeners() {
         toolbar.setNavigationOnClickListener(v -> finish());
+        findViewById(R.id.btn_profile_open_bmi).setOnClickListener(v -> startActivity(new Intent(this, BmiActivity.class)));
+        findViewById(R.id.btn_bmi_add_weight).setOnClickListener(v -> startActivity(new Intent(this, AddHealthActivity.class).putExtra(AddHealthActivity.EXTRA_METRIC_GROUP, 3)));
+        findViewById(R.id.btn_profile_logout).setOnClickListener(v -> new vn.edu.tdmu.vita.utils.ProfileAccountActions(this, currentUser).showLogoutConfirmDialog());
+        findViewById(R.id.btn_profile_delete).setOnClickListener(v -> new vn.edu.tdmu.vita.utils.ProfileAccountActions(this, currentUser).showDeleteConfirmDialog());
 
         rgBmiStandard.setOnCheckedChangeListener((group, checkedId) -> {
             if (isInitialCheck || currentUser == null) {
@@ -126,13 +135,13 @@ public class ProfileActivity extends AppCompatActivity {
         String displayName = (currentUser.getFullname() != null && !currentUser.getFullname().trim().isEmpty())
                 ? currentUser.getFullname() : currentUser.getUsername();
         tvFullname.setText(displayName);
-        tvUsername.setText("@" + currentUser.getUsername());
+        tvUsername.setText("@" + currentUser.getUsername() + " · " + getString(R.string.figma_profile_on_device));
 
         // Birth year & age
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int age = currentYear - currentUser.getBirthYear();
         if (currentUser.getBirthYear() > 0 && age >= 0 && age <= 120) {
-            tvBirthYear.setText(getString(R.string.profile_age_format, currentUser.getBirthYear(), age));
+            tvBirthYear.setText(getString(R.string.figma_profile_age, currentUser.getBirthYear(), age));
         } else {
             tvBirthYear.setText(getString(R.string.profile_not_updated));
         }
@@ -152,6 +161,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Render BMI Card
         renderBmiCard(standard);
 
+        ((MaterialButton) findViewById(R.id.btn_profile_open_bmi)).setText("BMI " + tvBmiValue.getText() + " · " + tvBmiCategory.getText());
+
         // BMI Standard radio selection
         isInitialCheck = true;
         if (BMICalculator.STANDARD_WHO.equalsIgnoreCase(standard)) {
@@ -168,8 +179,14 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         float heightCm = currentUser.getHeightCm();
-        float weightKg = BMICalculator.currentWeight(
-                new HealthDao(this).getLatestWeight(currentUser.getId()), currentUser.getBaseWeightKg());
+        vn.edu.tdmu.vita.models.HealthRecord latest = new HealthDao(this).getLatestWeightRecord(currentUser.getId());
+        float weightKg = BMICalculator.currentWeight(latest == null ? null : latest.getWeightKg(), currentUser.getBaseWeightKg());
+        String when = latest == null ? "" : vn.edu.tdmu.vita.utils.DateTimeUtils.formatDisplayDate(latest.getDate()) + " · "
+                + (latest.getMeasuredTime() == null ? getString(R.string.measurement_time_unknown) : latest.getMeasuredTime());
+        ((TextView) findViewById(R.id.tv_profile_latest_weight)).setText(latest == null ? "—" : getString(R.string.profile_weight_format, latest.getWeightKg()));
+        ((TextView) findViewById(R.id.tv_profile_weight_source)).setText(latest == null
+                ? getString(R.string.figma_bmi_source_initial, heightCm, weightKg)
+                : getString(R.string.figma_bmi_source_log, heightCm, weightKg, when));
 
         if (heightCm > 0 && weightKg > 0) {
             BMICalculator.BmiResult result = BMICalculator.calculateAndClassify(weightKg, heightCm, standard,
@@ -194,9 +211,8 @@ public class ProfileActivity extends AppCompatActivity {
             }
 
             tvHealthyWeight.setText(adultClassification
-                    ? getString(R.string.profile_healthy_weight_format,
+                    ? getString(R.string.figma_bmi_range_value,
                             result.getMinHealthyWeight(), result.getMaxHealthyWeight())
-                            + "\n" + getString(R.string.bmi_adult_scope)
                     : getString(R.string.bmi_outside_adult_scope));
         } else {
             tvBmiValue.setText("--");
@@ -207,4 +223,3 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 }
-

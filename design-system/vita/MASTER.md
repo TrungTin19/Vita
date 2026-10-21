@@ -1,3 +1,7 @@
+> Cập nhật sau audit UI/UX21/10/2026: phần quy chuẩn bên dưới là tài liệu lịch sử, chưa phản ánh đầy đủ thiết kế đang chạy. Khi có mâu thuẫn, dùng tài nguyên Android hiện hành và báo cáo `docs/reviews/2026-10-21-ui-ux-quality-audit.md`; không phục hồi thời tiết/giấc ngủ/sao lưu hay chức năng gia đình từ tài liệu cũ.
+>
+> Token hiện hành: primary `#0B786E`, dark `#104B47`, background `#F4F8F7`, text `#173333`, secondary text `#526B6B`, water `#286DAD`. Ô nhập dùng `Widget.Vita.AuthInput`, trạng thái viền `vita_input_stroke`; vùng chạm tối thiểu48dp, nút chính tối thiểu52dp và được tăng theo font. Cấu trúc Java/XML, MVC và dữ liệu hiện có giữ nguyên.
+
 # BẢN QUY CHUẨN THIẾT KẾ UI/UX CHỦ ĐẠO (MASTER DESIGN SYSTEM)
 ## Ứng dụng Di động Vita – Quản lý Sức khỏe Cá nhân và Gia đình tại Nhà (Android Native)
 

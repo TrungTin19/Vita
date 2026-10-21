@@ -1,114 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/vita_bg"
     android:orientation="vertical">
-
-    <!-- Top Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_add_health"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        android:background="@color/vita_surface"
-        android:elevation="@dimen/elevation_toolbar"
+        android:layout_height="64dp"
+        android:layout_marginBottom="36dp"
+        android:background="@color/vita_bg"
+        android:elevation="0dp"
         app:navigationIcon="@drawable/ic_arrow_back"
         app:navigationContentDescription="@string/a11y_navigate_back"
-        app:navigationIconTint="@color/vita_text_primary"
-        app:title="@string/add_health_title_add"
+        app:navigationIconTint="@color/vita_teal"
+        app:title="@string/figma_health_record"
         app:titleTextColor="@color/vita_text_primary" />
-
     <ScrollView
         android:id="@+id/scroll_add_health"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/spacing_md">
-
-            <!-- Date Picker Field -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_add_health_date"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/spacing_md"
-                android:hint="@string/add_health_hint_date"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="@dimen/radius_input"
-                app:boxCornerRadiusBottomStart="@dimen/radius_input"
-                app:boxCornerRadiusTopEnd="@dimen/radius_input"
-                app:boxCornerRadiusTopStart="@dimen/radius_input"
-                app:boxStrokeColor="@color/vita_teal"
-                app:hintTextColor="@color/vita_teal"
-                app:startIconDrawable="@drawable/ic_calendar"
-                app:startIconTint="@color/vita_teal">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_add_health_date"
-                    android:layout_width="match_parent"
+                android:text="@string/figma_health_question"
+                android:textSize="18sp"
+                android:textColor="@color/vita_text_primary"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_add_health_date"
+                    style="@style/Widget.Vita.Health.Input"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:cursorVisible="false"
-                    android:focusable="false"
-                    android:inputType="none"
-                    android:textColor="@color/vita_text_primary"
-                    android:textSize="@dimen/text_body_lg"
-                    tools:hint="Ngày đo (dd/MM/yyyy)" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp" android:hint="@string/measurement_time"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/et_health_time" android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:minHeight="48dp"
-                    android:focusable="false" android:clickable="true" android:inputType="none" />
-            </com.google.android.material.textfield.TextInputLayout>
-            <!-- SECTION 1: HUYẾT ÁP & TIM MẠCH -->
+                    android:layout_marginBottom="@dimen/spacing_md"
+                    android:hint="@string/figma_health_date_label"
+                    app:boxCornerRadiusBottomEnd="@dimen/radius_input"
+                    app:boxCornerRadiusBottomStart="@dimen/radius_input"
+                    app:boxCornerRadiusTopEnd="@dimen/radius_input"
+                    app:boxCornerRadiusTopStart="@dimen/radius_input"
+                    app:boxStrokeColor="@color/vita_input_stroke"
+                    app:hintTextColor="@color/vita_text_secondary"
+                    app:startIconTint="@color/vita_teal"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:layout_marginStart="0dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_add_health_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:cursorVisible="false"
+                        android:focusable="true"
+                        android:inputType="none"
+                        android:textColor="@color/vita_text_primary"
+                        android:textSize="16sp"
+                        tools:hint="Ngày đo (dd/MM/yyyy)"
+                        android:minHeight="70dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp" />
+                </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="@string/measurement_time"
+                    style="@style/Widget.Vita.Health.Input"
+                    app:boxStrokeColor="@color/vita_input_stroke"
+                    app:hintTextColor="@color/vita_text_secondary"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginStart="6dp">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_health_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="70dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp"
+                        android:focusable="true"
+                        android:clickable="true"
+                        android:inputType="none"
+                        android:textSize="16sp" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_xs"
                 android:layout_marginBottom="@dimen/spacing_sm"
-                android:text="@string/add_health_section_bp"
-                android:textColor="@color/vita_teal"
-                android:textSize="@dimen/text_caption"
-                android:textStyle="bold" />
-
-            <!-- Systolic & Diastolic Row -->
+                android:text="@string/figma_health_bp"
+                android:textColor="@color/vita_text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:id="@+id/tv_add_bp_section" />
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_sm"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
-
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_add_systolic"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.Vita.Health.Input"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_sm"
+                    android:layout_marginEnd="6dp"
                     android:layout_weight="1"
-                    android:hint="@string/add_health_hint_systolic"
-                    app:boxBackgroundMode="outline"
+                    android:hint="@string/figma_health_sys_label"
                     app:boxCornerRadiusBottomEnd="@dimen/radius_input"
                     app:boxCornerRadiusBottomStart="@dimen/radius_input"
                     app:boxCornerRadiusTopEnd="@dimen/radius_input"
                     app:boxCornerRadiusTopStart="@dimen/radius_input"
-                    app:boxStrokeColor="@color/vita_teal"
-                    app:helperText="@string/add_health_helper_systolic"
-                    app:hintTextColor="@color/vita_teal"
-                    app:suffixText="@string/add_health_suffix_mmhg">
-
+                    app:boxStrokeColor="@color/vita_input_stroke"
+                    app:hintTextColor="@color/vita_text_secondary">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_add_systolic"
                         android:layout_width="match_parent"
@@ -117,28 +143,28 @@
                         android:inputType="number"
                         android:maxLength="3"
                         android:textColor="@color/vita_text_primary"
-                        android:textSize="@dimen/text_body_lg"
-                        tools:hint="120" />
+                        android:textSize="16sp"
+                        tools:hint="120"
+                        android:minHeight="70dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp" />
                 </com.google.android.material.textfield.TextInputLayout>
-
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_add_diastolic"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    style="@style/Widget.Vita.Health.Input"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_sm"
+                    android:layout_marginStart="6dp"
                     android:layout_weight="1"
-                    android:hint="@string/add_health_hint_diastolic"
-                    app:boxBackgroundMode="outline"
+                    android:hint="@string/figma_health_dia_label"
                     app:boxCornerRadiusBottomEnd="@dimen/radius_input"
                     app:boxCornerRadiusBottomStart="@dimen/radius_input"
                     app:boxCornerRadiusTopEnd="@dimen/radius_input"
                     app:boxCornerRadiusTopStart="@dimen/radius_input"
-                    app:boxStrokeColor="@color/vita_teal"
-                    app:helperText="@string/add_health_helper_diastolic"
-                    app:hintTextColor="@color/vita_teal"
-                    app:suffixText="@string/add_health_suffix_mmhg">
-
+                    app:boxStrokeColor="@color/vita_input_stroke"
+                    app:hintTextColor="@color/vita_text_secondary">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_add_diastolic"
                         android:layout_width="match_parent"
@@ -147,29 +173,29 @@
                         android:inputType="number"
                         android:maxLength="3"
                         android:textColor="@color/vita_text_primary"
-                        android:textSize="@dimen/text_body_lg"
-                        tools:hint="80" />
+                        android:textSize="16sp"
+                        tools:hint="80"
+                        android:minHeight="70dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
-
-            <!-- Heart Rate -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_add_heart_rate"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Vita.Health.Input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
                 android:hint="@string/add_health_hint_hr"
-                app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="@dimen/radius_input"
                 app:boxCornerRadiusBottomStart="@dimen/radius_input"
                 app:boxCornerRadiusTopEnd="@dimen/radius_input"
                 app:boxCornerRadiusTopStart="@dimen/radius_input"
-                app:boxStrokeColor="@color/vita_teal"
-                app:helperText="@string/add_health_helper_hr"
-                app:hintTextColor="@color/vita_teal"
+                app:boxStrokeColor="@color/vita_input_stroke"
+                app:hintTextColor="@color/vita_text_secondary"
                 app:suffixText="@string/add_health_suffix_bpm">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_add_heart_rate"
                     android:layout_width="match_parent"
@@ -178,47 +204,34 @@
                     android:inputType="number"
                     android:maxLength="3"
                     android:textColor="@color/vita_text_primary"
-                    android:textSize="@dimen/text_body_lg"
-                    tools:hint="75" />
+                    android:textSize="16sp"
+                    tools:hint="75"
+                    android:minHeight="70dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- SECTION 2: THỂ TRẠNG & ĐƯỜNG HUYẾT -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xs"
-                android:layout_marginBottom="@dimen/spacing_sm"
-                android:text="@string/add_health_section_body"
-                android:textColor="@color/vita_teal"
-                android:textSize="@dimen/text_caption"
-                android:textStyle="bold" />
-
-            <!-- Weight & Blood Sugar Row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
                 android:baselineAligned="false"
-                android:orientation="horizontal">
-
+                android:orientation="vertical">
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_add_weight"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
+                    style="@style/Widget.Vita.Health.Input"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/spacing_sm"
-                    android:layout_weight="1"
                     android:hint="@string/add_health_hint_weight"
-                    app:boxBackgroundMode="outline"
                     app:boxCornerRadiusBottomEnd="@dimen/radius_input"
                     app:boxCornerRadiusBottomStart="@dimen/radius_input"
                     app:boxCornerRadiusTopEnd="@dimen/radius_input"
                     app:boxCornerRadiusTopStart="@dimen/radius_input"
-                    app:boxStrokeColor="@color/vita_teal"
-                    app:helperText="@string/add_health_helper_weight"
-                    app:hintTextColor="@color/vita_teal"
-                    app:suffixText="@string/add_health_suffix_kg">
-
+                    app:boxStrokeColor="@color/vita_input_stroke"
+                    app:hintTextColor="@color/vita_text_secondary"
+                    app:suffixText="@string/add_health_suffix_kg"
+                    android:layout_marginBottom="12dp">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_add_weight"
                         android:layout_width="match_parent"
@@ -226,28 +239,28 @@
                         android:imeOptions="actionNext"
                         android:inputType="numberDecimal"
                         android:textColor="@color/vita_text_primary"
-                        android:textSize="@dimen/text_body_lg"
-                        tools:hint="62.5" />
+                        android:textSize="16sp"
+                        tools:hint="62.5"
+                        android:minHeight="70dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp" />
                 </com.google.android.material.textfield.TextInputLayout>
-
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_add_sugar"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="0dp"
+                    style="@style/Widget.Vita.Health.Input"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_sm"
-                    android:layout_weight="1"
                     android:hint="@string/add_health_hint_sugar"
-                    app:boxBackgroundMode="outline"
                     app:boxCornerRadiusBottomEnd="@dimen/radius_input"
                     app:boxCornerRadiusBottomStart="@dimen/radius_input"
                     app:boxCornerRadiusTopEnd="@dimen/radius_input"
                     app:boxCornerRadiusTopStart="@dimen/radius_input"
-                    app:boxStrokeColor="@color/vita_teal"
-                    app:helperText="@string/add_health_helper_sugar"
-                    app:hintTextColor="@color/vita_teal"
-                    app:suffixText="@string/add_health_suffix_sugar">
-
+                    app:boxStrokeColor="@color/vita_input_stroke"
+                    app:hintTextColor="@color/vita_text_secondary"
+                    app:suffixText="@string/add_health_suffix_sugar"
+                    android:layout_marginBottom="12dp">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_add_sugar"
                         android:layout_width="match_parent"
@@ -255,42 +268,59 @@
                         android:imeOptions="actionNext"
                         android:inputType="numberDecimal"
                         android:textColor="@color/vita_text_primary"
-                        android:textSize="@dimen/text_body_lg"
-                        tools:hint="95.0" />
+                        android:textSize="16sp"
+                        tools:hint="95.0"
+                        android:minHeight="70dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="16dp" />
                 </com.google.android.material.textfield.TextInputLayout>
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:text="@string/meal_context_title" android:textSize="16sp" android:labelFor="@id/sp_meal_context" />
-            <Spinner android:id="@+id/sp_meal_context" android:layout_width="match_parent"
-                android:layout_height="wrap_content" android:minHeight="48dp" android:layout_marginBottom="16dp" />
-
             </LinearLayout>
-
-            <!-- SECTION 3: GHI CHÚ BỔ SUNG -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_health_input"
+                android:paddingTop="12dp"
+                android:layout_marginBottom="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/meal_context_title"
+                    android:textSize="12sp"
+                    android:textColor="@color/vita_text_secondary"
+                    android:labelFor="@id/sp_meal_context" />
+                <Spinner
+                    android:id="@+id/sp_meal_context"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="40dp" />
+            </LinearLayout>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_xs"
                 android:layout_marginBottom="@dimen/spacing_sm"
                 android:text="@string/add_health_section_notes"
-                android:textColor="@color/vita_teal"
-                android:textSize="@dimen/text_caption"
+                android:textColor="@color/vita_text_primary"
+                android:textSize="18sp"
                 android:textStyle="bold" />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_add_note"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Vita.Health.Input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
                 android:hint="@string/add_health_hint_notes"
-                app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="@dimen/radius_input"
                 app:boxCornerRadiusBottomStart="@dimen/radius_input"
                 app:boxCornerRadiusTopEnd="@dimen/radius_input"
                 app:boxCornerRadiusTopStart="@dimen/radius_input"
-                app:boxStrokeColor="@color/vita_teal"
-                app:hintTextColor="@color/vita_teal">
-
+                app:boxStrokeColor="@color/vita_input_stroke"
+                app:hintTextColor="@color/vita_text_secondary">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_add_note"
                     android:layout_width="match_parent"
@@ -301,11 +331,14 @@
                     android:lines="3"
                     android:maxLines="5"
                     android:textColor="@color/vita_text_primary"
-                    android:textSize="@dimen/text_body"
-                    tools:hint="Ví dụ: Đo sau khi uống thuốc huyết áp 30 phút, cảm thấy hơi mệt..." />
+                    android:textSize="16sp"
+                    tools:hint="Ví dụ: Đo sau khi uống thuốc huyết áp 30 phút, cảm thấy hơi mệt..."
+                    android:minHeight="70dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Helper Text Notice (Nullable Guidance) -->
             <TextView
                 android:id="@+id/tv_add_health_hint"
                 android:layout_width="match_parent"
@@ -318,8 +351,6 @@
                 android:textSize="@dimen/text_caption"
                 app:drawableStartCompat="@drawable/ic_info"
                 app:drawableTint="@color/vita_teal" />
-
-            <!-- Save Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_add_health_save"
                 style="@style/Widget.Vita.Button.Primary"
@@ -327,7 +358,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_md"
                 android:text="@string/add_health_btn_save" />
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

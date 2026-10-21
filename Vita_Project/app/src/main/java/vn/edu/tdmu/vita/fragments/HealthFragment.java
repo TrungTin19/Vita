@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ public class HealthFragment extends Fragment {
     private LinearLayout layoutHealthEmpty;
     private MaterialButton btnFilterDate;
     private MaterialButton btnClearFilter;
-    private FloatingActionButton fabAddHealth;
+    private MaterialButton fabAddHealth;
 
     private HealthDao healthDao;
     private SessionManager sessionManager;
@@ -81,6 +81,9 @@ public class HealthFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        view.findViewById(R.id.btn_health_profile).setOnClickListener(v -> startActivity(
+                new android.content.Intent(requireContext(), vn.edu.tdmu.vita.activities.ProfileActivity.class)));
 
         sessionManager = new SessionManager(requireContext());
         healthDao = new HealthDao(requireContext());
@@ -161,8 +164,12 @@ public class HealthFragment extends Fragment {
         btnFilterDate.setText(filtered
                 ? getString(R.string.health_filter_range_format,
                         DateTimeUtils.formatDisplayDate(startDate), DateTimeUtils.formatDisplayDate(endDate))
-                : getString(R.string.health_filter_all_dates));
-        btnClearFilter.setVisibility(filtered ? View.VISIBLE : View.GONE);
+                : getString(R.string.figma_health_choose_range));
+        btnClearFilter.setVisibility(View.VISIBLE);
+        btnClearFilter.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                androidx.core.content.ContextCompat.getColor(requireContext(), filtered ? R.color.vita_surface : R.color.vita_mint)));
+        btnFilterDate.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                androidx.core.content.ContextCompat.getColor(requireContext(), filtered ? R.color.vita_mint : R.color.vita_surface)));
     }
 
     @Override
@@ -172,7 +179,8 @@ public class HealthFragment extends Fragment {
         outState.putString("filter_end", endDate);
     }
 
-    private void loadData() {
+    public void loadData() {
+        if (getView() == null || sessionManager == null) return;
         long userId = sessionManager.getUserId();
         if (userId <= 0) return;
 
@@ -184,6 +192,10 @@ public class HealthFragment extends Fragment {
             records.addAll(healthDao.getAllByUserId(userId, null));
         }
         adapter.notifyDataSetChanged();
+        ((android.widget.TextView) requireView().findViewById(R.id.tv_health_count))
+                .setText(getString(R.string.health_result_count, records.size()));
+        ((android.widget.TextView) requireView().findViewById(R.id.tv_health_empty_title))
+                .setText(startDate == null ? R.string.health_empty_title : R.string.health_no_match);
 
         updateEmptyState();
     }
@@ -229,12 +241,9 @@ public class HealthFragment extends Fragment {
                 .setMessage(getString(R.string.health_delete_dialog_msg, dateDisplay))
                 .setNegativeButton(getString(R.string.btn_cancel), null)
                 .setPositiveButton(getString(R.string.btn_delete), (dialog, which) -> {
-                    boolean deleted = healthDao.delete(record.getId());
+                    boolean deleted = healthDao.delete(record.getId(), sessionManager.getUserId());
                     if (deleted) {
-                        records.remove(position);
-                        adapter.notifyItemRemoved(position);
-                        adapter.notifyItemRangeChanged(position, records.size() - position);
-                        updateEmptyState();
+                        loadData();
                         Toast.makeText(requireContext(), getString(R.string.health_delete_success), Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(requireContext(), getString(R.string.health_delete_error), Toast.LENGTH_SHORT).show();

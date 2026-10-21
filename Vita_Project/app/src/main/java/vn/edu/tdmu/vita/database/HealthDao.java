@@ -29,37 +29,37 @@ public class HealthDao {
         return db.insert(DatabaseHelper.TABLE_HEALTH_RECORDS, null, values);
     }
 
-    public boolean update(HealthRecord record) {
-        if (record == null || record.getId() <= 0) return false;
+    public boolean update(HealthRecord record, long userId) {
+        if (record == null || record.getId() <= 0 || record.getUserId() != userId || userId <= 0) return false;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = toContentValues(record);
         int rows = db.update(
                 DatabaseHelper.TABLE_HEALTH_RECORDS,
                 values,
-                DatabaseHelper.COL_HEALTH_ID + " = ?",
-                new String[]{String.valueOf(record.getId())}
+                DatabaseHelper.COL_HEALTH_ID + " = ? AND " + DatabaseHelper.COL_HEALTH_USER_ID + " = ?",
+                new String[]{String.valueOf(record.getId()), String.valueOf(userId)}
         );
         return rows > 0;
     }
 
-    public boolean delete(long id) {
+    public boolean delete(long id, long userId) {
         if (id <= 0) return false;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int rows = db.delete(
                 DatabaseHelper.TABLE_HEALTH_RECORDS,
-                DatabaseHelper.COL_HEALTH_ID + " = ?",
-                new String[]{String.valueOf(id)}
+                DatabaseHelper.COL_HEALTH_ID + " = ? AND " + DatabaseHelper.COL_HEALTH_USER_ID + " = ?",
+                new String[]{String.valueOf(id), String.valueOf(userId)}
         );
         return rows > 0;
     }
 
-    public HealthRecord getById(long id) {
+    public HealthRecord getById(long id, long userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(
                 DatabaseHelper.TABLE_HEALTH_RECORDS,
                 null,
-                DatabaseHelper.COL_HEALTH_ID + " = ?",
-                new String[]{String.valueOf(id)},
+                DatabaseHelper.COL_HEALTH_ID + " = ? AND " + DatabaseHelper.COL_HEALTH_USER_ID + " = ?",
+                new String[]{String.valueOf(id), String.valueOf(userId)},
                 null, null, null
         );
         if (cursor != null && cursor.moveToFirst()) {
@@ -126,24 +126,44 @@ public class HealthDao {
     }
 
     public Float getLatestWeight(long userId) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
-                DatabaseHelper.TABLE_HEALTH_RECORDS,
-                new String[]{DatabaseHelper.COL_HEALTH_WEIGHT_KG},
-                DatabaseHelper.COL_HEALTH_USER_ID + " = ? AND " + DatabaseHelper.COL_HEALTH_WEIGHT_KG + " IS NOT NULL",
-                new String[]{String.valueOf(userId)},
-                null, null,
-                DatabaseHelper.COL_HEALTH_DATE + " DESC, COALESCE(measured_time, '') DESC, " + DatabaseHelper.COL_HEALTH_ID + " DESC",
-                "1"
-        );
+        HealthRecord record = getLatestWeightRecord(userId);
+        return record == null ? null : record.getWeightKg();
+    }
 
-        if (cursor != null && cursor.moveToFirst()) {
-            float weight = cursor.getFloat(0);
-            cursor.close();
-            return weight;
+    public HealthRecord getPreviousComparable(long userId, HealthRecord current,
+            vn.edu.tdmu.vita.utils.HealthChartData.Metric metric) {
+        if (current == null || getById(current.getId(), userId) == null) return null;
+        if (metric == vn.edu.tdmu.vita.utils.HealthChartData.Metric.BLOOD_SUGAR
+                && current.getMealContext() == HealthRecord.MealContext.UNSPECIFIED) return null;
+        String required;
+        switch (metric) {
+            case WEIGHT: required = "weight_kg IS NOT NULL"; break;
+            case HEART_RATE: required = "heart_rate IS NOT NULL"; break;
+            case BLOOD_PRESSURE: required = "systolic IS NOT NULL AND diastolic IS NOT NULL"; break;
+            default: required = "blood_sugar IS NOT NULL AND meal_context = ?";
         }
-        if (cursor != null) cursor.close();
-        return null;
+        String time = current.getMeasuredTime() == null ? "" : current.getMeasuredTime();
+        List<String> args = new ArrayList<>();
+        args.add(String.valueOf(userId));
+        if (metric == vn.edu.tdmu.vita.utils.HealthChartData.Metric.BLOOD_SUGAR)
+            args.add(current.getMealContext().name());
+        java.util.Collections.addAll(args, current.getDate(), current.getDate(), time,
+                current.getDate(), time, String.valueOf(current.getId()));
+        try (Cursor cursor = dbHelper.getReadableDatabase().query(DatabaseHelper.TABLE_HEALTH_RECORDS,
+                null, "user_id = ? AND " + required + " AND (date < ? OR (date = ? AND COALESCE(measured_time,'') < ?)"
+                        + " OR (date = ? AND COALESCE(measured_time,'') = ? AND id < ?))",
+                args.toArray(new String[0]), null, null,
+                "date DESC, COALESCE(measured_time,'') DESC, id DESC", "1")) {
+            return cursor.moveToFirst() ? cursorToRecord(cursor) : null;
+        }
+    }
+
+    public HealthRecord getLatestWeightRecord(long userId) {
+        try (Cursor cursor = dbHelper.getReadableDatabase().query(DatabaseHelper.TABLE_HEALTH_RECORDS,
+                null, "user_id = ? AND weight_kg IS NOT NULL", new String[]{String.valueOf(userId)},
+                null, null, "date DESC, COALESCE(measured_time, '') DESC, id DESC", "1")) {
+            return cursor.moveToFirst() ? cursorToRecord(cursor) : null;
+        }
     }
 
     private ContentValues toContentValues(HealthRecord record) {

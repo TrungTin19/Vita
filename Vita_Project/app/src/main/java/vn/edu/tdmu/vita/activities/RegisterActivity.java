@@ -27,6 +27,7 @@ import vn.edu.tdmu.vita.utils.SessionManager;
 public class RegisterActivity extends AppCompatActivity {
 
     private MaterialToolbar toolbar;
+    private boolean profileStep;
     private TextInputLayout tilUsername;
     private TextInputLayout tilPassword;
     private TextInputLayout tilConfirm;
@@ -59,6 +60,10 @@ public class RegisterActivity extends AppCompatActivity {
         initViews();
         setupSpinner();
         setupListeners();
+        showStep(savedInstanceState != null && savedInstanceState.getBoolean("register_profile_step"));
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() { navigateBack(); }
+        });
     }
 
     private void initViews() {
@@ -80,6 +85,16 @@ public class RegisterActivity extends AppCompatActivity {
         etHeight = findViewById(R.id.et_reg_height);
         etWeight = findViewById(R.id.et_reg_weight);
 
+        if (getResources().getConfiguration().fontScale > 1.3f) {
+            android.widget.LinearLayout row = (android.widget.LinearLayout) tilHeight.getParent();
+            row.setOrientation(android.widget.LinearLayout.VERTICAL);
+            for (int index = 0; index < row.getChildCount(); index++) {
+                android.widget.LinearLayout.LayoutParams params = (android.widget.LinearLayout.LayoutParams) row.getChildAt(index).getLayoutParams();
+                params.width = android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+                params.weight = 0;
+                params.setMarginStart(0); params.setMarginEnd(0);
+            }
+        }
         btnSubmit = findViewById(R.id.btn_reg_submit);
         tvGotoLogin = findViewById(R.id.tv_reg_goto_login);
     }
@@ -92,7 +107,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupListeners() {
-        toolbar.setNavigationOnClickListener(v -> finish());
+        toolbar.setNavigationOnClickListener(v -> navigateBack());
 
         etUsername.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -184,6 +199,11 @@ public class RegisterActivity extends AppCompatActivity {
             hasError = true;
         }
 
+        if (!profileStep) {
+            if (!hasError) showStep(true);
+            return;
+        }
+
         // Validate height
         float height = 0f;
         if (heightStr.isEmpty()) {
@@ -254,6 +274,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         long userId = userDao.register(newUser, password);
         if (userId == -1) {
+            showStep(false);
             tilUsername.setError(getString(R.string.register_error_username_exists));
             return;
         }
@@ -266,6 +287,28 @@ public class RegisterActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    private void showStep(boolean profile) {
+        profileStep = profile;
+        findViewById(R.id.group_register_account).setVisibility(profile ? android.view.View.GONE : android.view.View.VISIBLE);
+        findViewById(R.id.group_register_profile).setVisibility(profile ? android.view.View.VISIBLE : android.view.View.GONE);
+        ((TextView) findViewById(R.id.tv_register_step)).setText(profile ? R.string.figma_register_step_two : R.string.figma_register_step_one);
+        ((TextView) findViewById(R.id.tv_register_heading)).setText(profile ? R.string.figma_register_background_title : R.string.figma_register_title);
+        ((TextView) findViewById(R.id.title_register)).setText(profile ? R.string.figma_register_background : R.string.register_toolbar_title);
+        btnSubmit.setText(profile ? R.string.figma_register_finish : R.string.figma_register_next);
+        findViewById(R.id.tv_register_note).setVisibility(profile ? android.view.View.GONE : android.view.View.VISIBLE);
+        findViewById(R.id.tv_reg_goto_login).setVisibility(android.view.View.GONE);
+        ((android.widget.ScrollView) findViewById(R.id.scroll_register)).scrollTo(0, 0);
+    }
+
+    private void navigateBack() {
+        if (profileStep) showStep(false); else finish();
+    }
+
+    @Override protected void onSaveInstanceState(Bundle state) {
+        state.putBoolean("register_profile_step", profileStep);
+        super.onSaveInstanceState(state);
     }
 
     private abstract static class SimpleTextWatcher implements TextWatcher {

@@ -6,7 +6,6 @@ import static org.junit.Assert.*;
 import vn.edu.tdmu.vita.models.HealthRecord;
 import vn.edu.tdmu.vita.models.Medicine;
 import vn.edu.tdmu.vita.models.MedicineLog;
-import vn.edu.tdmu.vita.models.SleepLog;
 import vn.edu.tdmu.vita.models.WaterLog;
 
 public class DaosTest {
@@ -30,8 +29,6 @@ public class DaosTest {
         WaterLog waterLog = new WaterLog(4L, 10L, "2026-10-09", 250, "2026-10-09 09:00:00");
         assertEquals(250, waterLog.getAmountMl());
 
-        SleepLog sleepLog = new SleepLog(5L, 10L, "2026-10-09", "23:00", "07:00", 8.0f);
-        assertEquals(8.0f, sleepLog.getDurationH(), 0.01f);
     }
 
     @Test

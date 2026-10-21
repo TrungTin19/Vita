@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/vita_bg">
+    <include
+        android:id="@+id/toolbar_stats_data"
+        layout="@layout/view_page_toolbar" />
+    <TextView
+        android:id="@+id/tv_stats_data_period"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="24dp"
+        android:paddingBottom="16dp"
+        android:textSize="12sp"
+        android:textColor="@color/vita_text_secondary"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp" />
+    <ListView
+        android:id="@+id/list_stats_data"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="16dp"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp" />
+</LinearLayout>

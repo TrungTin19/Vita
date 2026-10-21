@@ -18,18 +18,16 @@ import java.util.List;
 import vn.edu.tdmu.vita.database.DatabaseHelper;
 import vn.edu.tdmu.vita.database.HealthDao;
 import vn.edu.tdmu.vita.database.MedicineDao;
-import vn.edu.tdmu.vita.database.SleepDao;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.database.WaterDao;
 import vn.edu.tdmu.vita.models.HealthRecord;
 import vn.edu.tdmu.vita.models.Medicine;
-import vn.edu.tdmu.vita.models.SleepLog;
 import vn.edu.tdmu.vita.models.User;
 import vn.edu.tdmu.vita.utils.DateTimeUtils;
 
 /**
  * Chạy trên thiết bị/máy ảo: Đăng ký -> Đăng nhập -> Thêm chỉ số ->
- * Đặt lịch thuốc -> Nạp nước -> Ghi ngủ -> Kiểm tra truy vấn biểu đồ.
+ * Đặt lịch thuốc -> Nạp nước.
  */
 @RunWith(AndroidJUnit4.class)
 public class VitaSystemIntegrationTest {
@@ -39,7 +37,6 @@ public class VitaSystemIntegrationTest {
     private HealthDao healthDao;
     private MedicineDao medicineDao;
     private WaterDao waterDao;
-    private SleepDao sleepDao;
 
     @Before
     public void setUp() {
@@ -49,7 +46,6 @@ public class VitaSystemIntegrationTest {
         healthDao = new HealthDao(context);
         medicineDao = new MedicineDao(context);
         waterDao = new WaterDao(context);
-        sleepDao = new SleepDao(context);
     }
 
     @Test
@@ -82,7 +78,7 @@ public class VitaSystemIntegrationTest {
         long medId = medicineDao.insert(medicine);
         assertTrue(medId > 0);
         assertEquals(1, medicineDao.getAllByUserId(userId).size());
-        long logId = medicineDao.logMedicineStatus(medId, today, "08:00", "TAKEN",
+        long logId = medicineDao.logMedicineStatus(medId,userId, today, "08:00", "TAKEN",
                 DateTimeUtils.getCurrentTimestamp());
         assertTrue(logId > 0);
 
@@ -91,11 +87,5 @@ public class VitaSystemIntegrationTest {
         assertTrue(waterDao.addWater(userId, today, 250, DateTimeUtils.getCurrentTimestamp()) > 0);
         assertEquals(500, waterDao.getDailyTotal(userId, today));
 
-        // 6. Ghi giấc ngủ qua đêm
-        float hours = DateTimeUtils.calculateSleepDuration("23:00", "06:30");
-        assertEquals(7.5f, hours, 0.01f);
-        SleepLog sleepLog = new SleepLog(0, userId, today, "23:00", "06:30", hours);
-        assertTrue(sleepDao.insert(sleepLog) > 0);
-        assertEquals(1, sleepDao.getLatest7Days(userId).size());
     }
 }

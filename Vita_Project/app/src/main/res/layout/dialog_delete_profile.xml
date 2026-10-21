@@ -5,21 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingHorizontal="24dp"
-    android:paddingTop="16dp">
+    android:paddingBottom="12dp"
+    android:paddingTop="0dp"
+    android:paddingStart="0dp"
+    android:paddingEnd="0dp">
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_delete_profile_password"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.Vita.AuthInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/profile_delete_password"
-        app:endIconMode="password_toggle">
-
+        android:hint="@string/figma_delete_profile_password"
+        app:placeholderText="@string/figma_delete_profile_placeholder">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/et_delete_profile_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="48dp"
+            android:minHeight="72dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
             android:inputType="textPassword"
             android:imeOptions="actionDone"
             android:saveEnabled="false" />

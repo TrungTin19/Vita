@@ -40,6 +40,7 @@ public class ProfileBirthYearDeviceTest {
             screen.onActivity(activity->{
                 fill(activity,name,year);
                 activity.findViewById(R.id.btn_reg_submit).performClick();
+                activity.findViewById(R.id.btn_reg_submit).performClick();
             });
         }
         User user=users.login(name,"test-password");
@@ -70,6 +71,7 @@ public class ProfileBirthYearDeviceTest {
         try(ActivityScenario<RegisterActivity> screen=ActivityScenario.launch(RegisterActivity.class)) {
             for(String year:new String[]{"1899","9999"}) screen.onActivity(activity->{
                 fill(activity,name,year); activity.findViewById(R.id.btn_reg_submit).performClick();
+                activity.findViewById(R.id.btn_reg_submit).performClick();
                 assertNotNull(((TextInputLayout)activity.findViewById(R.id.til_reg_birth_year)).getError());
                 assertFalse(users.isUsernameExists(name));
             });

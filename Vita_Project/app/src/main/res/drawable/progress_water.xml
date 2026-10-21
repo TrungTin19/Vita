@@ -2,16 +2,16 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
-            <corners android:radius="6dp" />
-            <solid android:color="#E0E0E0" />
+            <corners android:radius="4dp" />
+            <solid android:color="@color/vita_surface" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
-        <clip>
+        <scale android:scaleWidth="100%" android:scaleGravity="start">
             <shape android:shape="rectangle">
-                <corners android:radius="6dp" />
-                <solid android:color="#1976D2" />
+                <corners android:radius="4dp" />
+                <solid android:color="@color/vita_water" />
             </shape>
-        </clip>
+        </scale>
     </item>
 </layer-list>

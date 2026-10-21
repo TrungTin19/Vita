@@ -1,124 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
     android:id="@+id/root_health"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/vita_bg">
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <!-- Header title -->
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/spacing_md"
-            android:paddingTop="@dimen/spacing_md"
-            android:paddingBottom="@dimen/spacing_sm"
-            android:text="@string/health_list_title"
-            android:textColor="@color/vita_text_primary"
-            android:textSize="@dimen/text_h2"
-            android:textStyle="bold" />
-
-        <!-- Date filter bar -->
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingTop="24dp"
+            android:paddingBottom="24dp"
+            android:minHeight="100dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/figma_health_title"
+                    android:textColor="@color/vita_text_primary"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/figma_health_subtitle"
+                    android:textSize="12sp"
+                    android:textColor="@color/vita_text_secondary"
+                    android:layout_marginTop="6dp" />
+            </LinearLayout>
+            <ImageButton
+                android:id="@+id/btn_health_profile"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:src="@drawable/figma_ic_profile"
+                android:background="@drawable/figma_avatar_bg"
+                android:contentDescription="@string/figma_health_profile"
+                app:tint="@color/vita_teal" />
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/layout_health_filter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/spacing_md"
-            android:paddingBottom="@dimen/spacing_sm">
-
+            android:paddingBottom="@dimen/spacing_sm"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_health_clear_filter"
+                style="@style/Widget.Vita.Button.Outlined"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/min_touch_target"
+                android:text="@string/health_filter_all_dates"
+                android:textColor="@color/vita_teal"
+                tools:visibility="visible"
+                android:layout_marginEnd="4dp" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_health_filter_date"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.Vita.Button.Outlined"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/min_touch_target"
-                android:layout_marginEnd="@dimen/spacing_sm"
+                android:layout_marginEnd="4dp"
                 android:layout_weight="1"
-                android:text="@string/health_filter_all_dates"
+                android:text="@string/figma_health_choose_range"
                 android:textColor="@color/vita_text_primary"
-                app:icon="@drawable/ic_calendar"
                 app:iconGravity="start"
                 app:iconTint="@color/vita_teal"
                 app:strokeColor="@color/vita_divider" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_health_clear_filter"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/min_touch_target"
-                android:text="@string/health_filter_clear"
-                android:textColor="@color/vita_teal"
-                android:visibility="gone"
-                tools:visibility="visible" />
         </LinearLayout>
-
-        <!-- RecyclerView -->
+        <TextView
+            android:id="@+id/tv_health_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_sm"
+            android:textColor="@color/vita_text_secondary"
+            android:textSize="12sp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp" />
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_health_records"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
             android:clipToPadding="false"
-            android:paddingBottom="@dimen/spacing_scroll_pad"
+            android:paddingBottom="0dp"
             tools:listitem="@layout/item_health_record" />
-
-        <!-- Empty state -->
         <LinearLayout
             android:id="@+id/layout_health_empty"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:minHeight="220dp"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="gone"
-            tools:visibility="visible">
-
+            tools:visibility="visible"
+            android:padding="24dp">
             <ImageView
                 android:layout_width="@dimen/min_touch_target"
                 android:layout_height="@dimen/min_touch_target"
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_empty_notes"
                 app:tint="@color/vita_text_disabled" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_md"
+                android:layout_marginTop="24dp"
+                android:id="@+id/tv_health_empty_title"
                 android:text="@string/health_empty_title"
-                android:textColor="@color/vita_text_disabled"
-                android:textSize="@dimen/text_body_lg" />
-
+                android:textColor="@color/vita_text_secondary"
+                android:textSize="@dimen/text_body_lg"
+                android:gravity="center" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/spacing_xs"
                 android:text="@string/health_empty_desc"
-                android:textColor="@color/vita_text_disabled"
-                android:textSize="@dimen/text_body" />
+                android:textColor="@color/vita_text_secondary"
+                android:textSize="@dimen/text_body"
+                android:gravity="center" />
         </LinearLayout>
-
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/fab_add_health"
+            style="@style/Widget.Vita.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="52dp"
+            android:layout_marginBottom="16dp"
+            android:text="@string/figma_health_record"
+            android:contentDescription="@string/health_fab_content_desc"
+            app:icon="@drawable/ic_add"
+            app:iconGravity="textStart"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp" />
     </LinearLayout>
-
-    <!-- FAB -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_health"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/spacing_md"
-        android:layout_marginBottom="@dimen/spacing_scroll_pad"
-        android:contentDescription="@string/health_fab_content_desc"
-        app:backgroundTint="@color/btn_fab_bg"
-        app:elevation="@dimen/elevation_fab"
-        app:srcCompat="@drawable/ic_add"
-        app:tint="@color/white" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.core.widget.NestedScrollView>

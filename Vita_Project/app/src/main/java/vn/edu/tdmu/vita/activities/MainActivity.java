@@ -17,13 +17,19 @@ import vn.edu.tdmu.vita.fragments.HomeFragment;
 import vn.edu.tdmu.vita.fragments.ReminderFragment;
 import vn.edu.tdmu.vita.fragments.StatsFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements vn.edu.tdmu.vita.utils.WaterJournalDialog.Host {
 
     public static final String EXTRA_TAB = "extra_tab";
     public static final String TAB_REMINDER = "reminder";
 
     private MaterialToolbar toolbar;
     private BottomNavigationView bottomNav;
+    private int activeTab = R.id.nav_home;
+    private final android.content.BroadcastReceiver clockReceiver = new android.content.BroadcastReceiver() {
+        @Override public void onReceive(android.content.Context context, Intent intent) {
+            refreshVisible();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +38,35 @@ public class MainActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar_main);
         bottomNav = findViewById(R.id.bottom_nav_main);
+        bottomNav.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                androidx.core.content.ContextCompat.getColor(this, R.color.vita_surface)));
+        bottomNav.setElevation(0);
 
-        toolbar.setOnMenuItemClickListener(this::onToolbarItemClicked);
+        findViewById(R.id.btn_main_profile).setOnClickListener(v -> startActivity(new Intent(this, ProfileActivity.class)));
         bottomNav.setOnItemSelectedListener(this::onTabSelected);
         bottomNav.setOnItemReselectedListener(item -> { /* đứng yên tab hiện tại */ });
 
-        if (savedInstanceState == null) {
-            openTab(getIntentTab());
-        }
+        openTab(savedInstanceState == null ? getIntentTab() : savedInstanceState.getInt("active_tab", R.id.nav_home));
+    }
+
+    @Override protected void onSaveInstanceState(@NonNull Bundle state) {
+        state.putInt("active_tab", activeTab);
+        super.onSaveInstanceState(state);
+    }
+
+    @Override protected void onStart() {
+        super.onStart();
+        android.content.IntentFilter filter = new android.content.IntentFilter(Intent.ACTION_TIME_TICK);
+        filter.addAction(Intent.ACTION_DATE_CHANGED);
+        filter.addAction(Intent.ACTION_TIME_CHANGED);
+        filter.addAction(Intent.ACTION_TIMEZONE_CHANGED);
+        androidx.core.content.ContextCompat.registerReceiver(this, clockReceiver, filter,
+                androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
+    }
+
+    @Override protected void onStop() {
+        unregisterReceiver(clockReceiver);
+        super.onStop();
     }
 
     @Override
@@ -76,18 +103,26 @@ public class MainActivity extends AppCompatActivity {
         if (bottomNav.getSelectedItemId() != itemId) {
             bottomNav.setSelectedItemId(itemId); // khác tab -> listener tự bắn
         } else {
-            // ponytail: setSelectedItemId không bắn listener khi item đã checked sẵn
+            // setSelectedItemId không bắn listener khi item đã checked sẵn
             // -> gọi transaction trực tiếp thay vì trông chờ callback.
             onTabSelected(bottomNav.getMenu().findItem(itemId));
         }
     }
 
-    private boolean onToolbarItemClicked(MenuItem item) {
-        if (item.getItemId() == R.id.action_profile) {
-            startActivity(new Intent(this, ProfileActivity.class));
-            return true;
-        }
-        return false;
+    @Override public void onWaterJournalChanged() {
+        refreshVisible();
+    }
+
+    private void refreshVisible() {
+        ((android.widget.TextView) findViewById(R.id.tv_main_date)).setText(
+                new java.text.SimpleDateFormat("EEEE, d 'tháng' M", new java.util.Locale("vi", "VN")).format(new java.util.Date()));
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("tab:" + activeTab);
+        if (fragment == null || fragment.getView() == null) return;
+        if (fragment instanceof ReminderFragment && fragment.getView() != null)
+            ((ReminderFragment) fragment).refreshToday();
+        if (fragment instanceof HealthFragment) ((HealthFragment) fragment).loadData();
+        if (fragment instanceof HomeFragment) ((HomeFragment) fragment).refreshDashboard();
+        if (fragment instanceof StatsFragment) ((StatsFragment) fragment).loadAll();
     }
 
     private boolean onTabSelected(@NonNull MenuItem item) {
@@ -111,10 +146,23 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
 
-        toolbar.setTitle(titleRes);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+        ((android.widget.TextView) findViewById(R.id.tv_main_title)).setText(titleRes);
+        boolean home = itemId == R.id.nav_home;
+        toolbar.setVisibility(home ? android.view.View.VISIBLE : android.view.View.GONE);
+        android.widget.TextView date = findViewById(R.id.tv_main_date);
+        date.setVisibility(home ? android.view.View.VISIBLE : android.view.View.GONE);
+        date.setText(new java.text.SimpleDateFormat("EEEE, d 'tháng' M", new java.util.Locale("vi", "VN")).format(new java.util.Date()));
+        activeTab = itemId;
+        String tag = "tab:" + itemId;
+        Fragment existing = getSupportFragmentManager().findFragmentByTag(tag);
+        if (existing != null) fragment = existing;
+        androidx.fragment.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        for (Fragment other : getSupportFragmentManager().getFragments()) {
+            if (other.getId() != R.id.fragment_container || other == fragment) continue;
+            transaction.hide(other).setMaxLifecycle(other, androidx.lifecycle.Lifecycle.State.STARTED);
+        }
+        if (existing == null) transaction.add(R.id.fragment_container, fragment, tag);
+        transaction.show(fragment).setMaxLifecycle(fragment, androidx.lifecycle.Lifecycle.State.RESUMED).commit();
         return true;
     }
 }

@@ -1,0 +1,10 @@
+<resources>
+<string name="figma_home_subtitle">Một chút quan tâm, mỗi ngày khỏe hơn.</string>
+<string name="figma_home_record">Ghi chỉ số sức khỏe</string>
+<string name="figma_home_reminders">Xem lịch nhắc</string>
+<string name="figma_home_custom">Lượng khác</string>
+<string name="figma_home_journal">Xem nhật ký nước →</string>
+<string name="figma_home_goal">/ %1$,d ml\nCòn %2$,d ml</string>
+<string name="figma_home_percent">%1$d%% mục tiêu ngày</string>
+<string name="figma_home_quick_water">+ %1$d ml</string>
+</resources>

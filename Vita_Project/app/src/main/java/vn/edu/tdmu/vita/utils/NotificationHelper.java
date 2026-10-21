@@ -37,7 +37,7 @@ public final class NotificationHelper {
         if (manager == null) return;
         SharedPreferences prefs = context.getSharedPreferences(PREFS_CHANNEL, Context.MODE_PRIVATE);
         if (prefs.getInt(KEY_MED_CHANNEL_V, 0) < MED_CHANNEL_VERSION) {
-            // ponytail: channel tạo 1 lần và hệ thống giữ mãi; xóa để bản cũ nhận cấu hình mới.
+            // Android giữ cấu hình notification channel sau khi tạo, nên cần xóa channel cũ để áp dụng cấu hình mới.
             manager.deleteNotificationChannel(CHANNEL_ID);
             prefs.edit().putInt(KEY_MED_CHANNEL_V, MED_CHANNEL_VERSION).apply();
         }
@@ -168,7 +168,7 @@ public final class NotificationHelper {
         if (manager == null || manager.getNotificationChannel(WATER_CHANNEL_ID) != null) return;
         NotificationChannel channel = new NotificationChannel(
                 WATER_CHANNEL_ID, WATER_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-        channel.setDescription("Nhắc uống nước định kỳ mỗi 2 giờ của Vita");
+        channel.setDescription(context.getString(R.string.water_channel_description));
         manager.createNotificationChannel(channel);
     }
 }

@@ -1,23 +1,17 @@
 package vn.edu.tdmu.vita.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -34,7 +28,6 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,14 +36,10 @@ import java.util.Locale;
 import java.util.Map;
 
 import vn.edu.tdmu.vita.R;
-import vn.edu.tdmu.vita.activities.AddSleepActivity;
-import vn.edu.tdmu.vita.adapters.SleepRecordAdapter;
 import vn.edu.tdmu.vita.database.HealthDao;
-import vn.edu.tdmu.vita.database.SleepDao;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.database.WaterDao;
 import vn.edu.tdmu.vita.models.HealthRecord;
-import vn.edu.tdmu.vita.models.SleepLog;
 import vn.edu.tdmu.vita.models.User;
 import vn.edu.tdmu.vita.utils.DateTimeUtils;
 import vn.edu.tdmu.vita.utils.HealthChartData;
@@ -64,34 +53,21 @@ public class StatsFragment extends Fragment {
     private LineChart chartHeartRate;
     private LineChart chartGlucose;
     private BarChart chartWater;
-    private BarChart chartSleep;
     private TextView tvWaterGoal;
-    private TextView tvSleepEmpty;
-    private RecyclerView rvSleepRecords;
-    private FloatingActionButton fabAddSleep;
     private MaterialButtonToggleGroup toggleRange;
+    private androidx.appcompat.app.AppCompatDialog dataScreen;
 
     private HealthDao healthDao;
     private WaterDao waterDao;
-    private SleepDao sleepDao;
     private UserDao userDao;
     private SessionManager sessionManager;
 
-    private List<SleepLog> sleepLogs;
-    private SleepRecordAdapter sleepAdapter;
-
     private int rangeDays = 7;
-
-    private ActivityResultLauncher<Intent> addSleepLauncher;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        addSleepLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> loadAll()
-        );
-    }
+    private int selectedMetric, selectedContext;
+    private android.widget.Spinner metricSelector, contextSelector;
+    private final List<HealthRecord> displayedRecords = new ArrayList<>();
+    private List<String> displayedDays = new ArrayList<>();
+    private Map<String, Integer> displayedWater = java.util.Collections.emptyMap();
 
     @Nullable
     @Override
@@ -104,10 +80,12 @@ public class StatsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        view.findViewById(R.id.btn_stats_profile).setOnClickListener(v -> startActivity(
+                new android.content.Intent(requireContext(), vn.edu.tdmu.vita.activities.ProfileActivity.class)));
+
         sessionManager = new SessionManager(requireContext());
         healthDao = new HealthDao(requireContext());
         waterDao = new WaterDao(requireContext());
-        sleepDao = new SleepDao(requireContext());
         userDao = new UserDao(requireContext());
 
         chartBp = view.findViewById(R.id.chart_bp);
@@ -115,29 +93,46 @@ public class StatsFragment extends Fragment {
         chartHeartRate = view.findViewById(R.id.chart_heart_rate);
         chartGlucose = view.findViewById(R.id.chart_glucose);
         chartWater = view.findViewById(R.id.chart_water);
-        chartSleep = view.findViewById(R.id.chart_sleep);
         tvWaterGoal = view.findViewById(R.id.tv_water_goal);
-        tvSleepEmpty = view.findViewById(R.id.tv_sleep_empty);
-        rvSleepRecords = view.findViewById(R.id.rv_sleep_records);
-        fabAddSleep = view.findViewById(R.id.fab_add_sleep);
         toggleRange = view.findViewById(R.id.toggle_time_range);
-
-        sleepLogs = new ArrayList<>();
-        sleepAdapter = new SleepRecordAdapter(sleepLogs);
-        rvSleepRecords.setLayoutManager(new LinearLayoutManager(requireContext()));
-        rvSleepRecords.setAdapter(sleepAdapter);
-        registerForContextMenu(rvSleepRecords);
+        if (savedInstanceState != null) {
+            selectedMetric = savedInstanceState.getInt("metric", 0);
+            selectedContext = savedInstanceState.getInt("context", 0);
+        }
+        metricSelector = view.findViewById(R.id.sp_stats_metric);
+        contextSelector = view.findViewById(R.id.sp_stats_context);
+        metricSelector.setAdapter(android.widget.ArrayAdapter.createFromResource(requireContext(), R.array.stats_metrics, android.R.layout.simple_spinner_dropdown_item));
+        contextSelector.setAdapter(android.widget.ArrayAdapter.createFromResource(requireContext(), R.array.stats_contexts, android.R.layout.simple_spinner_dropdown_item));
+        metricSelector.setSelection(selectedMetric);
+        contextSelector.setSelection(selectedContext);
+        android.widget.AdapterView.OnItemSelectedListener selected = new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(android.widget.AdapterView<?> parent, View item, int position, long id) {
+                selectedMetric = metricSelector.getSelectedItemPosition();
+                selectedContext = contextSelector.getSelectedItemPosition();
+                loadAll();
+            }
+            @Override public void onNothingSelected(android.widget.AdapterView<?> parent) { }
+        };
+        metricSelector.setOnItemSelectedListener(selected);
+        contextSelector.setOnItemSelectedListener(selected);
+        view.findViewById(R.id.btn_stats_data).setOnClickListener(v -> showData());
+        view.findViewById(R.id.btn_stats_first_measurement).setOnClickListener(v -> {
+            if (selectedMetric == 4) {
+                vn.edu.tdmu.vita.utils.WaterJournalDialog.showAddAmount(requireActivity(), sessionManager.getUserId(), this::loadAll);
+            } else {
+                int[] groups = {3, 1, 2, 4};
+                startActivity(new android.content.Intent(requireContext(), vn.edu.tdmu.vita.activities.AddHealthActivity.class)
+                        .putExtra(vn.edu.tdmu.vita.activities.AddHealthActivity.EXTRA_METRIC_GROUP, groups[selectedMetric]));
+            }
+        });
+        if (savedInstanceState != null) rangeDays = savedInstanceState.getInt("range_days", 7);
+        toggleRange.check(rangeDays == 30 ? R.id.btn_range_30 : R.id.btn_range_7);
 
         toggleRange.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (!isChecked) return;
             rangeDays = (checkedId == R.id.btn_range_30) ? 30 : 7;
             loadCharts();
         });
-        fabAddSleep.setOnClickListener(v -> {
-            Intent intent = new Intent(requireContext(), AddSleepActivity.class);
-            addSleepLauncher.launch(intent);
-        });
-
         loadAll();
     }
 
@@ -147,10 +142,17 @@ public class StatsFragment extends Fragment {
         loadAll();
     }
 
-    private void loadAll() {
+    public void loadAll() {
+        if (getView() == null || sessionManager == null) return;
         if (sessionManager.getUserId() <= 0) return;
         loadCharts();
-        loadSleepList();
+    }
+
+    @Override public void onSaveInstanceState(@NonNull Bundle state) {
+        state.putInt("range_days", rangeDays);
+        state.putInt("metric", selectedMetric);
+        state.putInt("context", selectedContext);
+        super.onSaveInstanceState(state);
     }
 
     private List<String> lastDaysDb(int n) {
@@ -175,12 +177,144 @@ public class StatsFragment extends Fragment {
         String end = days.get(days.size() - 1);
 
         List<HealthRecord> records = healthDao.getRecordsRange(userId, start, end);
-        drawMetricChart(chartWeight, records, days, HealthChartData.Metric.WEIGHT);
-        drawMetricChart(chartHeartRate, records, days, HealthChartData.Metric.HEART_RATE);
-        drawMetricChart(chartGlucose, records, days, HealthChartData.Metric.BLOOD_SUGAR);
-        drawBpChart(records, days);
-        drawWaterChart(userId, days);
-        drawSleepChart(userId, days);
+        displayedDays = days;
+        displayedRecords.clear();
+        for (HealthRecord record : records) if (matchesSelectedMetric(record)) displayedRecords.add(record);
+        View[] cards = { (View) chartWeight.getParent().getParent(), (View) chartBp.getParent().getParent(),
+                (View) chartHeartRate.getParent().getParent(), (View) chartGlucose.getParent().getParent(), (View) chartWater.getParent().getParent() };
+        for (int i = 0; i < cards.length; i++) cards[i].setVisibility(i == selectedMetric ? View.VISIBLE : View.GONE);
+        ((View) contextSelector.getParent()).setVisibility(selectedMetric == 3 ? View.VISIBLE : View.GONE);
+        switch (selectedMetric) {
+            case 0: drawMetricChart(chartWeight, displayedRecords, days, HealthChartData.Metric.WEIGHT); break;
+            case 1: drawBpChart(displayedRecords, days); break;
+            case 2: drawMetricChart(chartHeartRate, displayedRecords, days, HealthChartData.Metric.HEART_RATE); break;
+            case 3: drawMetricChart(chartGlucose, displayedRecords, days, HealthChartData.Metric.BLOOD_SUGAR); break;
+            case 4: drawWaterChart(userId, days); break;
+        }
+        String summary;
+        TextView latestValue = requireView().findViewById(R.id.tv_stats_latest_value);
+        latestValue.setText("—");
+        TextView countBadge = requireView().findViewById(R.id.tv_stats_count);
+        countBadge.setVisibility(selectedMetric == 0 && !displayedRecords.isEmpty() ? View.VISIBLE : View.GONE);
+        countBadge.setText(getString(R.string.figma_stats_record_count, displayedRecords.size()));
+        TextView chartNote = requireView().findViewById(R.id.tv_stats_chart_note);
+        chartNote.setVisibility(selectedMetric == 1 || selectedMetric == 2 || selectedMetric == 4 ? View.VISIBLE : View.GONE);
+        chartNote.setText(selectedMetric == 1 ? getString(R.string.figma_stats_bp_note)
+                : selectedMetric == 4 ? tvWaterGoal.getText() : getString(R.string.figma_stats_point_note, displayedRecords.size()));
+        tvWaterGoal.setVisibility(View.GONE);
+        if (selectedMetric == 4) {
+            displayedWater = waterDao.getDailyTotalsRange(userId, start, end);
+            summary = getString(R.string.health_result_count, displayedWater.size());
+            for (int i = days.size() - 1; i >= 0; i--) if (displayedWater.containsKey(days.get(i))) {
+                summary += "\n" + DateTimeUtils.formatDisplayDate(days.get(i));
+                latestValue.setText(displayedWater.get(days.get(i)) + " ml");
+                break;
+            }
+        } else {
+            int count = displayedRecords.size();
+            if (count > 0) latestValue.setText(metricValue(displayedRecords.get(count - 1)));
+            summary = count == 0 ? getString(R.string.stats_no_records) : vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(requireContext(), displayedRecords.get(count - 1));
+            if (selectedMetric == 1 || selectedMetric == 2) summary += "\n" + getString(R.string.figma_stats_record_count, count);
+            if (count == 1 && selectedMetric != 0) summary += "\n" + getString(R.string.stats_one_record);
+        }
+        String latest = latestValue.getText().toString();
+        int unitStart = latest.lastIndexOf(' ');
+        ((TextView) requireView().findViewById(R.id.tv_stats_latest_unit)).setText(unitStart < 0 ? "" : latest.substring(unitStart + 1));
+        if (unitStart >= 0) latestValue.setText(latest.substring(0, unitStart));
+        ((TextView) requireView().findViewById(R.id.tv_stats_summary)).setText(summary);
+        boolean empty = selectedMetric == 4 ? displayedWater.isEmpty() : displayedRecords.isEmpty();
+        requireView().findViewById(R.id.layout_stats_empty).setVisibility(empty ? View.VISIBLE : View.GONE);
+        requireView().findViewById(R.id.card_stats_latest).setVisibility(empty ? View.GONE : View.VISIBLE);
+        requireView().findViewById(R.id.btn_stats_data).setVisibility(empty ? View.GONE : View.VISIBLE);
+        ((TextView) requireView().findViewById(R.id.tv_stats_empty)).setText(selectedMetric == 0
+                ? R.string.figma_stats_empty_weight : R.string.figma_stats_empty_metric);
+        ((TextView) requireView().findViewById(R.id.btn_stats_first_measurement)).setText(selectedMetric == 0
+                ? R.string.figma_stats_first_weight : selectedMetric == 4 ? R.string.figma_stats_first_water : R.string.figma_health_record);
+        if (empty) {
+            for (View card : cards) card.setVisibility(View.GONE);
+            chartNote.setVisibility(View.GONE);
+        }
+        boolean oneWeight = selectedMetric == 0 && displayedRecords.size() == 1;
+        ((TextView) requireView().findViewById(R.id.tv_stats_weight_chart_title)).setText(oneWeight
+                ? R.string.figma_stats_one_title : R.string.figma_chart_weight);
+        requireView().findViewById(R.id.tv_stats_weight_note).setVisibility(oneWeight ? View.VISIBLE : View.GONE);
+    }
+
+    private boolean matchesSelectedMetric(HealthRecord r) {
+        switch (selectedMetric) {
+            case 0: return r.getWeightKg() != null;
+            case 1: return r.getSystolic() != null && r.getDiastolic() != null;
+            case 2: return r.getHeartRate() != null;
+            case 3: return r.getBloodSugar() != null && (selectedContext == 0
+                    || r.getMealContext().ordinal() == (selectedContext == 4 ? 0 : selectedContext));
+            default: return false;
+        }
+    }
+
+    private String metricValue(HealthRecord r) {
+        String value;
+        switch (selectedMetric) {
+            case 0: value = String.format(Locale.getDefault(), "%.1f kg", r.getWeightKg()); break;
+            case 1: value = r.getSystolic() + " / " + r.getDiastolic() + " mmHg"; break;
+            case 2: value = r.getHeartRate() + " bpm"; break;
+            default: value = String.format(Locale.getDefault(), "%.0f mg/dL", r.getBloodSugar());
+        }
+        return value;
+    }
+
+    private CharSequence dataRow(String date, String value) {
+        android.text.SpannableString row = new android.text.SpannableString(date + "\n" + value);
+        row.setSpan(new android.text.style.AbsoluteSizeSpan(Math.round(android.util.TypedValue.applyDimension(
+                android.util.TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()))), 0, date.length(), 0);
+        row.setSpan(new android.text.style.ForegroundColorSpan(ContextCompat.getColor(requireContext(), R.color.vita_text_secondary)), 0, date.length(), 0);
+        row.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), date.length() + 1, row.length(), 0);
+        return row;
+    }
+
+    private void showData() {
+        List<HealthRecord> dataRecords = new ArrayList<>(displayedRecords);
+        java.util.Collections.reverse(dataRecords);
+        List<String> dataDays = new ArrayList<>(displayedDays);
+        java.util.Collections.reverse(dataDays);
+        List<CharSequence> labels = new ArrayList<>();
+        if (selectedMetric == 4) {
+            for (String day : dataDays) labels.add(dataRow(DateTimeUtils.formatDisplayDate(day),
+                    (displayedWater.containsKey(day) ? displayedWater.get(day) + " ml" : getString(R.string.stats_unrecorded))
+                            + (day.equals(DateTimeUtils.getTodayDate()) ? " · " + getString(R.string.stats_today_ongoing) : "")));
+        } else for (HealthRecord r : dataRecords) labels.add(dataRow(
+                vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(requireContext(), r).replace(DateTimeUtils.formatDisplayDate(r.getDate()), shortDate(r.getDate())), metricValue(r)));
+        if (labels.isEmpty()) {
+            new androidx.appcompat.app.AlertDialog.Builder(requireContext()).setMessage(R.string.stats_no_records)
+                    .setPositiveButton(R.string.action_close_short, null).show();
+            return;
+        }
+        dataScreen = new androidx.appcompat.app.AppCompatDialog(requireContext(), R.style.Theme_Vita);
+        dataScreen.setContentView(R.layout.dialog_stats_data);
+        com.google.android.material.appbar.MaterialToolbar dataToolbar = dataScreen.findViewById(R.id.toolbar_stats_data);
+        ((TextView) dataScreen.findViewById(R.id.tv_page_title)).setText(getString(R.string.figma_stats_data_title,
+                metricSelector.getSelectedItem().toString().toLowerCase(Locale.getDefault())));
+        dataToolbar.setNavigationOnClickListener(v -> dataScreen.dismiss());
+        ((TextView) dataScreen.findViewById(R.id.tv_stats_data_period)).setText(getString(selectedMetric == 4
+                        ? R.string.figma_stats_water_data_period : R.string.figma_stats_data_period,
+                shortDate(displayedDays.get(0)),
+                DateTimeUtils.formatDisplayDate(displayedDays.get(displayedDays.size() - 1)), labels.size()));
+        android.widget.ListView list = dataScreen.findViewById(R.id.list_stats_data);
+        list.setAdapter(new android.widget.ArrayAdapter<>(requireContext(), R.layout.item_stats_data,
+                R.id.tv_stats_data_item, labels));
+        list.setOnItemClickListener((parent, row, position, id) -> {
+                    dataScreen.dismiss();
+                    if (selectedMetric == 4) vn.edu.tdmu.vita.utils.WaterJournalDialog.show(requireActivity(), sessionManager.getUserId(), dataDays.get(position), this::loadAll);
+                    else startActivity(new android.content.Intent(requireContext(), vn.edu.tdmu.vita.activities.DetailHealthActivity.class)
+                            .putExtra(vn.edu.tdmu.vita.activities.DetailHealthActivity.EXTRA_RECORD_ID, dataRecords.get(position).getId()));
+                });
+        dataScreen.show();
+        dataScreen.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+    }
+
+    @Override public void onDestroyView() {
+        if (dataScreen != null) dataScreen.dismiss();
+        dataScreen = null;
+        super.onDestroyView();
     }
 
     private String shortDate(String dbDate) {
@@ -199,7 +333,7 @@ public class StatsFragment extends Fragment {
     private void drawMetricChart(LineChart chart, List<HealthRecord> records,
                                  List<String> days, HealthChartData.Metric metric) {
         styleLineChart(requireContext(), chart);
-        chart.setNoDataText(getString(R.string.stats_not_enough_data));
+        chart.setNoDataText(getString(R.string.stats_no_records));
         List<Entry> entries = new ArrayList<>();
         for (HealthChartData.Point point : HealthChartData.metricPoints(records, days, metric)) {
             entries.add(new Entry(point.x, point.value,
@@ -224,8 +358,34 @@ public class StatsFragment extends Fragment {
         chart.getXAxis().setValueFormatter(new IndexAxisValueFormatter(dayLabels(days)));
         chart.getXAxis().setAxisMinimum(0f);
         chart.getXAxis().setAxisMaximum(days.size());
+        chart.getXAxis().setDrawLabels(entries.size() != 1);
+        if (entries.size() == 1) {
+            chart.getXAxis().setAxisMinimum(entries.get(0).getX() - 1f);
+            chart.getXAxis().setAxisMaximum(entries.get(0).getX() + 1f);
+        }
         chart.setMarker(new ChartMarker(requireContext(), dayLabels(days), unit));
         chart.setData(new LineData(data));
+        if (glucose) {
+            List<com.github.mikephil.charting.interfaces.datasets.ILineDataSet> groups = new ArrayList<>();
+            int[] colors = {R.color.vita_text_secondary, R.color.vita_water, R.color.vita_status_warning, R.color.vita_teal};
+            for (HealthRecord.MealContext context : HealthRecord.MealContext.values()) {
+                List<Entry> values = new ArrayList<>();
+                for (HealthChartData.Point point : HealthChartData.metricPoints(records, days, metric))
+                    if (point.record.getMealContext() == context) values.add(new Entry(point.x, point.value,
+                            vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(requireContext(), point.record)));
+                if (values.isEmpty()) continue;
+                LineDataSet group = new LineDataSet(values, getResources().getStringArray(R.array.meal_contexts)[context.ordinal()]);
+                int groupColor = ContextCompat.getColor(requireContext(), colors[context.ordinal()]);
+                group.setColor(groupColor); group.setCircleColor(groupColor); group.setCircleRadius(4f); group.setDrawValues(false);
+                group.setLineWidth(2f);
+                if (context == HealthRecord.MealContext.UNSPECIFIED) group.setColor(Color.TRANSPARENT);
+                else if (context == HealthRecord.MealContext.BEFORE_MEAL) group.enableDashedLine(8f, 5f, 0f);
+                else if (context == HealthRecord.MealContext.AFTER_MEAL) group.enableDashedLine(2f, 5f, 0f);
+                groups.add(group);
+            }
+            chart.setData(new LineData(groups));
+            chart.getLegend().setEnabled(true);
+        }
         chart.invalidate();
     }
 
@@ -245,21 +405,23 @@ public class StatsFragment extends Fragment {
         }
 
         styleLineChart(context, chartBp);
-        chartBp.setNoDataText(getString(R.string.stats_not_enough_data));
+        chartBp.setNoDataText(getString(R.string.stats_no_records));
         if (sysEntries.isEmpty()) {
             chartBp.clear();
             chartBp.invalidate();
             return;
         }
 
-        int sysColor = ContextCompat.getColor(context, R.color.vita_status_danger);
+        int sysColor = ContextCompat.getColor(context, R.color.vita_teal);
         int diaColor = ContextCompat.getColor(context, R.color.vita_water);
 
         LineDataSet sysSet = new LineDataSet(sysEntries, getString(R.string.stats_bp_sys_label));
         sysSet.setColor(sysColor);
+        sysSet.setForm(com.github.mikephil.charting.components.Legend.LegendForm.LINE);
         sysSet.setCircleColor(sysColor);
         sysSet.setCircleRadius(4f);
         sysSet.setLineWidth(2.5f);
+        sysSet.setDrawValues(false);
         sysSet.setMode(LineDataSet.Mode.LINEAR);
 
         LineDataSet diaSet = new LineDataSet(diaEntries, getString(R.string.stats_bp_dia_label));
@@ -267,23 +429,18 @@ public class StatsFragment extends Fragment {
         diaSet.setCircleColor(diaColor);
         diaSet.setCircleRadius(5f);
         diaSet.setLineWidth(2f);
-        diaSet.enableDashedLine(10f, 5f, 0f); // nét đứt cho người mù màu
+        diaSet.setDrawValues(false);
+        diaSet.setForm(com.github.mikephil.charting.components.Legend.LegendForm.LINE);
+        diaSet.enableDashedLine(10f, 5f, 0f);
+        diaSet.setFormLineDashEffect(diaSet.getDashPathEffect()); // nét đứt cho người mù màu
         diaSet.setMode(LineDataSet.Mode.LINEAR);
-
-        LimitLine sysLimit = new LimitLine(120f);
-        sysLimit.setLineColor(sysColor);
-        sysLimit.enableDashedLine(8f, 6f, 0f);
-        LimitLine diaLimit = new LimitLine(80f);
-        diaLimit.setLineColor(diaColor);
-        diaLimit.enableDashedLine(8f, 6f, 0f);
-        chartBp.getAxisLeft().removeAllLimitLines();
-        chartBp.getAxisLeft().addLimitLine(sysLimit);
-        chartBp.getAxisLeft().addLimitLine(diaLimit);
 
         chartBp.getXAxis().setAxisMinimum(0f);
         chartBp.getXAxis().setAxisMaximum(days.size());
         chartBp.getXAxis().setValueFormatter(new IndexAxisValueFormatter(labels));
         chartBp.setMarker(new ChartMarker(context, labels, " mmHg"));
+        chartBp.getLegend().setEnabled(true);
+        chartBp.getLegend().setWordWrapEnabled(true);
         chartBp.setData(new LineData(sysSet, diaSet));
         chartBp.animateY(800);
         chartBp.invalidate();
@@ -294,14 +451,15 @@ public class StatsFragment extends Fragment {
         Map<String, Integer> totals = waterDao.getDailyTotalsRange(userId, days.get(0), days.get(days.size() - 1));
 
         User user = userDao.getUserById(userId);
-        int goal = HydrationGoal.current(context, user);
+        int goal = HydrationGoal.forUserGoal(user != null ? user.getWaterGoalMl() : 0);
         tvWaterGoal.setText(String.format(Locale.getDefault(),
-                getString(R.string.stats_water_goal_format), goal));
+                getString(R.string.stats_water_reference), goal));
 
         List<BarEntry> entries = new ArrayList<>();
         boolean hasData = false;
         for (int i = 0; i < days.size(); i++) {
-            int total = totals.containsKey(days.get(i)) ? totals.get(days.get(i)) : 0;
+            if (!totals.containsKey(days.get(i))) continue;
+            int total = totals.get(days.get(i));
             if (total > 0) hasData = true;
             entries.add(new BarEntry(i, total));
         }
@@ -316,6 +474,7 @@ public class StatsFragment extends Fragment {
 
         BarDataSet set = new BarDataSet(entries, "ml");
         set.setColor(ContextCompat.getColor(context, R.color.vita_water));
+        set.setDrawValues(false);
 
         LimitLine goalLine = new LimitLine(goal);
         goalLine.setLineColor(ContextCompat.getColor(context, R.color.vita_teal));
@@ -330,131 +489,52 @@ public class StatsFragment extends Fragment {
         chartWater.invalidate();
     }
 
-    private void drawSleepChart(long userId, List<String> days) {
-        Context context = requireContext();
-        List<SleepLog> logs = sleepDao.getLogsRange(userId, days.get(0), days.get(days.size() - 1));
-        Map<String, Float> byDate = HealthChartData.sleepTotals(logs);
-
-        List<BarEntry> entries = new ArrayList<>();
-        boolean hasData = false;
-        for (int i = 0; i < days.size(); i++) {
-            float h = byDate.containsKey(days.get(i)) ? byDate.get(days.get(i)) : 0f;
-            if (h > 0) hasData = true;
-            entries.add(new BarEntry(i, h));
-        }
-
-        styleBarChart(context, chartSleep);
-        chartSleep.setNoDataText(getString(R.string.stats_not_enough_data));
-        if (!hasData) {
-            chartSleep.clear();
-            chartSleep.invalidate();
-            return;
-        }
-
-        BarDataSet set = new BarDataSet(entries, getString(R.string.stats_sleep_chart_title));
-        set.setColor(ContextCompat.getColor(context, R.color.vita_sleep));
-
-        chartSleep.getXAxis().setValueFormatter(new IndexAxisValueFormatter(dayLabels(days)));
-        chartSleep.setMarker(new ChartMarker(context, dayLabels(days), " giờ"));
-        chartSleep.setData(new BarData(set));
-        chartSleep.animateY(800);
-        chartSleep.invalidate();
-    }
-
     private void styleLineChart(Context context, LineChart chart) {
         chart.getDescription().setEnabled(false);
+        chart.getLayoutParams().height = Math.round(180 * getResources().getDisplayMetrics().density * getResources().getConfiguration().fontScale);
         chart.setPinchZoom(false);
         chart.setDoubleTapToZoomEnabled(false);
         chart.setNoDataTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
         chart.getAxisRight().setEnabled(false);
         chart.getAxisLeft().setTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
-        chart.getAxisLeft().setTextSize(10f);
+        chart.getAxisLeft().setTextSize(12f * getResources().getConfiguration().fontScale);
+        chart.getAxisLeft().setDrawAxisLine(false);
+        chart.getAxisLeft().setGridColor(ContextCompat.getColor(context, R.color.vita_divider));
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(false);
         xAxis.setGranularity(1f);
         xAxis.setTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
-        xAxis.setTextSize(10f);
+        xAxis.setTextSize(12f * getResources().getConfiguration().fontScale);
+        chart.getLegend().setEnabled(false);
         chart.getLegend().setTextColor(ContextCompat.getColor(context, R.color.vita_text_primary));
+        chart.getLegend().setTextSize(12f * getResources().getConfiguration().fontScale);
+        chart.getLegend().setWordWrapEnabled(true);
+        chart.getAxisLeft().setLabelCount(3, false);
+        chart.getXAxis().setLabelCount(3, false);
     }
 
     private void styleBarChart(Context context, BarChart chart) {
         chart.getDescription().setEnabled(false);
+        chart.getLayoutParams().height = Math.round(180 * getResources().getDisplayMetrics().density * getResources().getConfiguration().fontScale);
         chart.setPinchZoom(false);
         chart.setDoubleTapToZoomEnabled(false);
         chart.setNoDataTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
         chart.getAxisRight().setEnabled(false);
         chart.getAxisLeft().setAxisMinimum(0f);
         chart.getAxisLeft().setTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
-        chart.getAxisLeft().setTextSize(10f);
+        chart.getAxisLeft().setTextSize(12f * getResources().getConfiguration().fontScale);
+        chart.getAxisLeft().setDrawAxisLine(false);
+        chart.getAxisLeft().setGridColor(ContextCompat.getColor(context, R.color.vita_divider));
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(false);
         xAxis.setGranularity(1f);
         xAxis.setTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
-        xAxis.setTextSize(10f);
+        xAxis.setTextSize(12f * getResources().getConfiguration().fontScale);
         chart.getLegend().setEnabled(false);
-    }
-
-    private void loadSleepList() {
-        long userId = sessionManager.getUserId();
-        if (userId <= 0) return;
-
-        sleepLogs.clear();
-        sleepLogs.addAll(sleepDao.getLatest7Days(userId));
-        sleepAdapter.notifyDataSetChanged();
-
-        if (sleepLogs.isEmpty()) {
-            rvSleepRecords.setVisibility(View.GONE);
-            tvSleepEmpty.setVisibility(View.VISIBLE);
-        } else {
-            rvSleepRecords.setVisibility(View.VISIBLE);
-            tvSleepEmpty.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(@NonNull MenuItem item) {
-        int position = sleepAdapter.getContextMenuPosition();
-        if (position < 0 || position >= sleepLogs.size()) {
-            return super.onContextItemSelected(item);
-        }
-
-        SleepLog log = sleepLogs.get(position);
-        int itemId = item.getItemId();
-
-        if (itemId == R.id.menu_sleep_edit) {
-            Intent intent = new Intent(requireContext(), AddSleepActivity.class);
-            intent.putExtra(AddSleepActivity.EXTRA_SLEEP_LOG_ID, log.getId());
-            addSleepLauncher.launch(intent);
-            return true;
-        } else if (itemId == R.id.menu_sleep_delete) {
-            showDeleteConfirmation(log, position);
-            return true;
-        }
-
-        return super.onContextItemSelected(item);
-    }
-
-    private void showDeleteConfirmation(SleepLog log, int position) {
-        new androidx.appcompat.app.AlertDialog.Builder(requireContext())
-                .setTitle(getString(R.string.stats_sleep_delete_title))
-                .setMessage(getString(R.string.stats_sleep_delete_msg,
-                        DateTimeUtils.formatDisplayDate(log.getDate())))
-                .setNegativeButton(getString(R.string.btn_cancel), null)
-                .setPositiveButton(getString(R.string.btn_delete), (dialog, which) -> {
-                    boolean deleted = sleepDao.delete(log.getId());
-                    if (deleted) {
-                        loadSleepList();
-                        loadCharts();
-                        android.widget.Toast.makeText(requireContext(),
-                                getString(R.string.stats_sleep_delete_success),
-                                android.widget.Toast.LENGTH_SHORT).show();
-                    } else {
-                        android.widget.Toast.makeText(requireContext(),
-                                getString(R.string.stats_sleep_delete_error),
-                                android.widget.Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .show();
     }
 
     static class ChartMarker extends MarkerView {

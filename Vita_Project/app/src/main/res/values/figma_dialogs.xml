@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="figma_delete_record_title">Xóa bản ghi?</string>
+    <string name="figma_delete_record_message">Xóa lần đo %1$s · %2$s? Thao tác này không thể hoàn tác.</string>
+    <string name="figma_delete_record_action">Xóa bản ghi</string>
+    <string name="figma_delete_medicine_title">Xóa thuốc?</string>
+    <string name="figma_delete_medicine_message">Xóa %1$s và hủy các lịch nhắc của thuốc này.</string>
+    <string name="figma_delete_medicine_action">Xóa thuốc</string>
+    <string name="figma_dose_title">Cữ %1$s · %2$s</string>
+    <string name="figma_dose_pending">Chưa ghi nhận. Quá giờ không tự động là bỏ qua.</string>
+    <string name="figma_dose_edit_title">Cữ đã được ghi nhận</string>
+    <string name="figma_dose_edit_message">%1$s. Bạn có thể sửa trạng thái hoặc bỏ xác nhận.</string>
+    <string name="figma_dose_change_skipped">Đổi thành bỏ qua</string>
+    <string name="figma_dose_change_taken">Đổi thành đã uống</string>
+    <string name="figma_dose_clear">Bỏ xác nhận</string>
+</resources>

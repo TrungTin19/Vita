@@ -30,31 +30,31 @@ public class MedicineDao {
         return db.insert(DatabaseHelper.TABLE_MEDICINES, null, values);
     }
 
-    public boolean update(Medicine medicine) {
-        if (medicine == null || medicine.getId() <= 0) return false;
+    public boolean update(Medicine medicine, long userId) {
+        if (medicine == null || medicine.getId() <= 0 || medicine.getUserId() != userId || userId <= 0) return false;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = toContentValues(medicine);
         int rows = db.update(
                 DatabaseHelper.TABLE_MEDICINES,
                 values,
-                DatabaseHelper.COL_MED_ID + " = ?",
-                new String[]{String.valueOf(medicine.getId())}
+                DatabaseHelper.COL_MED_ID + " = ? AND " + DatabaseHelper.COL_MED_USER_ID + " = ?",
+                new String[]{String.valueOf(medicine.getId()), String.valueOf(userId)}
         );
         return rows > 0;
     }
 
-    public boolean delete(long id) {
+    public boolean delete(long id, long userId) {
         if (id <= 0) return false;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         int rows = db.delete(
                 DatabaseHelper.TABLE_MEDICINES,
-                DatabaseHelper.COL_MED_ID + " = ?",
-                new String[]{String.valueOf(id)}
+                DatabaseHelper.COL_MED_ID + " = ? AND " + DatabaseHelper.COL_MED_USER_ID + " = ?",
+                new String[]{String.valueOf(id), String.valueOf(userId)}
         );
         return rows > 0;
     }
 
-    public boolean toggleActive(long id, boolean isActive) {
+    public boolean toggleActive(long id, long userId, boolean isActive) {
         if (id <= 0) return false;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -62,19 +62,19 @@ public class MedicineDao {
         int rows = db.update(
                 DatabaseHelper.TABLE_MEDICINES,
                 values,
-                DatabaseHelper.COL_MED_ID + " = ?",
-                new String[]{String.valueOf(id)}
+                DatabaseHelper.COL_MED_ID + " = ? AND " + DatabaseHelper.COL_MED_USER_ID + " = ?",
+                new String[]{String.valueOf(id), String.valueOf(userId)}
         );
         return rows > 0;
     }
 
-    public Medicine getById(long id) {
+    public Medicine getById(long id, long userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(
                 DatabaseHelper.TABLE_MEDICINES,
                 null,
-                DatabaseHelper.COL_MED_ID + " = ?",
-                new String[]{String.valueOf(id)},
+                DatabaseHelper.COL_MED_ID + " = ? AND " + DatabaseHelper.COL_MED_USER_ID + " = ?",
+                new String[]{String.valueOf(id), String.valueOf(userId)},
                 null, null, null
         );
         if (cursor != null && cursor.moveToFirst()) {
@@ -126,10 +126,12 @@ public class MedicineDao {
         return list;
     }
 
-    public long logMedicineStatus(long medicineId, String date, String scheduledTime, String status, String loggedAt) {
+    public long logMedicineStatus(long medicineId, long userId, String date, String scheduledTime, String status, String loggedAt) {
         if (!"TAKEN".equals(status) && !"SKIPPED".equals(status)) throw new IllegalArgumentException("Invalid dose status");
         if (scheduledTime == null || !scheduledTime.matches("([01]\\d|2[0-3]):[0-5]\\d")) throw new IllegalArgumentException("Invalid dose time");
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Medicine medicine = getById(medicineId, userId);
+        if (medicine == null) return -1;
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COL_MED_LOG_MEDICINE_ID, medicineId);
         values.put(DatabaseHelper.COL_MED_LOG_DATE, date);
@@ -138,35 +140,83 @@ public class MedicineDao {
         values.put(DatabaseHelper.COL_MED_LOG_LOGGED_AT, loggedAt);
         db.beginTransaction();
         try {
-            MedicineLog previous = getLogForDose(medicineId, date, scheduledTime);
+            MedicineLog previous = getLogForDose(medicineId, userId, date, scheduledTime);
             long id;
-            if (previous == null) id = db.insertOrThrow(DatabaseHelper.TABLE_MEDICINE_LOGS, null, values);
+            if (previous == null) {
+                values.put("medicine_name_snapshot", medicine.getName());
+                values.put("dosage_snapshot", medicine.getDosage());
+                values.put("snapshot_inherited", 0);
+                id = db.insertOrThrow(DatabaseHelper.TABLE_MEDICINE_LOGS, null, values);
+            }
             else {
                 id = previous.getId();
-                db.update(DatabaseHelper.TABLE_MEDICINE_LOGS, values, "id = ?", new String[]{String.valueOf(id)});
+                db.update(DatabaseHelper.TABLE_MEDICINE_LOGS, values,
+                        "id = ? AND medicine_id IN (SELECT id FROM medicines WHERE user_id = ?)",
+                        new String[]{String.valueOf(id), String.valueOf(userId)});
             }
             db.setTransactionSuccessful();
             return id;
         } finally { db.endTransaction(); }
     }
 
-    public MedicineLog getLogForDose(long medicineId, String date, String time) {
+    public MedicineLog getLogForDose(long medicineId, long userId, String date, String time) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         try (Cursor cursor = db.query(DatabaseHelper.TABLE_MEDICINE_LOGS, null,
-                "medicine_id = ? AND date = ? AND scheduled_time = ?",
-                new String[]{String.valueOf(medicineId), date, time}, null, null, "id DESC", "1")) {
+                "medicine_id = ? AND date = ? AND scheduled_time = ? AND medicine_id IN (SELECT id FROM medicines WHERE user_id = ?)",
+                new String[]{String.valueOf(medicineId), date, time, String.valueOf(userId)}, null, null, "id DESC", "1")) {
             return cursor.moveToFirst() ? cursorToLog(cursor) : null;
         }
     }
 
-    public List<MedicineLog> getHistory(long medicineId) {
+    public List<MedicineLog> getHistory(long medicineId, long userId) {
         List<MedicineLog> logs = new ArrayList<>();
         try (Cursor cursor = dbHelper.getReadableDatabase().query(DatabaseHelper.TABLE_MEDICINE_LOGS,
-                null, "medicine_id = ?", new String[]{String.valueOf(medicineId)},
+                null, "medicine_id = ? AND medicine_id IN (SELECT id FROM medicines WHERE user_id = ?)", new String[]{String.valueOf(medicineId), String.valueOf(userId)},
                 null, null, "date DESC, scheduled_time DESC, id DESC")) {
             while (cursor.moveToNext()) logs.add(cursorToLog(cursor));
         }
         return logs;
+    }
+
+    public List<MedicineLog> getLogsForDay(long medicineId, long userId, String date) {
+        List<MedicineLog> logs = new ArrayList<>();
+        try (Cursor cursor = dbHelper.getReadableDatabase().query(DatabaseHelper.TABLE_MEDICINE_LOGS,
+                null, "medicine_id = ? AND date = ? AND medicine_id IN (SELECT id FROM medicines WHERE user_id = ?)",
+                new String[]{String.valueOf(medicineId), date, String.valueOf(userId)}, null, null, "scheduled_time ASC,id DESC")) {
+            while (cursor.moveToNext()) logs.add(cursorToLog(cursor));
+        }
+        return logs;
+    }
+
+    public boolean clearDoseStatus(long medicineId, long userId, String date, String time) {
+        return dbHelper.getWritableDatabase().delete(DatabaseHelper.TABLE_MEDICINE_LOGS,
+                "medicine_id = ? AND date = ? AND scheduled_time = ? AND medicine_id IN (SELECT id FROM medicines WHERE user_id = ?)",
+                new String[]{String.valueOf(medicineId), date, time, String.valueOf(userId)}) > 0;
+    }
+
+    public static final class NextDose {
+        public final Medicine medicine;
+        public final String date, time;
+        private NextDose(Medicine medicine, String date, String time) { this.medicine = medicine; this.date = date; this.time = time; }
+    }
+
+    public NextDose getNextUnloggedDose(long userId, long nowMillis) {
+        NextDose next = null; long earliest = Long.MAX_VALUE;
+        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
+        for (Medicine medicine : getActiveMedicines(userId)) {
+            java.util.Set<String> logged = new java.util.HashSet<>();
+            for (MedicineLog log : getHistory(medicine.getId(), userId)) logged.add(log.getDate() + "@" + log.getScheduledTime());
+            for (String time : medicine.getTime().split(",")) {
+                long candidate = vn.edu.tdmu.vita.utils.MedicineSchedule.computeNextTriggerMillis(time, medicine.getDaysMask(), nowMillis);
+                while (candidate > 0 && logged.contains(dateFormat.format(new java.util.Date(candidate)) + "@" + time))
+                    candidate = vn.edu.tdmu.vita.utils.MedicineSchedule.computeNextTriggerMillis(time, medicine.getDaysMask(), candidate);
+                if (candidate > 0 && candidate < earliest) {
+                    earliest = candidate;
+                    next = new NextDose(medicine, dateFormat.format(new java.util.Date(candidate)), time);
+                }
+            }
+        }
+        return next;
     }
 
     private ContentValues toContentValues(Medicine med) {
@@ -200,6 +250,9 @@ public class MedicineDao {
         log.setScheduledTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_LOG_TIME)));
         log.setStatus(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_LOG_STATUS)));
         log.setLoggedAt(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_LOG_LOGGED_AT)));
+        log.setMedicineNameSnapshot(cursor.getString(cursor.getColumnIndexOrThrow("medicine_name_snapshot")));
+        log.setDosageSnapshot(cursor.getString(cursor.getColumnIndexOrThrow("dosage_snapshot")));
+        log.setSnapshotInherited(cursor.getInt(cursor.getColumnIndexOrThrow("snapshot_inherited")) != 0);
         return log;
     }
 }

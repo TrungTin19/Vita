@@ -1,0 +1,46 @@
+<resources>
+    <string name="figma_profile_water_open">Mục tiêu &amp; lịch nhắc nước</string>
+    <string name="figma_delete_profile_title">Xóa hồ sơ vĩnh viễn?</string>
+    <string name="figma_delete_profile_message">Hồ sơ và toàn bộ dữ liệu liên quan sẽ bị xóa. Hồ sơ khác được giữ nguyên.</string>
+    <string name="figma_delete_profile_password">Mật khẩu xác nhận</string>
+    <string name="figma_delete_profile_placeholder">Nhập mật khẩu xác nhận</string>
+    <string name="figma_dialog_cancel">Hủy bỏ</string>
+    <string name="figma_login_toolbar">Chào bạn trở lại</string>
+    <string name="figma_login_title">Hôm nay, mình\nchăm sóc bản thân nhé.</string>
+    <string name="figma_login_subtitle">Đăng nhập hồ sơ trên thiết bị này.</string>
+    <string name="figma_create_account">Tạo tài khoản mới</string>
+    <string name="figma_local_account">Mỗi tài khoản có nhật ký riêng. Đăng xuất để đăng nhập một hồ sơ khác.</string>
+    <string name="figma_register_title">Một hồ sơ riêng\ncho sức khỏe của bạn.</string>
+    <string name="figma_register_step_one">Bước 1 / 2</string>
+    <string name="figma_register_step_two">Bước 2 / 2</string>
+    <string name="figma_register_next">Tiếp tục</string>
+    <string name="figma_register_finish">Hoàn tất &amp; bắt đầu</string>
+    <string name="figma_register_background">Thông tin ban đầu</string>
+    <string name="figma_register_background_title">Để hiểu cơ thể\nbạn hơn một chút.</string>
+    <string name="figma_register_local">Tài khoản chỉ dùng trên thiết bị này. Không cần email hoặc kết nối Internet.</string>
+    <string name="figma_initial_weight_note">Cân nặng ban đầu làm thông tin nền. Các lần cân về sau được ghi riêng trong nhật ký.</string>
+    <string name="figma_profile_local">Dữ liệu lưu trên thiết bị này</string>
+    <string name="figma_profile_bmi_open">Xem BMI →</string>
+    <string name="figma_profile_bmi_title">BMI của bạn</string>
+    <string name="figma_splash_title">Sức khỏe trong tầm tay.\nAn tâm mỗi ngày.</string>
+    <string name="figma_splash_note">Nhật ký sức khỏe, thuốc và nước uống — luôn ở bên bạn, ngay cả khi ngoại tuyến.</string>
+    <string name="figma_splash_footer">Dữ liệu được lưu trên thiết bị của bạn.</string>
+    <style name="Widget.Vita.AuthInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/vita_surface</item>
+        <item name="android:background">@null</item>
+        <item name="expandedHintEnabled">false</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeWidthFocused">2dp</item>
+        <item name="boxCollapsedPaddingTop">12dp</item>
+        <item name="boxStrokeColor">@color/vita_input_stroke</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="hintTextColor">@color/vita_text_secondary</item>
+        <item name="android:textColorHint">@color/vita_text_secondary</item>
+        <item name="helperTextTextColor">@color/vita_text_secondary</item>
+        <item name="suffixTextColor">@color/vita_text_secondary</item>
+        <item name="prefixTextColor">@color/vita_text_secondary</item>
+    </style>
+<string name="figma_bmi_add_weight">Ghi nhận lần cân mới</string><style name="Widget.Vita.Button.AuthSecondary" parent="Widget.Vita.Button.Outlined"><item name="backgroundTint">@color/vita_mint</item><item name="strokeWidth">0dp</item><item name="android:textColor">@color/vita_teal</item></style><string name="figma_profile_personal">Thông tin cá nhân</string><string name="figma_profile_on_device">Hồ sơ trên thiết bị này</string><style name="Widget.Vita.Button.AuthDanger" parent="Widget.Vita.Button.AuthSecondary"><item name="backgroundTint">@color/vita_status_danger_bg</item><item name="android:textColor">@color/vita_status_danger</item></style><string name="figma_water_settings_title">Cài đặt nước</string><string name="figma_water_settings_save">Lưu cài đặt</string><string name="figma_water_preview_title">Các mốc nhắc của bạn</string><string name="figma_password_minimum">Tối thiểu 6 ký tự.</string><string name="figma_edit_action">Chỉnh sửa</string><string name="figma_edit_save">Lưu thông tin</string><string name="figma_edit_height">Chiều cao *</string><string name="figma_edit_weight">Cân nặng ban đầu *</string><string name="figma_edit_weight_help">Sửa cân nặng ban đầu không tạo thêm lần cân trong nhật ký.</string><string name="figma_water_goal_label">Mục tiêu mỗi ngày</string><string name="figma_water_amount_label">Cỡ cốc ghi nhanh</string><string name="figma_water_mode_label">Cách nhắc</string><string name="figma_profile_age">%1$d · %2$d tuổi</string><style name="Widget.Vita.AuthSegment" parent="Widget.AppCompat.CompoundButton.RadioButton"><item name="android:button">@null</item><item name="android:background">@drawable/bg_auth_segment</item><item name="android:gravity">center</item><item name="android:minHeight">48dp</item><item name="android:padding">0dp</item><item name="android:textSize">14sp</item><item name="android:textColor">@color/vita_teal</item></style><string name="figma_profile_latest_weight_label">Lần cân gần nhất</string><string name="figma_bmi_standard_label">Chuẩn đánh giá</string><string name="figma_bmi_weight_range_label">KHOẢNG CÂN NẶNG THAM KHẢO</string><string name="figma_bmi_current_label">CHỈ SỐ KHỐI CƠ THỂ</string><string name="figma_bmi_range_value">%1$.1f–%2$.1f kg</string><string name="figma_bmi_source_log">%1$.0f cm · %2$.1f kg\nNguồn: nhật ký %3$s</string><string name="figma_bmi_source_initial">%1$.0f cm · %2$.1f kg\nNguồn: cân nặng ban đầu</string><string name="figma_bmi_who">WHO</string><string name="figma_logout_title">Đăng xuất?</string><string name="figma_logout_message">Dữ liệu vẫn còn trên thiết bị. Lịch nhắc và thông báo của phiên này sẽ được hủy.</string></resources>

@@ -37,19 +37,9 @@ public class ModelsTest {
     }
 
     @Test
-    public void testWaterAndSleepLog() {
+    public void testWaterLog() {
         WaterLog water = new WaterLog(201L, 1L, "2026-10-09", 250, "2026-10-09 09:00");
         assertEquals(250, water.getAmountMl());
 
-        SleepLog sleep = new SleepLog(301L, 1L, "2026-10-09", "23:00", "06:30", 7.5f);
-        assertEquals(7.5f, sleep.getDurationH(), 0.01f);
-    }
-
-    @Test
-    public void testWeatherData() {
-        WeatherData weather = new WeatherData(33.0f, 68, 65, "Bình Dương", false, "08:30");
-        assertEquals(33.0f, weather.getTemperature(), 0.01f);
-        assertEquals(65, weather.getAqi());
-        assertFalse(weather.isOffline());
     }
 }

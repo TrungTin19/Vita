@@ -28,7 +28,7 @@ public class MedicineAlarmReceiver extends BroadcastReceiver {
         long medicineId = intent.getLongExtra(EXTRA_MEDICINE_ID, -1);
         if (medicineId <= 0) return;
         MedicineDao dao = new MedicineDao(context);
-        Medicine medicine = dao.getById(medicineId);
+        Medicine medicine = dao.getById(medicineId, new SessionManager(context).getUserId());
         if (medicine == null || !medicine.isActive()
                 || !SessionManager.matchesUser(medicine.getUserId(), new SessionManager(context).getUserId())) return;
         String date = intent.getStringExtra(EXTRA_DOSE_DATE);
@@ -36,7 +36,7 @@ public class MedicineAlarmReceiver extends BroadcastReceiver {
         if (date == null) date = vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate();
         if (time == null) time = medicine.getTime().split(",")[0];
         if (!java.util.Arrays.asList(medicine.getTime().split(",")).contains(time)) return;
-        if (dao.getLogForDose(medicineId, date, time) == null) {
+        if (dao.getLogForDose(medicineId, medicine.getUserId(), date, time) == null) {
             NotificationHelper.showMedicineNotification(context, medicine, date, time);
         }
         scheduleDose(context, medicine, time);

@@ -28,7 +28,6 @@ public class ProfileDeletionDaoDeviceTest {
             db.execSQL("INSERT INTO medicines(id,user_id,name,time) VALUES(?,?,'Test','07:00,19:00')",new Object[]{i,i});
             db.execSQL("INSERT INTO medicine_logs(medicine_id,date,scheduled_time,status,logged_at) VALUES(?,'2026-10-17','07:00','TAKEN','2026-10-17 07:01:00')",new Object[]{i});
             db.execSQL("INSERT INTO water_logs(user_id,date,amount_ml,logged_at) VALUES(?,'2026-10-17',250,'2026-10-17 07:00:00')",new Object[]{i});
-            db.execSQL("INSERT INTO sleep_logs(user_id,date,sleep_time,wake_time,duration_h) VALUES(?,'2026-10-17','23:00','07:00',8)",new Object[]{i});
         }
         return db;
     }
@@ -41,7 +40,7 @@ public class ProfileDeletionDaoDeviceTest {
             assertFalse(users.deleteProfileWithPassword(1,"password2"));
             assertFalse(users.deleteProfileWithPassword(1,""));
             assertNotNull(users.login("user1","password1")); assertNotNull(users.login("user2","password2"));
-            for(String table:new String[]{"users","health_records","medicines","medicine_logs","water_logs","sleep_logs"}) assertEquals(2,count(db,table));
+            for(String table:new String[]{"users","health_records","medicines","medicine_logs","water_logs"}) assertEquals(2,count(db,table));
         }
     }
     @Test public void authenticatedDeletion_cascadesOnlyOwnedRows() {
@@ -49,17 +48,17 @@ public class ProfileDeletionDaoDeviceTest {
             UserDao users=new UserDao(helper(db));
             assertTrue(users.deleteProfileWithPassword(1,"password1"));
             assertNull(users.getUserById(1)); assertNotNull(users.login("user2","password2"));
-            for(String table:new String[]{"users","health_records","medicines","medicine_logs","water_logs","sleep_logs"}) assertEquals(1,count(db,table));
+            for(String table:new String[]{"users","health_records","medicines","medicine_logs","water_logs"}) assertEquals(1,count(db,table));
             assertFalse(users.deleteProfileWithPassword(1,"password1"));
         }
     }
     @Test public void failedCascade_keepsProfileAndAllOwnedRows() {
         try(SQLiteDatabase db=fixture()) {
-            db.execSQL("CREATE TRIGGER block_delete BEFORE DELETE ON sleep_logs WHEN OLD.user_id=1 BEGIN SELECT RAISE(ABORT,'test'); END");
+            db.execSQL("CREATE TRIGGER block_delete BEFORE DELETE ON health_records WHEN OLD.user_id=1 BEGIN SELECT RAISE(ABORT,'test'); END");
             UserDao users=new UserDao(helper(db));
             assertThrows(android.database.sqlite.SQLiteException.class,()->users.deleteProfileWithPassword(1,"password1"));
             assertNotNull(users.getUserById(1));
-            for(String table:new String[]{"users","health_records","medicines","medicine_logs","water_logs","sleep_logs"}) assertEquals(2,count(db,table));
+            for(String table:new String[]{"users","health_records","medicines","medicine_logs","water_logs"}) assertEquals(2,count(db,table));
         }
     }
 }

@@ -55,7 +55,6 @@ public class UserDao {
         values.put("water_end", user.getWaterEnd());
         values.put("water_amount", user.getWaterAmount());
         values.put("water_times", user.getWaterTimes());
-        values.put("weather_adjustment", user.isWeatherAdjustmentEnabled() ? 1 : 0);
         values.put(DatabaseHelper.COL_USER_FULLNAME, user.getFullname());
         values.put(DatabaseHelper.COL_USER_BIRTH_YEAR, user.getBirthYear());
         values.put(DatabaseHelper.COL_USER_GENDER, user.getGender());
@@ -134,7 +133,7 @@ public class UserDao {
     }
 
     public boolean updateWaterSettings(long userId, int goal, String start, String end,
-                                       int amount, boolean weatherAdjustment, String times) {
+                                       int amount, String times) {
         if (userId <= 0 || !vn.edu.tdmu.vita.utils.InputValidator.isValidWaterGoal(goal)
                 || !vn.edu.tdmu.vita.utils.WaterReminderPolicy.validSettings(start, end, amount)) return false;
         String normalized;
@@ -146,7 +145,6 @@ public class UserDao {
         values.put("water_start", start);
         values.put("water_end", end);
         values.put("water_amount", amount);
-        values.put("weather_adjustment", weatherAdjustment ? 1 : 0);
         return dbHelper.getWritableDatabase().update(DatabaseHelper.TABLE_USERS, values,
                 DatabaseHelper.COL_USER_ID + " = ?", new String[]{String.valueOf(userId)}) == 1;
     }
@@ -194,7 +192,6 @@ public class UserDao {
         u.setWaterEnd(cursor.getString(cursor.getColumnIndexOrThrow("water_end")));
         u.setWaterAmount(cursor.getInt(cursor.getColumnIndexOrThrow("water_amount")));
         u.setWaterTimes(cursor.getString(cursor.getColumnIndexOrThrow("water_times")));
-        u.setWeatherAdjustmentEnabled(cursor.getInt(cursor.getColumnIndexOrThrow("weather_adjustment")) == 1);
         return u;
     }
 }

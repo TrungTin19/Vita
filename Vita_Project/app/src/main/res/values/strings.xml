@@ -12,17 +12,12 @@
 
     <!-- Splash Screen -->
     <string name="splash_title">Vita</string>
-    <string name="splash_slogan">Sức sống mỗi ngày, an tâm tại nhà</string>
-    <string name="splash_version">Phiên bản 1.0 - ĐH Thủ Dầu Một</string>
     <string name="splash_logo_desc">Biểu tượng ứng dụng quản lý sức khỏe Vita</string>
 
     <!-- Login Screen -->
-    <string name="login_title">Đăng nhập vào Vita</string>
-    <string name="login_subtitle">Cùng chăm sóc sức khỏe mỗi ngày nhé!</string>
     <string name="login_hint_username">Tên đăng nhập</string>
     <string name="login_hint_password">Mật khẩu</string>
     <string name="login_btn_submit">Đăng nhập</string>
-    <string name="login_link_register">Chưa có tài khoản? Đăng ký ngay</string>
     <string name="login_error_empty_username">Vui lòng nhập tên đăng nhập</string>
     <string name="login_error_empty_password">Vui lòng nhập mật khẩu</string>
     <string name="login_error_invalid_credentials">Tên đăng nhập hoặc mật khẩu chưa chính xác. Vui lòng kiểm tra lại.</string>
@@ -30,9 +25,6 @@
 
     <!-- Register Screen -->
     <string name="register_toolbar_title">Tạo tài khoản mới</string>
-    <string name="register_subtitle">Bắt đầu hành trình sống khỏe cùng Vita!</string>
-    <string name="register_section_account">THÔNG TIN ĐĂNG NHẬP</string>
-    <string name="register_section_physical">THÔNG TIN THỂ CHẤT BAN ĐẦU</string>
     <string name="register_hint_username">Tên đăng nhập *</string>
     <string name="register_hint_password">Mật khẩu (tối thiểu 6 ký tự) *</string>
     <string name="register_hint_confirm">Xác nhận lại mật khẩu *</string>
@@ -40,13 +32,6 @@
     <string name="register_hint_birth_year">Năm sinh</string>
     <string name="register_helper_birth_year">Có thể để trống</string>
     <string name="register_hint_gender">Giới tính</string>
-    <string name="register_hint_height">Chiều cao (cm) *</string>
-    <string name="register_helper_height">50 – 250 cm</string>
-    <string name="register_hint_weight">Cân nặng (kg) *</string>
-    <string name="register_helper_weight">20 – 300 kg</string>
-    <string name="register_suffix_cm">cm</string>
-    <string name="register_suffix_kg">kg</string>
-    <string name="register_btn_submit">Hoàn tất đăng ký</string>
     <string name="register_link_login">Đã có tài khoản? Đăng nhập ngay</string>
     <string name="register_error_empty_username">Vui lòng nhập tên đăng nhập</string>
     <string name="register_error_short_username">Tên đăng nhập tối thiểu 3 ký tự</string>
@@ -67,58 +52,38 @@
     <string name="register_success">Đăng ký thành công! Chào mừng bạn đến với Vita.</string>
 
     <!-- Profile Screen -->
-    <string name="profile_toolbar_title">Hồ sơ cá nhân</string>
+    <string name="profile_toolbar_title">Hồ sơ</string>
     <string name="profile_avatar_desc">Ảnh đại diện tài khoản</string>
     <string name="profile_default_user">Người dùng Vita</string>
-    <string name="profile_section_physical">THÔNG SỐ THỂ CHẤT</string>
-    <string name="profile_label_birth_year">NĂM SINH</string>
-    <string name="profile_label_gender">GIỚI TÍNH</string>
-    <string name="profile_label_height">CHIỀU CAO</string>
-    <string name="profile_label_base_weight">CÂN NẶNG BAN ĐẦU</string>
-    <string name="profile_label_water_goal">MỤC TIÊU NƯỚC UỐNG HẰNG NGÀY</string>
-    <string name="profile_section_bmi">CHỈ SỐ KHỐI CƠ THỂ (BMI)</string>
-    <string name="profile_label_current_bmi">BMI Hiện Tại</string>
+    <string name="profile_label_birth_year">Năm sinh</string>
+    <string name="profile_label_gender">Giới tính</string>
+    <string name="profile_label_height">Chiều cao</string>
+    <string name="profile_label_base_weight">Cân nặng ban đầu</string>
     <string name="profile_bmi_undetermined">Chưa xác định</string>
     <string name="profile_bmi_no_metrics">Chưa có số đo</string>
-    <string name="profile_label_bmi_standard">TIÊU CHUẨN ĐÁNH GIÁ</string>
-    <string name="profile_standard_asian">Chuẩn Châu Á (IDI &amp; WPRO)\nKhuyến nghị cho người Việt Nam (bình thường: 18.5 – 22.9)</string>
-    <string name="profile_standard_who">Chuẩn Quốc tế (WHO)\nÁp dụng đa chủng tộc toàn cầu (bình thường: 18.5 – 24.9)</string>
-    <string name="profile_btn_edit">Chỉnh sửa hồ sơ</string>
-    <string name="profile_age_format">%1$d (%2$d tuổi)</string>
     <string name="profile_not_updated">Chưa cập nhật</string>
     <string name="profile_unknown">Chưa rõ</string>
     <string name="profile_height_format">%1$.1f cm</string>
     <string name="profile_weight_format">%1$.1f kg</string>
     <string name="profile_water_goal_format">%,d ml / ngày</string>
-    <string name="profile_healthy_weight_format">Khoảng cân nặng lý tưởng nên duy trì: %1$.1f kg – %2$.1f kg</string>
     <string name="profile_healthy_weight_prompt">Vui lòng cập nhật chiều cao và cân nặng để tính BMI.</string>
     <string name="profile_snackbar_standard_who">Đã đổi sang Chuẩn Quốc tế (WHO)</string>
     <string name="profile_snackbar_standard_asian">Đã đổi sang Chuẩn Châu Á (IDI &amp; WPRO)</string>
 
     <!-- Edit Profile Screen -->
     <string name="edit_profile_toolbar_title">Chỉnh sửa hồ sơ</string>
-    <string name="edit_profile_subtitle">Thông tin cá nhân và thể trạng. Năm sinh có thể để trống.</string>
     <string name="edit_profile_hint_fullname">Họ và tên</string>
     <string name="edit_profile_hint_birth_year">Năm sinh</string>
     <string name="edit_profile_hint_gender">Giới tính</string>
-    <string name="edit_profile_hint_height">Chiều cao (cm) *</string>
-    <string name="edit_profile_hint_weight">Cân nặng cơ sở (kg) *</string>
-    <string name="edit_profile_hint_water_goal">Mục tiêu nước mỗi ngày (ml) *</string>
-    <string name="edit_profile_helper_water_goal">Mục tiêu riêng của bạn, từ 100 đến 10.000 ml/ngày</string>
     <string name="edit_profile_suffix_ml">ml</string>
-    <string name="edit_profile_btn_save">Lưu thay đổi</string>
     <string name="edit_profile_btn_logout">Đăng xuất</string>
-    <string name="edit_profile_logout_dialog_title">Xác nhận đăng xuất</string>
-    <string name="edit_profile_logout_dialog_msg">Bạn có chắc chắn muốn đăng xuất khỏi ứng dụng Vita không?</string>
     <string name="edit_profile_logout_toast">Đã đăng xuất tài khoản</string>
     <string name="edit_profile_save_success">Đã lưu thay đổi hồ sơ thành công!</string>
     <string name="edit_profile_save_error">Không thể cập nhật hồ sơ. Vui lòng thử lại.</string>
     <string name="edit_profile_error_invalid_water_goal">Mục tiêu nước từ %1$,d đến %2$,d ml / ngày</string>
 
     <!-- Health Log List (HealthFragment & Adapter) -->
-    <string name="health_list_title">Nhật ký chỉ số sức khỏe</string>
     <string name="health_filter_all_dates">Tất cả ngày</string>
-    <string name="health_filter_clear">Xem tất cả</string>
     <string name="health_empty_title">Chưa có bản ghi sức khỏe nào</string>
     <string name="health_empty_desc">Nhấn nút + để ghi nhận chỉ số đo đầu tiên</string>
     <string name="health_fab_content_desc">Thêm chỉ số sức khỏe mới</string>
@@ -129,21 +94,10 @@
     <string name="health_delete_dialog_msg">Bạn có chắc chắn muốn xóa bản ghi đo ngày %1$s không? Thao tác này không thể hoàn tác.</string>
     <string name="health_delete_success">Đã xóa bản ghi thành công</string>
     <string name="health_delete_error">Không thể xóa bản ghi. Vui lòng thử lại.</string>
-    <string name="health_item_bp_label">Huyết áp: </string>
-    <string name="health_item_weight_format">Cân nặng: %1$.1f kg</string>
-    <string name="health_item_hr_format">Tim: %1$d bpm</string>
-    <string name="health_item_sugar_format">Đường huyết: %1$.0f mg/dL</string>
 
     <!-- Detail Health Screen -->
-    <string name="detail_health_toolbar_title">Chi tiết lần đo</string>
-    <string name="detail_health_date_format">Ngày đo: %1$s</string>
-    <string name="detail_health_section_bp">HUYẾT ÁP &amp; NHỊP TIM</string>
     <string name="detail_health_bp_unit">mmHg</string>
     <string name="detail_health_advice_format">Đánh giá: %1$s</string>
-    <string name="detail_health_hr_format">Nhịp tim: %1$d bpm (%2$s)</string>
-    <string name="detail_health_section_body">CÂN NẶNG &amp; ĐƯỜNG HUYẾT</string>
-    <string name="detail_health_weight_format">Cân nặng: %1$.1f kg</string>
-    <string name="detail_health_sugar_format">Đường huyết: %1$.1f mg/dL</string>
     <string name="detail_health_section_notes">GHI CHÚ ĐÍNH KÈM</string>
     <string name="detail_health_disclaimer">Lời khuyên tham khảo từ Vita. Nếu bạn cảm thấy chóng mặt, đau đầu, hãy tham vấn ý kiến bác sĩ gia đình.</string>
     <string name="detail_health_btn_edit">Chỉnh sửa bản ghi này</string>
@@ -151,24 +105,12 @@
     <string name="detail_health_invalid_record">Bản ghi không hợp lệ</string>
 
     <!-- Add / Edit Health Screen -->
-    <string name="add_health_title_add">Ghi nhận chỉ số đo</string>
     <string name="add_health_title_edit">Chỉnh sửa số đo</string>
-    <string name="add_health_hint_date">Ngày đo *</string>
-    <string name="add_health_section_bp">HUYẾT ÁP &amp; TIM MẠCH</string>
-    <string name="add_health_hint_systolic">Tâm thu (Huyết áp trên)</string>
-    <string name="add_health_helper_systolic">Ví dụ: 120</string>
-    <string name="add_health_hint_diastolic">Tâm trương (Huyết áp dưới)</string>
-    <string name="add_health_helper_diastolic">Ví dụ: 80</string>
-    <string name="add_health_hint_hr">Nhịp tim</string>
-    <string name="add_health_helper_hr">Ví dụ: 75 (nhịp/phút)</string>
-    <string name="add_health_suffix_mmhg">mmHg</string>
+    <string name="add_health_hint_hr">Nhịp tim · bpm</string>
     <string name="add_health_suffix_bpm">bpm</string>
-    <string name="add_health_section_body">THỂ TRẠNG &amp; ĐƯỜNG HUYẾT</string>
-    <string name="add_health_hint_weight">Cân nặng</string>
-    <string name="add_health_helper_weight">20 – 300 kg</string>
+    <string name="add_health_hint_weight">Cân nặng · kg</string>
     <string name="add_health_suffix_kg">kg</string>
-    <string name="add_health_hint_sugar">Đường huyết</string>
-    <string name="add_health_helper_sugar">Ví dụ: 95.0</string>
+    <string name="add_health_hint_sugar">Đường huyết · mg/dL</string>
     <string name="add_health_suffix_sugar">mg/dL</string>
     <string name="add_health_section_notes">GHI CHÚ BỔ SUNG</string>
     <string name="add_health_hint_notes">Ghi chú (cảm giác cơ thể, triệu chứng, sau ăn...)</string>
@@ -190,11 +132,6 @@
     <!-- Add / Edit Medicine Screen -->
     <string name="add_med_title_add">Lịch uống thuốc mới</string>
     <string name="add_med_title_edit">Chỉnh sửa lịch uống thuốc</string>
-    <string name="add_med_hint_name">Tên thuốc *</string>
-    <string name="add_med_hint_dosage">Liều lượng &amp; Hướng dẫn dùng</string>
-    <string name="add_med_helper_dosage">Ví dụ: 1 viên sau ăn sáng</string>
-    <string name="add_med_hint_time">Giờ uống thuốc *</string>
-    <string name="add_med_section_days">LẶP LẠI CÁC NGÀY TRONG TUẦN</string>
     <string name="add_med_day_mon">T2</string>
     <string name="add_med_day_tue">T3</string>
     <string name="add_med_day_wed">T4</string>
@@ -203,9 +140,6 @@
     <string name="add_med_day_sat">T7</string>
     <string name="add_med_day_sun">CN</string>
     <string name="add_med_all_days">Chọn tất cả các ngày (Hằng ngày)</string>
-    <string name="add_med_day_on">, đã chọn</string>
-    <string name="add_med_day_off">, chưa chọn</string>
-    <string name="add_med_btn_save">Lưu lịch uống thuốc</string>
     <string name="add_med_error_empty_name">Vui lòng nhập tên thuốc</string>
     <string name="add_med_error_no_days">Vui lòng chọn ít nhất một ngày trong tuần để báo thức hoạt động</string>
     <string name="add_med_success_add">Đã đặt báo thức nhắc %1$s lúc %2$s</string>
@@ -214,85 +148,30 @@
     <string name="add_med_error_update">Không thể cập nhật lịch uống thuốc. Vui lòng thử lại.</string>
 
     <!-- Reminder Screen (Medicines + Water) -->
-    <string name="reminder_title">Nhắc nhở &amp; Thói quen hàng ngày</string>
     <string name="reminder_water_title">Tiến độ uống nước hôm nay</string>
     <string name="reminder_water_progress_format">%1$,d / %2$,d ml (%3$d%%)</string>
-    <string name="reminder_btn_add_water">Nạp %1$d ml nước</string>
-    <string name="reminder_water_reached">Tuyệt vời! Bạn đã hoàn thành mục tiêu uống nước hôm nay.</string>
-    <string name="reminder_section_medicines">DANH SÁCH LỊCH UỐNG THUỐC</string>
+    <string name="reminder_btn_add_water">+ %1$d ml</string>
     <string name="reminder_empty_title">Chưa có đơn thuốc nào</string>
     <string name="reminder_empty_desc">Nhấn nút + để thêm lịch nhắc uống thuốc</string>
-    <string name="reminder_fab_desc">Thêm lịch uống thuốc mới</string>
-    <string name="reminder_switch_desc">Bật hoặc tắt báo thức thuốc này</string>
-    <string name="reminder_med_days_prefix">Lặp lại: %1$s</string>
     <string name="reminder_med_days_daily">Hằng ngày</string>
     <string name="reminder_context_menu_title">Tùy chọn</string>
     <string name="reminder_context_menu_edit">Sửa đơn thuốc này</string>
     <string name="reminder_context_menu_delete">Xóa đơn thuốc này</string>
-    <string name="reminder_delete_dialog_title">Xác nhận xóa</string>
-    <string name="reminder_delete_dialog_msg">Bạn có chắc chắn muốn xóa lịch nhắc %1$s? Báo thức của thuốc này sẽ bị hủy.</string>
     <string name="reminder_delete_success">Đã xóa đơn thuốc thành công</string>
     <string name="reminder_delete_error">Không thể xóa đơn thuốc. Vui lòng thử lại.</string>
     <string name="reminder_alarm_off">Đã tắt nhắc nhở cho %1$s</string>
     <string name="reminder_alarm_on">Đã bật nhắc nhở cho %1$s</string>
     <string name="reminder_undo">Hoàn tác</string>
 
-    <!-- Add Sleep Screen -->
-    <string name="add_sleep_title">Ghi nhận giấc ngủ</string>
-    <string name="add_sleep_icon_desc">Biểu tượng mặt trăng giấc ngủ</string>
-    <string name="add_sleep_heading">Đêm qua bạn ngủ có ngon không?</string>
-    <string name="add_sleep_subtitle">Theo dõi giấc ngủ để duy trì thể lực.</string>
-    <string name="add_sleep_hint_date">Ngày thức dậy</string>
-    <string name="add_sleep_hint_sleep_time">Giờ bắt đầu ngủ</string>
-    <string name="add_sleep_hint_wake_time">Giờ thức dậy</string>
-    <string name="add_sleep_result_title">TỔNG THỜI LƯỢNG GIẤC NGỦ</string>
-    <string name="add_sleep_duration_format">%.1f giờ</string>
-    <string name="add_sleep_advice_lack">Bạn nên sắp xếp nghỉ trưa hoặc ngủ sớm hơn tối nay nhé.</string>
-    <string name="add_sleep_advice_fair">Giấc ngủ tạm ổn, cố gắng ngủ sớm hơn một chút nhé.</string>
-    <string name="add_sleep_advice_good">Thời lượng giấc ngủ lý tưởng để cơ thể tái tạo năng lượng.</string>
-    <string name="add_sleep_advice_oversleep">Ngủ quá nhiều cũng khiến cơ thể mệt mỏi, hãy duy trì 7–9 giờ nhé.</string>
-    <string name="add_sleep_btn_save">Lưu giấc ngủ</string>
-    <string name="add_sleep_error_same_time">Giờ ngủ và giờ thức không thể trùng nhau. Vui lòng kiểm tra lại.</string>
-    <string name="add_sleep_success">Đã lưu giấc ngủ thành công!</string>
-    <string name="add_sleep_error_save">Không thể lưu giấc ngủ. Vui lòng thử lại.</string>
 
     <!-- Stats Screen -->
-    <string name="stats_title">Xu hướng &amp; phân tích thống kê</string>
-    <string name="stats_range_7">7 ngày qua</string>
-    <string name="stats_range_30">30 ngày qua</string>
     <string name="stats_bp_title">Biến thiên huyết áp (mmHg)</string>
     <string name="stats_bp_sys_label">Tâm thu</string>
     <string name="stats_bp_dia_label">Tâm trương</string>
-    <string name="stats_bp_legend">Đường liền: Tâm thu • Đường đứt: Tâm trương</string>
     <string name="stats_water_title">Lượng nước uống mỗi ngày (ml)</string>
-    <string name="stats_water_goal_format">Mục tiêu hôm nay: %,d ml (đường tham chiếu)</string>
-    <string name="stats_sleep_chart_title">Thời lượng ngủ mỗi đêm (giờ)</string>
-    <string name="stats_sleep_section">NHẬT KÝ GIẤC NGỦ GẦN ĐÂY</string>
-    <string name="stats_sleep_empty">Chưa có dữ liệu giấc ngủ</string>
-    <string name="stats_sleep_item_format">Ngủ: %1$s – Thức: %2$s (%3$.1f giờ)</string>
-    <string name="stats_sleep_date_format">Đêm %1$s → Sáng %2$s</string>
-    <string name="stats_fab_desc">Ghi nhận giấc ngủ mới</string>
     <string name="stats_not_enough_data">Chưa đủ dữ liệu vẽ đồ thị. Hãy ghi nhận ít nhất 2 ngày để theo dõi xu hướng nhé.</string>
-    <string name="stats_sleep_menu_title">Tùy chọn</string>
-    <string name="stats_sleep_menu_edit">Sửa giấc ngủ này</string>
-    <string name="stats_sleep_menu_delete">Xóa giấc ngủ này</string>
-    <string name="stats_sleep_delete_title">Xác nhận xóa</string>
-    <string name="stats_sleep_delete_msg">Bạn có chắc chắn muốn xóa giấc ngủ đêm %1$s không?</string>
-    <string name="stats_sleep_delete_success">Đã xóa giấc ngủ thành công</string>
-    <string name="stats_sleep_delete_error">Không thể xóa giấc ngủ. Vui lòng thử lại.</string>
-    <string name="add_sleep_title_edit">Chỉnh sửa giấc ngủ</string>
-    <string name="add_sleep_success_edit">Đã cập nhật giấc ngủ thành công!</string>
-    <string name="add_sleep_error_update">Không thể cập nhật giấc ngủ. Vui lòng thử lại.</string>
-    <string name="reminder_med_status_none">Hôm nay: chưa xác nhận</string>
-    <string name="reminder_med_status_taken">Hôm nay: đã uống lúc %1$s</string>
-    <string name="reminder_med_status_skipped">Hôm nay: đã bỏ qua cữ này</string>
-    <string name="reminder_quick_taken">Đã uống</string>
-    <string name="reminder_quick_skipped">Bỏ qua</string>
-    <string name="reminder_quick_taken_toast">Vita ghi nhận bạn đã uống %1$s. Chúc bạn mau khỏe!</string>
-    <string name="reminder_quick_skipped_toast">Đã ghi nhận bỏ qua cữ thuốc này. Hãy chú ý giữ gìn sức khỏe nhé.</string>
 
     <!-- Home Screen -->
-    <string name="home_sub_greeting">Chúc bạn một ngày tràn đầy năng lượng.</string>
     <string name="home_bmi_title">CHỈ SỐ THỂ TRẠNG (BMI)</string>
     <string name="home_bmi_info_format">Chiều cao: %1$.0f cm • Cân nặng: %2$.0f kg%3$s</string>
     <string name="home_bmi_info_initial_suffix"> (ban đầu)</string>
@@ -300,31 +179,15 @@
     <string name="home_bmi_standard_asian">Châu Á</string>
     <string name="home_bmi_standard_who">Quốc tế (WHO)</string>
     <string name="home_bmi_no_data">Hãy ghi nhận cân nặng để Vita tính BMI nhé.</string>
-    <string name="home_greeting_morning">Chào buổi sáng, %1$s!</string>
-    <string name="home_greeting_afternoon">Chào buổi chiều, %1$s!</string>
-    <string name="home_greeting_evening">Chào buổi tối, %1$s!</string>
-    <string name="home_weather_title">THỜI TIẾT &amp; MÔI TRƯỜNG</string>
-    <string name="home_temp_format">%.0f°C</string>
-    <string name="home_humidity_format">Độ ẩm: %1$d%%</string>
-    <string name="home_aqi_format">AQI: %1$d</string>
-    <string name="home_aqi_good">Không khí tốt</string>
-    <string name="home_aqi_moderate">Không khí vừa phải</string>
-    <string name="home_aqi_sensitive">Nhạy cảm với nhóm sức khỏe yếu</string>
-    <string name="home_aqi_bad">Không khí kém</string>
-    <string name="home_aqi_unknown">Chưa có dữ liệu AQI</string>
-    <string name="home_updated_format">Cập nhật: %1$s</string>
-    <string name="home_offline_label">Ngoại tuyến</string>
-    <string name="home_weather_error">Không tải được thời tiết. Kiểm tra mạng nhé.</string>
-    <string name="home_advice_title">GỢI Ý CHĂM SÓC HÔM NAY</string>
-    <string name="home_advice_air">Chất lượng không khí kém (AQI %1$d). Hãy đeo khẩu trang khi ra ngoài và hạn chế vận động mạnh nhé.</string>
+    <string name="home_greeting_morning">Chào buổi sáng, %1$s</string>
+    <string name="home_greeting_afternoon">Chào buổi chiều, %1$s</string>
+    <string name="home_greeting_evening">Chào buổi tối, %1$s</string>
 
     <!-- Main Navigation -->
-    <string name="nav_home">Trang chủ</string>
+    <string name="nav_home">Hôm nay</string>
     <string name="nav_health">Chỉ số</string>
     <string name="nav_reminder">Nhắc nhở</string>
-    <string name="nav_stats">Thống kê</string>
-    <string name="main_profile_title">Hồ sơ cá nhân</string>
-    <string name="main_profile_desc">Mở hồ sơ cá nhân</string>
+    <string name="nav_stats">Xu hướng</string>
 
     <!-- Water Reminder -->
     <string name="water_reminder_title">Đến giờ uống nước</string>
@@ -338,15 +201,10 @@
     <string name="stats_heart_rate_title">Nhịp tim (bpm)</string>
     <string name="health_filter_range_title">Chọn khoảng ngày</string>
     <string name="health_filter_range_format">%1$s – %2$s</string>
-    <string name="water_heat_adjustment">Gợi ý theo thời tiết: cộng 300 ml theo quy tắc tùy chọn của ứng dụng, không phải nhu cầu dịch được kê riêng cho bạn.</string>
-    <string name="water_base_goal">Mục tiêu cơ bản trong hồ sơ.</string>
-    <string name="water_goal_today">Mục tiêu hôm nay: %,d ml.</string>
     <string name="reminder_notifications_disabled">Thông báo đang tắt. Bật thông báo để nhận nhắc uống thuốc và nước.</string>
     <string name="reminder_notifications_settings">Mở cài đặt thông báo</string>
-    <string name="med_times_help">Chạm ô giờ để thêm cữ. Chạm một giờ bên dưới để sửa, bấm dấu × để bỏ.</string>
     <string name="med_remove_time">Bỏ cữ %1$s</string>
     <string name="med_time_required">Chọn ít nhất một giờ uống thuốc.</string>
-    <string name="med_history">Lịch sử từng cữ</string>
     <string name="med_history_empty">Chưa có lần xác nhận nào.</string>
     <string name="measurement_time">Giờ đo</string>
     <string name="measurement_time_unknown">Chưa ghi giờ</string>
@@ -359,17 +217,16 @@
     <string name="water_settings">Cài đặt nhắc uống nước</string>
     <string name="water_start">Bắt đầu nhắc</string>
     <string name="water_end">Kết thúc nhắc</string>
-    <string name="water_amount">Lượng uống mỗi lần (ml)</string>
-    <string name="water_weather_opt_in">Cho phép cộng 300 ml khi trời từ 33°C</string>
     <string name="water_settings_help">Chọn nhắc mỗi 2 giờ hoặc các mốc giờ riêng trong khung đã đặt. Nhắc dừng khi đạt mục tiêu ngày. Mục tiêu gốc luôn được giữ nguyên.</string>
-    <string name="water_settings_invalid">Chọn hai giờ khác nhau và lượng uống từ 50 đến 2.000 ml.</string>
     <string name="profile_water_schedule">Khung giờ %1$s – %2$s · %3$d ml/lần</string>
     <string name="profile_management">Quản lý hồ sơ</string>
     <string name="profile_delete_title">Xóa hồ sơ</string>
-    <string name="profile_delete_message">Xóa vĩnh viễn hồ sơ này cùng nhật ký sức khỏe, thuốc, nước uống, giấc ngủ và cài đặt. Hồ sơ khác được giữ nguyên. Không thể hoàn tác.\n\nNhập mật khẩu để xác nhận.</string>
-    <string name="profile_delete_password">Mật khẩu</string>
     <string name="profile_delete_confirm">Xóa vĩnh viễn</string>
     <string name="profile_delete_password_error">Mật khẩu chưa chính xác.</string>
     <string name="profile_delete_success">Đã xóa hồ sơ.</string>
     <string name="profile_delete_error">Chưa thể xóa hồ sơ. Dữ liệu được giữ nguyên, vui lòng thử lại.</string>
+    <string-array name="medicine_weekday_names">
+        <item>Thứ hai</item><item>Thứ ba</item><item>Thứ tư</item>
+        <item>Thứ năm</item><item>Thứ sáu</item><item>Thứ bảy</item><item>Chủ nhật</item>
+    </string-array>
 </resources>

@@ -17,6 +17,32 @@ import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class WaterSettingsScreenDeviceTest {
+    @Test public void correctingWaterAmountClearsItsStaleError() {
+        Intent intent = new Intent(context, EditProfileActivity.class).putExtra("water_settings_only", true);
+        try (ActivityScenario<EditProfileActivity> screen = ActivityScenario.launch(intent)) {
+            screen.onActivity(a -> {
+                EditText amount = a.findViewById(R.id.et_edit_water_amount);
+                com.google.android.material.textfield.TextInputLayout field = a.findViewById(R.id.til_edit_water_amount);
+                amount.setText("20");
+                a.findViewById(R.id.btn_edit_save).performClick();
+                assertNotNull(field.getError());
+                amount.setText("250");
+                assertNull("An old error must clear when the value changes", field.getError());
+            });
+        }
+    }
+    @Test public void twoHourPreviewMatchesOvernightWindow_andOmitsUnalignedEnd() {
+        Intent intent = new Intent(context, EditProfileActivity.class).putExtra("water_settings_only", true);
+        try (ActivityScenario<EditProfileActivity> screen = ActivityScenario.launch(intent)) {
+            screen.onActivity(a -> {
+                ((TextView) a.findViewById(R.id.et_edit_water_start)).setText("22:00");
+                ((TextView) a.findViewById(R.id.et_edit_water_end)).setText("05:00");
+                String preview = ((TextView) a.findViewById(R.id.tv_water_schedule_preview)).getText().toString();
+                assertTrue(preview, preview.contains("22:00 · 00:00 · 02:00 · 04:00"));
+                assertFalse(preview, preview.contains("05:00"));
+            });
+        }
+    }
     private Context context; private long owner;
     @Before public void setup() {
         context=ApplicationProvider.getApplicationContext();

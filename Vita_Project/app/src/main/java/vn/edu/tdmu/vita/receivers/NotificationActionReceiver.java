@@ -30,14 +30,14 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         String status = ACTION_SKIPPED.equals(action) ? "SKIPPED" : "TAKEN";
 
         MedicineDao dao = new MedicineDao(context);
-        Medicine medicine = dao.getById(medicineId);
+        Medicine medicine = dao.getById(medicineId, new SessionManager(context).getUserId());
         if (medicine == null || !SessionManager.matchesUser(
                 medicine.getUserId(), new SessionManager(context).getUserId())) return;
         String date = intent.getStringExtra(MedicineAlarmReceiver.EXTRA_DOSE_DATE);
         String time = intent.getStringExtra(MedicineAlarmReceiver.EXTRA_DOSE_TIME);
         if (date == null || time == null) return;
         String medicineName = medicine.getName();
-        dao.logMedicineStatus(medicineId, date, time, status,
+        dao.logMedicineStatus(medicineId, medicine.getUserId(), date, time, status,
                 DateTimeUtils.getCurrentTimestamp());
 
         NotificationManagerCompat.from(context).cancel(vn.edu.tdmu.vita.utils.NotificationHelper.doseNotificationId(medicineId, date, time));

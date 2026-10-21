@@ -20,6 +20,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        ((com.google.android.material.appbar.MaterialToolbar) findViewById(R.id.toolbar_splash)).setNavigationOnClickListener(v -> finish());
 
         // Smooth brand fade-in animation
         View brandLayout = findViewById(R.id.ll_splash_brand);

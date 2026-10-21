@@ -1,16 +1,10 @@
 package vn.edu.tdmu.vita.fragments;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,41 +18,18 @@ import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.HealthDao;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.models.User;
-import vn.edu.tdmu.vita.models.WeatherData;
-import vn.edu.tdmu.vita.network.WeatherClient;
 import vn.edu.tdmu.vita.utils.BMICalculator;
-import vn.edu.tdmu.vita.utils.HydrationGoal;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class HomeFragment extends Fragment {
-
-    private static final String PREFS_HOME = "vita_home";
-    private static final String KEY_CITY = "city_position";
-
-    private static final String[] CITY_NAMES = WeatherClient.CITY_NAMES;
-    private static final double[] CITY_LAT = WeatherClient.CITY_LAT;
-    private static final double[] CITY_LON = WeatherClient.CITY_LON;
-    private int weatherRequest;
-
     private TextView tvGreeting;
     private TextView tvBmiValue;
     private TextView tvBmiBadge;
     private TextView tvBmiInfo;
     private TextView tvBmiStandard;
-    private Spinner spCity;
-    private TextView tvTemp;
-    private TextView tvHumidity;
-    private TextView tvAqi;
-    private TextView tvAqiLabel;
-    private TextView tvUpdated;
-    private TextView tvOffline;
-    private TextView tvAdvice;
-
     private UserDao userDao;
     private HealthDao healthDao;
     private SessionManager sessionManager;
-
-    private boolean spinnerInit = true;
 
     @Nullable
     @Override
@@ -70,26 +41,41 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         sessionManager = new SessionManager(requireContext());
         userDao = new UserDao(requireContext());
         healthDao = new HealthDao(requireContext());
-
         tvGreeting = view.findViewById(R.id.tv_home_greeting);
         tvBmiValue = view.findViewById(R.id.tv_home_bmi_value);
         tvBmiBadge = view.findViewById(R.id.tv_home_bmi_badge);
         tvBmiInfo = view.findViewById(R.id.tv_home_bmi_info);
         tvBmiStandard = view.findViewById(R.id.tv_home_bmi_standard);
-        spCity = view.findViewById(R.id.sp_home_city);
-        tvTemp = view.findViewById(R.id.tv_home_temp);
-        tvHumidity = view.findViewById(R.id.tv_home_humidity);
-        tvAqi = view.findViewById(R.id.tv_home_aqi);
-        tvAqiLabel = view.findViewById(R.id.tv_home_aqi_label);
-        tvUpdated = view.findViewById(R.id.tv_home_updated);
-        tvOffline = view.findViewById(R.id.tv_home_offline);
-        tvAdvice = view.findViewById(R.id.tv_home_advice_text);
-
-        setupCitySpinner();
+        if (getResources().getConfiguration().fontScale > 1.3f) {
+            for (int firstId : new int[]{R.id.tv_home_water_progress, R.id.btn_home_add_water}) {
+                android.widget.LinearLayout row = (android.widget.LinearLayout) view.findViewById(firstId).getParent();
+                row.setOrientation(android.widget.LinearLayout.VERTICAL);
+                for (int i = 0; i < row.getChildCount(); i++) {
+                    View child = row.getChildAt(i);
+                    android.widget.LinearLayout.LayoutParams params = (android.widget.LinearLayout.LayoutParams) child.getLayoutParams();
+                    params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                    params.weight = 0;
+                    params.setMarginEnd(0);
+                    if (i > 0) params.topMargin = getResources().getDimensionPixelSize(R.dimen.spacing_sm);
+                    child.setLayoutParams(params);
+                }
+            }
+        }
+        view.findViewById(R.id.btn_home_add_health).setOnClickListener(v ->
+                startActivity(new android.content.Intent(requireContext(), vn.edu.tdmu.vita.activities.AddHealthActivity.class)));
+        view.findViewById(R.id.btn_home_reminders).setOnClickListener(v ->
+                ((com.google.android.material.bottomnavigation.BottomNavigationView) requireActivity().findViewById(R.id.bottom_nav_main)).setSelectedItemId(R.id.nav_reminder));
+        view.findViewById(R.id.btn_home_add_water).setOnClickListener(v ->
+                vn.edu.tdmu.vita.utils.WaterJournalDialog.addQuickWater(requireActivity(), sessionManager.getUserId(), this::refreshDashboard));
+        view.findViewById(R.id.btn_home_custom_water).setOnClickListener(v ->
+                vn.edu.tdmu.vita.utils.WaterJournalDialog.showAddAmount(requireActivity(), sessionManager.getUserId(), this::refreshDashboard));
+        view.findViewById(R.id.btn_home_water_journal).setOnClickListener(v ->
+                vn.edu.tdmu.vita.utils.WaterJournalDialog.show(requireActivity(), sessionManager.getUserId(), vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate(), this::refreshDashboard));
+        view.findViewById(R.id.cv_home_bmi).setOnClickListener(v ->
+                startActivity(new android.content.Intent(requireContext(), vn.edu.tdmu.vita.activities.BmiActivity.class)));
         loadBmiCard();
     }
 
@@ -97,47 +83,16 @@ public class HomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
         loadBmiCard();
-        fetchWeather(currentCity());
     }
 
-    private void setupCitySpinner() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(),
-                android.R.layout.simple_spinner_item, CITY_NAMES);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spCity.setAdapter(adapter);
-        spCity.setSelection(currentCity());
-        spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-                if (spinnerInit) {
-                    spinnerInit = false;
-                    return;
-                }
-                saveCity(position);
-                fetchWeather(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
-        });
-    }
-
-    private int currentCity() {
-        SharedPreferences prefs = requireContext().getSharedPreferences(PREFS_HOME, 0);
-        int pos = prefs.getInt(KEY_CITY, 0);
-        return (pos >= 0 && pos < CITY_NAMES.length) ? pos : 0;
-    }
-
-    private void saveCity(int position) {
-        requireContext().getSharedPreferences(PREFS_HOME, 0).edit()
-                .putInt(KEY_CITY, position).apply();
-    }
+    public void refreshDashboard() { if (getView() != null) loadBmiCard(); }
 
     private void loadBmiCard() {
         long userId = sessionManager.getUserId();
         if (userId <= 0) return;
         User user = userDao.getUserById(userId);
         if (user == null) return;
+        loadSummary(user);
 
         String name = user.getFullname() != null && !user.getFullname().trim().isEmpty()
                 ? user.getFullname() : user.getUsername();
@@ -165,6 +120,7 @@ public class HomeFragment extends Fragment {
             String suffix = isInitial ? getString(R.string.home_bmi_info_initial_suffix) : "";
             tvBmiInfo.setText(String.format(Locale.getDefault(),
                     getString(R.string.home_bmi_info_format), height, weight, suffix));
+            if (!isInitial) tvBmiInfo.append("\n" + vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(requireContext(), healthDao.getLatestWeightRecord(userId)));
             String standard = BMICalculator.STANDARD_WHO.equals(user.getBmiStandard())
                     ? getString(R.string.home_bmi_standard_who)
                     : getString(R.string.home_bmi_standard_asian);
@@ -176,7 +132,49 @@ public class HomeFragment extends Fragment {
             tvBmiValue.setText("--");
             tvBmiBadge.setText("");
             tvBmiInfo.setText(getString(R.string.home_bmi_no_data));
+            tvBmiStandard.setText("");
         }
+    }
+
+    private void loadSummary(User user) {
+        long owner = sessionManager.getUserId();
+        vn.edu.tdmu.vita.database.MedicineDao.NextDose next = new vn.edu.tdmu.vita.database.MedicineDao(requireContext())
+                .getNextUnloggedDose(owner, System.currentTimeMillis());
+        ((TextView) requireView().findViewById(R.id.tv_home_next_time)).setText(next == null ? "—" : next.time);
+        ((TextView) requireView().findViewById(R.id.tv_home_next_dose)).setText(next == null
+                ? getString(R.string.home_no_next_dose) : next.medicine.getName());
+        ((TextView) requireView().findViewById(R.id.tv_home_next_info)).setText(next == null ? ""
+                : vn.edu.tdmu.vita.utils.DateTimeUtils.formatDisplayDate(next.date) + " · "
+                        + (next.medicine.getDosage() == null ? "" : next.medicine.getDosage()));
+        int total = new vn.edu.tdmu.vita.database.WaterDao(requireContext()).getDailyTotal(owner,
+                vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate());
+        int goal = vn.edu.tdmu.vita.utils.HydrationGoal.forUserGoal(user.getWaterGoalMl());
+        ((TextView) requireView().findViewById(R.id.tv_home_water_progress)).setText(String.format(Locale.getDefault(), "%,d", total));
+        ((TextView) requireView().findViewById(R.id.tv_home_water_goal)).setText(getString(R.string.figma_home_goal, goal, Math.max(0, goal - total)));
+        android.widget.ProgressBar progress = requireView().findViewById(R.id.pb_home_water);
+        progress.setMax(goal); progress.setProgress(total);
+        ((TextView) requireView().findViewById(R.id.tv_home_water_percent)).setText(getString(R.string.figma_home_percent, Math.round(100f * total / goal)));
+        ((TextView) requireView().findViewById(R.id.btn_home_add_water)).setText(getString(R.string.figma_home_quick_water, user.getWaterAmount()));
+        java.util.List<vn.edu.tdmu.vita.models.HealthRecord> records = healthDao.getAllByUserId(owner, null);
+        vn.edu.tdmu.vita.models.HealthRecord latest = records.isEmpty() ? null : records.get(0);
+        TextView summary = requireView().findViewById(R.id.tv_home_latest_record);
+        StringBuilder text = new StringBuilder(getString(R.string.home_latest_record));
+        if (latest == null) text.append('\n').append(getString(R.string.home_no_record));
+        else {
+            text.append('\n').append(vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(requireContext(), latest));
+            if (latest.getSystolic() != null || latest.getDiastolic() != null)
+                text.append('\n').append(latest.getSystolic() == null ? "—" : latest.getSystolic()).append('/')
+                        .append(latest.getDiastolic() == null ? "—" : latest.getDiastolic()).append(" mmHg");
+            if (latest.getWeightKg() != null) text.append('\n').append(latest.getWeightKg()).append(" kg");
+            if (latest.getHeartRate() != null) text.append('\n').append(latest.getHeartRate()).append(" bpm");
+            if (latest.getBloodSugar() != null) text.append('\n').append(latest.getBloodSugar()).append(" mg/dL");
+            if (latest.getNote() != null && !latest.getNote().trim().isEmpty()) text.append("\nGhi chú: ").append(latest.getNote());
+        }
+        summary.setText(text);
+        View open = requireView().findViewById(R.id.btn_home_latest_record);
+        open.setVisibility(latest == null ? View.GONE : View.VISIBLE);
+        open.setOnClickListener(v -> startActivity(new android.content.Intent(requireContext(), vn.edu.tdmu.vita.activities.DetailHealthActivity.class)
+                .putExtra(vn.edu.tdmu.vita.activities.DetailHealthActivity.EXTRA_RECORD_ID, latest.getId())));
     }
 
     private int badgeBg(int colorRes) {
@@ -184,92 +182,5 @@ public class HomeFragment extends Fragment {
         if (colorRes == R.color.vita_status_warning) return R.drawable.bg_badge_warning;
         if (colorRes == R.color.vita_status_danger) return R.drawable.bg_badge_danger;
         return R.drawable.bg_badge_rounded;
-    }
-
-    private void fetchWeather(int cityPos) {
-        int request = ++weatherRequest;
-        tvTemp.setText("--");
-        tvHumidity.setText("--");
-        tvAqi.setText("--");
-        tvAqiLabel.setText(R.string.home_aqi_unknown);
-        tvUpdated.setText("");
-        tvOffline.setVisibility(View.GONE);
-        tvAdvice.setText(R.string.weather_advice_loading);
-        WeatherClient.fetchWeather(requireContext(), CITY_LAT[cityPos], CITY_LON[cityPos],
-                CITY_NAMES[cityPos], new WeatherClient.Callback() {
-                    @Override
-                    public void onSuccess(WeatherData data) {
-                        if (!isAdded() || getView() == null || request != weatherRequest) return;
-                        renderWeather(data);
-                    }
-
-                    @Override
-                    public void onError() {
-                        if (!isAdded() || getView() == null || request != weatherRequest) return;
-                        Toast.makeText(requireContext(), getString(R.string.home_weather_error),
-                                Toast.LENGTH_SHORT).show();
-                        tvAdvice.setText(R.string.weather_advice_unavailable);
-                    }
-                });
-    }
-
-    private void renderWeather(WeatherData data) {
-        tvTemp.setText(String.format(Locale.US, getString(R.string.home_temp_format),
-                data.getTemperature()));
-        tvHumidity.setText(String.format(Locale.getDefault(),
-                getString(R.string.home_humidity_format), data.getHumidity()));
-        tvUpdated.setText(String.format(Locale.getDefault(),
-                getString(R.string.home_updated_format), data.getUpdatedAt()));
-        tvOffline.setVisibility(data.isOffline() ? View.VISIBLE : View.GONE);
-
-        int aqi = data.getAqi();
-        if (aqi < 0) {
-            tvAqi.setText("--");
-            tvAqiLabel.setText(getString(R.string.home_aqi_unknown));
-            tvAqi.setTextColor(ContextCompat.getColor(requireContext(), R.color.vita_text_secondary));
-        } else {
-            tvAqi.setText(String.format(Locale.getDefault(),
-                    getString(R.string.home_aqi_format), aqi));
-            int colorRes;
-            int labelRes;
-            if (aqi <= 50) {
-                colorRes = R.color.vita_status_good;
-                labelRes = R.string.home_aqi_good;
-            } else if (aqi <= 100) {
-                colorRes = R.color.vita_aqi_moderate;
-                labelRes = R.string.home_aqi_moderate;
-            } else if (aqi <= 150) {
-                colorRes = R.color.vita_status_warning;
-                labelRes = R.string.home_aqi_sensitive;
-            } else {
-                colorRes = R.color.vita_status_danger;
-                labelRes = R.string.home_aqi_bad;
-            }
-            tvAqi.setTextColor(ContextCompat.getColor(requireContext(), colorRes));
-            tvAqiLabel.setText(getString(labelRes));
-        }
-
-        User user = userDao.getUserById(sessionManager.getUserId());
-        int base = user != null ? user.getWaterGoalMl() : 2000;
-        int goal = HydrationGoal.forDay(base, data, CITY_NAMES[currentCity()],
-                vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate(), user != null && user.isWeatherAdjustmentEnabled());
-        String advice = "";
-        if (Float.isFinite(data.getTemperature()) && data.getTemperature() >= 33f) {
-            advice = getString(R.string.weather_advice_heat, data.getTemperature());
-        }
-        if (aqi > 100) {
-            advice += (advice.isEmpty() ? "" : "\n") + getString(R.string.home_advice_air, aqi);
-        }
-        if (goal > (base > 0 ? base : 2000)) {
-            advice += (advice.isEmpty() ? "" : "\n") + getString(R.string.water_heat_adjustment)
-                    + "\n" + getString(R.string.water_goal_today, goal);
-        }
-        tvAdvice.setText(advice.isEmpty() ? getString(R.string.weather_advice_general) : advice);
-    }
-
-    @Override
-    public void onDestroyView() {
-        weatherRequest++;
-        super.onDestroyView();
     }
 }

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="weather_advice_loading">Đang tải dữ liệu thời tiết…</string>
-    <string name="weather_advice_unavailable">Chưa có dữ liệu thời tiết. Hãy duy trì mục tiêu chăm sóc đã chọn.</string>
-    <string name="weather_advice_heat">Dữ liệu thời tiết ghi nhận trời nóng (%1$.0f°C). Hãy nghỉ ở nơi thoáng mát.</string>
-    <string name="weather_advice_general">Hãy duy trì mục tiêu chăm sóc đã chọn và vận động phù hợp với sức khỏe.</string>
-</resources>

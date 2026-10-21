@@ -2,9 +2,7 @@ package vn.edu.tdmu.vita.utils;
 
 import org.junit.Test;
 import java.util.Arrays;
-import java.util.Map;
 import vn.edu.tdmu.vita.models.HealthRecord;
-import vn.edu.tdmu.vita.models.SleepLog;
 import static org.junit.Assert.*;
 
 public class HealthChartDataTest {
@@ -26,14 +24,6 @@ public class HealthChartDataTest {
         assertNull(new HealthRecord().getMeasuredTime());
         assertEquals(HealthRecord.MealContext.UNSPECIFIED, new HealthRecord().getMealContext());
     }
-    @Test
-    public void sleepTotals_addSessionsOnSameWakeDate() {
-        Map<String, Float> totals = HealthChartData.sleepTotals(Arrays.asList(
-                new SleepLog(1, 1, "2026-10-16", "23:00", "07:00", 8f),
-                new SleepLog(2, 1, "2026-10-16", "13:00", "14:00", 1f)));
-        assertEquals(9f, totals.get("2026-10-16"), 0f);
-    }
-
     @Test
     public void metricPoints_skipNullsAndPreserveDayPositions() {
         HealthRecord first = new HealthRecord(1, 1, "2026-10-14", 68f, null, null, 72, null, null);

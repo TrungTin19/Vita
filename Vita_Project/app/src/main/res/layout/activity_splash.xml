@@ -1,74 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/vita_bg">
-
-    <!-- Center Content: Logo, Title, Slogan -->
-    <LinearLayout
-        android:id="@+id/ll_splash_brand"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/pb_splash_loading"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed">
-
-        <ImageView
-            android:id="@+id/iv_splash_logo"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:contentDescription="@string/splash_logo_desc"
-            android:scaleType="fitCenter"
-            android:src="@drawable/vita_logo_art" />
-
-        <TextView
-            android:id="@+id/tv_splash_title"
-            android:layout_width="wrap_content"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar_splash"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_marginBottom="36dp"
+        app:navigationIcon="@drawable/ic_arrow_back"
+        app:navigationContentDescription="@string/a11y_navigate_back"
+        app:navigationIconTint="@color/vita_teal"
+        app:title="@string/app_name"
+        app:titleTextColor="@color/vita_text_primary" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:text="@string/splash_title"
-            android:textColor="@color/vita_teal"
-            android:textSize="@dimen/text_display"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_splash_slogan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_sm"
-            android:text="@string/splash_slogan"
-            android:textColor="@color/vita_text_secondary"
-            android:textSize="@dimen/text_body" />
-    </LinearLayout>
-
-    <!-- Bottom Indicator & Version -->
-    <ProgressBar
-        android:id="@+id/pb_splash_loading"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="@dimen/spacing_lg"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/vita_aqua"
-        app:layout_constraintBottom_toTopOf="@+id/tv_splash_version"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_splash_version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_lg"
-        android:text="@string/splash_version"
-        android:textColor="@color/vita_text_secondary"
-        android:textSize="@dimen/text_caption"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+            android:orientation="vertical"
+            android:paddingTop="114dp"
+            android:paddingBottom="32dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+            <LinearLayout
+                android:id="@+id/ll_splash_brand"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <ImageView
+                    android:id="@+id/iv_splash_logo"
+                    android:layout_width="88dp"
+                    android:layout_height="88dp"
+                    android:src="@drawable/figma_leaf"
+                    android:contentDescription="@string/splash_logo_desc" />
+                <TextView
+                    android:id="@+id/tv_splash_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/splash_title"
+                    android:textSize="64sp"
+                    android:textColor="@color/vita_teal"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:includeFontPadding="false"
+                    android:minHeight="89.6sp"
+                    android:gravity="center_vertical"
+                    app:lineHeight="89.6sp" />
+                <TextView
+                    android:id="@+id/tv_splash_slogan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/figma_splash_title"
+                    android:textSize="28sp"
+                    android:textColor="@color/vita_text_primary"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:includeFontPadding="false"
+                    android:minHeight="39.2sp"
+                    android:gravity="center_vertical"
+                    app:lineHeight="39.2sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/figma_splash_note"
+                    android:textSize="14sp"
+                    android:textColor="@color/vita_text_secondary"
+                    android:padding="20dp"
+                    android:background="@drawable/bg_soft_card"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginBottom="16dp"
+                    android:includeFontPadding="false"
+                    android:minHeight="19.6sp"
+                    android:gravity="center_vertical"
+                    app:lineHeight="19.6sp" />
+            </LinearLayout>
+            <ProgressBar
+                android:visibility="gone"
+                android:id="@+id/pb_splash_loading"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:indeterminateTint="@color/vita_teal"
+                android:layout_marginTop="24dp" />
+            <TextView
+                android:id="@+id/tv_splash_version"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/figma_splash_footer"
+                android:textSize="14sp"
+                android:textColor="@color/vita_text_secondary"
+                android:layout_marginTop="90dp"
+                android:includeFontPadding="false"
+                android:minHeight="19.6sp"
+                android:gravity="center_vertical"
+                app:lineHeight="19.6sp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

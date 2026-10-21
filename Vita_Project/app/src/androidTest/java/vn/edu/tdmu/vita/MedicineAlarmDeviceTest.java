@@ -10,6 +10,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,6 +33,15 @@ import vn.edu.tdmu.vita.utils.NotificationHelper;
 public class MedicineAlarmDeviceTest {
 
     private Context context;
+    private Medicine scheduledMedicine;
+    private long owner;
+
+    @After public void cleanUp() {
+        if (scheduledMedicine != null) MedicineAlarmReceiver.cancel(context, scheduledMedicine);
+        context.getSystemService(NotificationManager.class).cancelAll();
+        if (owner > 0) new UserDao(context).deleteProfileWithPassword(owner, "matkhau123");
+        new SessionManager(context).clearSession();
+    }
 
     @Before
     public void setUp() {
@@ -47,6 +57,7 @@ public class MedicineAlarmDeviceTest {
         user.setHeightCm(170f);
         user.setBaseWeightKg(65f);
         long userId = userDao.register(user, "matkhau123");
+        owner = userId;
         assertTrue(userId > 0);
         new SessionManager(context).saveSession(userId, "alarm_test", "");
         assertTrue("Test requires notification permission", NotificationHelper.canNotify(context));
@@ -61,6 +72,7 @@ public class MedicineAlarmDeviceTest {
         long medId = medicineDao.insert(medicine);
         assertTrue(medId > 0);
         medicine.setId(medId);
+        scheduledMedicine = medicine;
 
         MedicineAlarmReceiver.schedule(context, medicine);
 

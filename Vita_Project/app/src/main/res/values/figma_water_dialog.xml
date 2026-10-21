@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="figma_water_add_title">Thêm nước</string>
+    <string name="figma_water_delete_title">Xóa lần uống?</string>
+    <string name="figma_water_delete_message">Xóa %1$d ml đã ghi lúc %2$s ngày %3$s?</string>
+    <string name="figma_water_delete_action">Xóa lần uống</string>
+</resources>

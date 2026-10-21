@@ -4,7 +4,7 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.widget.TextView;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +26,9 @@ import vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class AddMedicineActivity extends AppCompatActivity {
+    private vn.edu.tdmu.vita.utils.UnsavedChangesGuard unsavedGuard;
+
+    private long formUserId;
 
     public static final String EXTRA_MEDICINE_ID = "extra_medicine_id";
 
@@ -36,7 +39,7 @@ public class AddMedicineActivity extends AppCompatActivity {
     private TextInputEditText etDosage;
     private TextInputLayout tilTime;
     private TextInputEditText etTime;
-    private TextView[] dayButtons;
+    private CheckBox[] dayButtons;
     private MaterialCheckBox cbAllDays;
     private MaterialButton btnSave;
 
@@ -53,7 +56,8 @@ public class AddMedicineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_medicine);
 
         sessionManager = new SessionManager(this);
-        if (sessionManager.getUserId() <= 0) {
+        formUserId = savedInstanceState == null ? sessionManager.getUserId() : savedInstanceState.getLong("form_user_id", -1);
+        if (!SessionManager.matchesUser(formUserId, sessionManager.getUserId())) {
             finish();
             return;
         }
@@ -69,6 +73,13 @@ public class AddMedicineActivity extends AppCompatActivity {
             renderTimes();
             refreshDayButtons();
         }
+        unsavedGuard = vn.edu.tdmu.vita.utils.UnsavedChangesGuard.attach(this, savedInstanceState);
+        toolbar.setNavigationOnClickListener(v -> unsavedGuard.requestExit());
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (!SessionManager.matchesUser(formUserId, new SessionManager(this).getUserId())) finish();
     }
 
     private void initViews() {
@@ -79,7 +90,8 @@ public class AddMedicineActivity extends AppCompatActivity {
         etDosage = findViewById(R.id.et_med_dosage);
         tilTime = findViewById(R.id.til_med_time);
         etTime = findViewById(R.id.et_med_time);
-        dayButtons = new TextView[]{
+        etTime.setKeyListener(null);
+        dayButtons = new CheckBox[]{
                 findViewById(R.id.btn_day_mon),
                 findViewById(R.id.btn_day_tue),
                 findViewById(R.id.btn_day_wed),
@@ -120,8 +132,8 @@ public class AddMedicineActivity extends AppCompatActivity {
         medicineId = getIntent().getLongExtra(EXTRA_MEDICINE_ID, -1);
 
         if (medicineId > 0) {
-            toolbar.setTitle(getString(R.string.add_med_title_edit));
-            Medicine medicine = medicineDao.getById(medicineId);
+            ((android.widget.TextView) findViewById(R.id.title_add_medicine)).setText(R.string.add_med_title_edit);
+            Medicine medicine = medicineDao.getById(medicineId, formUserId);
             if (medicine != null && medicine.getUserId() == sessionManager.getUserId()) {
                 etName.setText(medicine.getName());
                 if (medicine.getDosage() != null) etDosage.setText(medicine.getDosage());
@@ -132,7 +144,7 @@ public class AddMedicineActivity extends AppCompatActivity {
                 return;
             }
         } else {
-            toolbar.setTitle(getString(R.string.add_med_title_add));
+            ((android.widget.TextView) findViewById(R.id.title_add_medicine)).setText(R.string.add_med_title_add);
             selectedTime = nextHourDefault();
             daysMask = 127;
         }
@@ -173,7 +185,7 @@ public class AddMedicineActivity extends AppCompatActivity {
     }
 
     private void renderTimes() {
-        etTime.setText(selectedTime == null ? "" : selectedTime.replace(",", " · "));
+        etTime.setText(R.string.figma_add_time);
         com.google.android.material.chip.ChipGroup group = findViewById(R.id.chips_med_times);
         group.removeAllViews();
         if (selectedTime == null || selectedTime.isEmpty()) return;
@@ -181,6 +193,11 @@ public class AddMedicineActivity extends AppCompatActivity {
             com.google.android.material.chip.Chip chip = new com.google.android.material.chip.Chip(this);
             chip.setText(time);
             chip.setEnsureMinTouchTargetSize(true);
+            chip.setChipBackgroundColor(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(this, R.color.vita_surface)));
+            chip.setChipStrokeWidth(0); chip.setTextSize(12); chip.setMinWidth(Math.round(116 * getResources().getDisplayMetrics().density));
+            chip.setCloseIconStartPadding(12 * getResources().getDisplayMetrics().density);
+            chip.setCloseIconEndPadding(12 * getResources().getDisplayMetrics().density);
+            chip.setCloseIconSize(24 * getResources().getDisplayMetrics().density); chip.setTextColor(ContextCompat.getColor(this, R.color.vita_text_primary));
             chip.setCloseIconResource(R.drawable.ic_cancel);
             chip.setCloseIconVisible(true);
             chip.setCloseIconContentDescription(getString(R.string.med_remove_time, time));
@@ -198,18 +215,17 @@ public class AddMedicineActivity extends AppCompatActivity {
     private void refreshDayButtons() {
         for (int i = 0; i < dayButtons.length; i++) {
             boolean selected = (daysMask & (1 << i)) != 0;
-            TextView btn = dayButtons[i];
+            CheckBox btn = dayButtons[i];
             if (selected) {
                 btn.setBackgroundResource(R.drawable.bg_day_selected);
-                btn.setTextColor(ContextCompat.getColor(this, android.R.color.white));
+                btn.setTextColor(ContextCompat.getColor(this, R.color.vita_teal));
             } else {
                 btn.setBackgroundResource(R.drawable.bg_day_unselected);
                 btn.setTextColor(ContextCompat.getColor(this, R.color.vita_teal));
             }
             btn.setSelected(selected);
-            btn.setContentDescription(btn.getText()
-                    + (selected ? getString(R.string.add_med_day_on)
-                                : getString(R.string.add_med_day_off)));
+            btn.setChecked(selected);
+            btn.setContentDescription(getResources().getStringArray(R.array.medicine_weekday_names)[i]);
         }
         cbAllDays.setOnCheckedChangeListener(null);
         cbAllDays.setChecked(daysMask == 127);
@@ -220,6 +236,7 @@ public class AddMedicineActivity extends AppCompatActivity {
     }
 
     private void handleSave() {
+        if (!SessionManager.matchesUser(formUserId, sessionManager.getUserId())) { finish(); return; }
         String name = getText(etName);
         String dosage = getText(etDosage);
 
@@ -242,7 +259,7 @@ public class AddMedicineActivity extends AppCompatActivity {
         Medicine medicine;
 
         if (medicineId > 0) {
-            medicine = medicineDao.getById(medicineId);
+            medicine = medicineDao.getById(medicineId, formUserId);
             if (medicine == null || medicine.getUserId() != userId) {
                 Toast.makeText(this, getString(R.string.add_med_error_update), Toast.LENGTH_SHORT).show();
                 return;
@@ -252,8 +269,8 @@ public class AddMedicineActivity extends AppCompatActivity {
             medicine.setDosage(dosage.isEmpty() ? null : dosage);
             medicine.setTime(selectedTime);
             medicine.setDaysMask(daysMask);
-            success = medicineDao.update(medicine);
-            if (!success) MedicineAlarmReceiver.schedule(this, medicineDao.getById(medicineId));
+            success = medicineDao.update(medicine, formUserId);
+            if (!success) MedicineAlarmReceiver.schedule(this, medicineDao.getById(medicineId, formUserId));
             if (success) {
                 Toast.makeText(this, getString(R.string.add_med_success_edit), Toast.LENGTH_SHORT).show();
             }
@@ -284,6 +301,8 @@ public class AddMedicineActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle state) {
+        state.putLong("form_user_id", formUserId);
+        if (unsavedGuard != null) unsavedGuard.saveState(state);
         super.onSaveInstanceState(state);
         state.putString("times", selectedTime);
         state.putInt("days", daysMask);

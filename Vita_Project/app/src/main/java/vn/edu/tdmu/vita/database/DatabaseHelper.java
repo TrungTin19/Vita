@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "vita_health.db";
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
 
     // Table: users
     public static final String TABLE_USERS = "users";
@@ -62,15 +62,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_WATER_AMOUNT_ML = "amount_ml";
     public static final String COL_WATER_LOGGED_AT = "logged_at";
 
-    // Table: sleep_logs
-    public static final String TABLE_SLEEP_LOGS = "sleep_logs";
-    public static final String COL_SLEEP_ID = "id";
-    public static final String COL_SLEEP_USER_ID = "user_id";
-    public static final String COL_SLEEP_DATE = "date";
-    public static final String COL_SLEEP_TIME = "sleep_time";
-    public static final String COL_SLEEP_WAKE_TIME = "wake_time";
-    public static final String COL_SLEEP_DURATION_H = "duration_h";
-
     // DDL Queries
     public static final String CREATE_TABLE_USERS =
             "CREATE TABLE " + TABLE_USERS + " (" +
@@ -86,7 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COL_USER_WATER_GOAL_ML + " INTEGER DEFAULT 2000, " +
             COL_USER_BMI_STANDARD + " TEXT DEFAULT 'ASIAN', " +
             "water_start TEXT NOT NULL DEFAULT '07:00', water_end TEXT NOT NULL DEFAULT '22:00', " +
-            "water_amount INTEGER NOT NULL DEFAULT 250, weather_adjustment INTEGER NOT NULL DEFAULT 0, " +
+            "water_amount INTEGER NOT NULL DEFAULT 250, " +
             "water_times TEXT NOT NULL DEFAULT ''" +
             ");";
 
@@ -125,6 +116,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             COL_MED_LOG_TIME + " TEXT NOT NULL, " +
             COL_MED_LOG_STATUS + " TEXT NOT NULL, " +
             COL_MED_LOG_LOGGED_AT + " TEXT NOT NULL, " +
+            "medicine_name_snapshot TEXT, dosage_snapshot TEXT, snapshot_inherited INTEGER NOT NULL DEFAULT 0, " +
             "FOREIGN KEY(" + COL_MED_LOG_MEDICINE_ID + ") REFERENCES " + TABLE_MEDICINES + "(" + COL_MED_ID + ") ON DELETE CASCADE" +
             ");";
 
@@ -138,26 +130,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "FOREIGN KEY(" + COL_WATER_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COL_USER_ID + ") ON DELETE CASCADE" +
             ");";
 
-    public static final String CREATE_TABLE_SLEEP_LOGS =
-            "CREATE TABLE " + TABLE_SLEEP_LOGS + " (" +
-            COL_SLEEP_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COL_SLEEP_USER_ID + " INTEGER NOT NULL, " +
-            COL_SLEEP_DATE + " TEXT NOT NULL, " +
-            COL_SLEEP_TIME + " TEXT NOT NULL, " +
-            COL_SLEEP_WAKE_TIME + " TEXT NOT NULL, " +
-            COL_SLEEP_DURATION_H + " REAL NOT NULL, " +
-            "FOREIGN KEY(" + COL_SLEEP_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COL_USER_ID + ") ON DELETE CASCADE" +
-            ");";
-
     // Indexes
     public static final String CREATE_INDEX_HEALTH =
             "CREATE INDEX IF NOT EXISTS idx_health_user_date ON " + TABLE_HEALTH_RECORDS + "(" + COL_HEALTH_USER_ID + ", " + COL_HEALTH_DATE + ");";
 
     public static final String CREATE_INDEX_WATER =
             "CREATE INDEX IF NOT EXISTS idx_water_user_date ON " + TABLE_WATER_LOGS + "(" + COL_WATER_USER_ID + ", " + COL_WATER_DATE + ");";
-
-    public static final String CREATE_INDEX_SLEEP =
-            "CREATE INDEX IF NOT EXISTS idx_sleep_user_date ON " + TABLE_SLEEP_LOGS + "(" + COL_SLEEP_USER_ID + ", " + COL_SLEEP_DATE + ");";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -176,16 +154,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_MEDICINES);
         db.execSQL(CREATE_TABLE_MEDICINE_LOGS);
         db.execSQL(CREATE_TABLE_WATER_LOGS);
-        db.execSQL(CREATE_TABLE_SLEEP_LOGS);
 
         db.execSQL(CREATE_INDEX_HEALTH);
         db.execSQL(CREATE_INDEX_WATER);
-        db.execSQL(CREATE_INDEX_SLEEP);
         db.execSQL("CREATE INDEX idx_medicine_dose ON medicine_logs(medicine_id,date,scheduled_time)");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 6 && newVersion >= 6) {
+            db.execSQL("ALTER TABLE medicine_logs ADD COLUMN medicine_name_snapshot TEXT");
+            db.execSQL("ALTER TABLE medicine_logs ADD COLUMN dosage_snapshot TEXT");
+            db.execSQL("ALTER TABLE medicine_logs ADD COLUMN snapshot_inherited INTEGER NOT NULL DEFAULT 1");
+            db.execSQL("UPDATE medicine_logs SET medicine_name_snapshot = (SELECT name FROM medicines WHERE id = medicine_id), dosage_snapshot = (SELECT dosage FROM medicines WHERE id = medicine_id)");
+        }
         if (oldVersion < 5 && newVersion >= 5) {
             db.execSQL("ALTER TABLE users ADD COLUMN water_times TEXT NOT NULL DEFAULT ''");
         }
@@ -198,7 +180,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE users ADD COLUMN water_start TEXT NOT NULL DEFAULT '07:00'");
             db.execSQL("ALTER TABLE users ADD COLUMN water_end TEXT NOT NULL DEFAULT '22:00'");
             db.execSQL("ALTER TABLE users ADD COLUMN water_amount INTEGER NOT NULL DEFAULT 250");
-            db.execSQL("ALTER TABLE users ADD COLUMN weather_adjustment INTEGER NOT NULL DEFAULT 0");
         }
         if (oldVersion < 3 && newVersion >= 3) {
             db.execSQL("ALTER TABLE health_records ADD COLUMN measured_time TEXT");

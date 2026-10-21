@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="false">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:background="@drawable/bg_auth_dialog">
+        <TextView
+            android:id="@+id/tv_account_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/vita_text_primary"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:minHeight="34sp"
+            android:gravity="center_vertical"
+            app:lineHeight="34sp"
+            android:includeFontPadding="false"
+            android:layout_marginBottom="12dp" />
+        <TextView
+            android:id="@+id/tv_account_dialog_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/vita_text_secondary"
+            android:textSize="16sp"
+            android:minHeight="22.4sp"
+            android:gravity="center_vertical"
+            app:lineHeight="22.4sp"
+            android:includeFontPadding="false"
+            android:layout_marginBottom="12dp" />
+        <FrameLayout
+            android:id="@+id/account_dialog_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@android:id/button1"
+            style="@style/Widget.Vita.Button.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="52dp"
+            android:layout_marginBottom="12dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@android:id/button2"
+            style="@style/Widget.Vita.Button.AuthSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="52dp"
+            android:text="@string/figma_dialog_cancel" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@android:id/button3"
+            style="@style/Widget.Vita.Button.AuthSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="52dp"
+            android:layout_marginTop="12dp"
+            android:visibility="gone" />
+    </LinearLayout>
+</ScrollView>

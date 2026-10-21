@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_stats_empty"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="gone"
+    android:paddingTop="80dp"
+    android:paddingBottom="24dp"
+    android:layout_marginStart="24dp"
+    android:layout_marginEnd="24dp">
+    <ImageView
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/figma_nav_stats"
+        android:importantForAccessibility="no"
+        app:tint="@color/vita_text_secondary" />
+    <TextView
+        android:id="@+id/tv_stats_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/figma_stats_empty_weight"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@color/vita_text_primary"
+        android:includeFontPadding="false"
+        app:lineHeight="33.6sp" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_stats_first_measurement"
+        style="@style/Widget.Vita.Button.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/figma_stats_first_weight" />
+</LinearLayout>

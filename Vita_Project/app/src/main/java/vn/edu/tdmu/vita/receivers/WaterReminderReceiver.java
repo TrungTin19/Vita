@@ -50,7 +50,7 @@ public class WaterReminderReceiver extends BroadcastReceiver {
         int minute = now.get(java.util.Calendar.HOUR_OF_DAY) * 60 + now.get(java.util.Calendar.MINUTE);
         int total = new WaterDao(context).getDailyTotal(user.getId(), DateTimeUtils.getTodayDate());
         if (vn.edu.tdmu.vita.utils.WaterReminderPolicy.shouldNotify(user.getWaterStart(), user.getWaterEnd(),
-                minute, total, vn.edu.tdmu.vita.utils.HydrationGoal.current(context, user))) {
+                minute, total, vn.edu.tdmu.vita.utils.HydrationGoal.forUserGoal(user != null ? user.getWaterGoalMl() : 0))) {
             NotificationHelper.showWaterReminder(context, NOTIFICATION_ID);
         } else {
             NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID);

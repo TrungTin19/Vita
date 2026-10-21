@@ -67,20 +67,20 @@ public class ReviewImprovementsDeviceTest {
         Intent action=new Intent(NotificationActionReceiver.ACTION_TAKEN).putExtra(NotificationActionReceiver.EXTRA_MEDICINE_ID,id)
                 .putExtra(MedicineAlarmReceiver.EXTRA_DOSE_DATE,"2026-01-01").putExtra(MedicineAlarmReceiver.EXTRA_DOSE_TIME,"19:00");
         androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().runOnMainSync(()->new NotificationActionReceiver().onReceive(context,action));
-        assertEquals("TAKEN",dao.getLogForDose(id,"2026-01-01","19:00").getStatus());
-        assertNull(dao.getLogForDose(id,"2026-01-01","07:00"));
-        assertNull(dao.getLogForDose(id,DateTimeUtils.getTodayDate(),"19:00"));
+        assertEquals("TAKEN",dao.getLogForDose(id,owner,"2026-01-01","19:00").getStatus());
+        assertNull(dao.getLogForDose(id,owner,"2026-01-01","07:00"));
+        assertNull(dao.getLogForDose(id,owner,DateTimeUtils.getTodayDate(),"19:00"));
     }
     @Test public void waterAction_customAmountAndReachedGoalSuppressesReminder() {
         UserDao users=new UserDao(context); User user=users.getUserById(owner);
-        user.setWaterAmount(350); user.setWaterGoalMl(350); users.updateWaterSettings(owner,350,user.getWaterStart(),user.getWaterEnd(),350,false,"");
+        user.setWaterAmount(350); user.setWaterGoalMl(350); users.updateWaterSettings(owner,350,user.getWaterStart(),user.getWaterEnd(),350,"");
         Intent action=new Intent(WaterReminderReceiver.ACTION_DRINKED).putExtra(WaterReminderReceiver.EXTRA_USER_ID,owner).putExtra(WaterReminderReceiver.EXTRA_AMOUNT,350);
         androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().runOnMainSync(()->new WaterReminderReceiver().onReceive(context,action));
         assertEquals(350,new WaterDao(context).getDailyTotal(owner,DateTimeUtils.getTodayDate()));
         new WaterReminderReceiver().onReceive(context,new Intent());
         for(android.service.notification.StatusBarNotification n:context.getSystemService(NotificationManager.class).getActiveNotifications()) assertNotEquals(9001,n.getId());
     }
-    @Test public void medicineEditorAndDoseRows_surviveRecreationAndLegacyTimestamp() {
+    @Test public void medicineEditor_keepsTimesAfterRecreation() {
         Medicine medicine=new Medicine(0,owner,"Test","1","07:00,12:00,19:00",127,true);
         MedicineDao dao=new MedicineDao(context); long id=dao.insert(medicine); medicine.setId(id);
         Intent intent=new Intent(context,AddMedicineActivity.class).putExtra(AddMedicineActivity.EXTRA_MEDICINE_ID,id);
@@ -88,14 +88,6 @@ public class ReviewImprovementsDeviceTest {
             activity.recreate();
             activity.onActivity(screen->{
                 assertEquals(3,((com.google.android.material.chip.ChipGroup)screen.findViewById(R.id.chips_med_times)).getChildCount());
-                MedicineLog log=new MedicineLog(); log.setStatus("TAKEN"); log.setLoggedAt("old");
-                MedicineAdapter adapter=new MedicineAdapter(Collections.singletonList(medicine));
-                Map<String,MedicineLog> logs=new HashMap<>(); logs.put(id+"@07:00",log); adapter.setTodayLogs(logs);
-                androidx.recyclerview.widget.RecyclerView parent=new androidx.recyclerview.widget.RecyclerView(screen);
-                parent.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(screen));
-                androidx.recyclerview.widget.RecyclerView.ViewHolder holder=adapter.onCreateViewHolder(parent,0);
-                ((androidx.recyclerview.widget.RecyclerView.Adapter)adapter).onBindViewHolder(holder,0);
-                assertEquals(3,((LinearLayout)holder.itemView.findViewById(R.id.layout_med_doses)).getChildCount());
             });
         }
     }
@@ -105,12 +97,11 @@ public class ReviewImprovementsDeviceTest {
                 ((TextView)screen.findViewById(R.id.et_edit_water_start)).setText("08:00");
                 ((TextView)screen.findViewById(R.id.et_edit_water_end)).setText("20:00");
                 ((TextView)screen.findViewById(R.id.et_edit_water_amount)).setText("350");
-                ((com.google.android.material.materialswitch.MaterialSwitch)screen.findViewById(R.id.switch_water_weather)).setChecked(true);
                 screen.findViewById(R.id.btn_edit_save).performClick();
             });
         }
         User saved=new UserDao(context).getUserById(owner);
-        assertEquals("08:00",saved.getWaterStart()); assertEquals(350,saved.getWaterAmount()); assertTrue(saved.isWeatherAdjustmentEnabled());
+        assertEquals("08:00",saved.getWaterStart()); assertEquals(350,saved.getWaterAmount());
     }
     @Test public void healthEditor_keepsMealAndTime() {
         HealthRecord record=new HealthRecord(0,owner,DateTimeUtils.getTodayDate(),null,null,null,null,100f,null);

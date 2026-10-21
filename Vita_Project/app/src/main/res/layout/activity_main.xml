@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root_main"
@@ -7,42 +8,81 @@
     android:layout_height="match_parent"
     android:background="@color/vita_bg"
     tools:context=".activities.MainActivity">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-        <!-- Toolbar -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar_main"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/toolbar_height"
-            android:background="@color/vita_surface"
+            android:layout_height="wrap_content"
+            android:minHeight="100dp"
+            android:padding="0dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp"
+            android:background="@color/vita_bg"
             android:elevation="@dimen/elevation_toolbar"
-            app:menu="@menu/main_toolbar_menu"
-            app:title="@string/app_name"
-            app:titleTextColor="@color/vita_teal" />
-
-        <!-- Fragment Container -->
+            app:contentInsetStart="0dp"
+            app:contentInsetEnd="0dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="8dp"
+                android:gravity="top"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/tv_main_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nav_home"
+                        android:textAppearance="@style/TextAppearance.Vita.Figma.Title" />
+                    <TextView
+                        android:id="@+id/tv_main_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textAppearance="@style/TextAppearance.Vita.Secondary" />
+                </LinearLayout>
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btn_main_profile"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/figma_avatar_bg"
+                    android:padding="12dp"
+                    android:src="@drawable/figma_ic_profile"
+                    android:contentDescription="@string/profile_toolbar_title" />
+            </LinearLayout>
+        </com.google.android.material.appbar.MaterialToolbar>
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
-
-        <!-- Bottom Navigation -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_main"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_nav_height"
             android:background="@color/vita_surface"
+            app:backgroundTint="@color/vita_surface"
+            app:itemPaddingTop="12dp"
+            app:itemPaddingBottom="8dp"
             android:elevation="@dimen/elevation_bottom_nav"
             app:itemIconTint="@color/bottom_nav_color"
             app:itemTextColor="@color/bottom_nav_color"
-            app:itemActiveIndicatorStyle="@style/Widget.Vita.BottomNav.ActiveIndicator"
+            app:itemIconSize="22dp"
+            app:itemTextAppearanceActive="@style/TextAppearance.Vita.Figma.Navigation"
+            app:itemTextAppearanceInactive="@style/TextAppearance.Vita.Figma.Navigation"
+            app:itemActiveIndicatorStyle="@style/Widget.Vita.Figma.NavigationIndicator"
             app:labelVisibilityMode="labeled"
             app:menu="@menu/bottom_nav_menu" />
     </LinearLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

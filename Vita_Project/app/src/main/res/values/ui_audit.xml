@@ -1,0 +1,4 @@
+<resources>
+    <string name="water_window_invalid">Chọn giờ bắt đầu và kết thúc hợp lệ, khác nhau.</string>
+    <string name="health_bp_value_with_unit">%1$s / %2$s mmHg</string>
+</resources>

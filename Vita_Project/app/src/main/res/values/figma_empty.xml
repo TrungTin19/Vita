@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="figma_stats_empty_weight">Chưa có lần cân\ntrong khoảng này.</string>
+    <string name="figma_stats_empty_metric">Chưa có dữ liệu\ntrong khoảng này.</string>
+    <string name="figma_stats_first_weight">Ghi lần cân đầu tiên</string>
+    <string name="figma_stats_first_water">Ghi lần uống đầu tiên</string>
+    <string name="figma_stats_one_title">Mới có 1 lần đo</string>
+    <string name="figma_stats_one_help">Cần thêm lần đo để theo dõi diễn biến.</string>
+</resources>

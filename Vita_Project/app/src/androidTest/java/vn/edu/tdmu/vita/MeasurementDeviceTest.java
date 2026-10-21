@@ -22,8 +22,8 @@ public class MeasurementDeviceTest {
             };
             helper.onUpgrade(db, 2, 3);
             HealthDao dao = new HealthDao(helper);
-            assertNull(dao.getById(1).getMeasuredTime());
-            assertEquals(HealthRecord.MealContext.UNSPECIFIED, dao.getById(1).getMealContext());
+            assertNull(dao.getById(1,7).getMeasuredTime());
+            assertEquals(HealthRecord.MealContext.UNSPECIFIED, dao.getById(1,7).getMealContext());
             HealthRecord evening = new HealthRecord(0,7,"2026-10-16",null,null,null,null,140f,null);
             evening.setMeasuredTime("19:00");
             evening.setMealContext("AFTER_MEAL");
