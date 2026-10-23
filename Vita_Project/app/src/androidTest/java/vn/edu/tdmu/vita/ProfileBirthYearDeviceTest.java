@@ -42,6 +42,8 @@ public class ProfileBirthYearDeviceTest {
                 activity.findViewById(R.id.btn_reg_submit).performClick();
                 activity.findViewById(R.id.btn_reg_submit).performClick();
             });
+            DeviceTestWait.until("Registration must finish before closing its screen",
+                    () -> new SessionManager(context).isLoggedIn());
         }
         User user=users.login(name,"test-password");
         assertNotNull(user); created.add(user.getId());

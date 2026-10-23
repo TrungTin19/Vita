@@ -18,6 +18,7 @@
     </style>
     <style name="Widget.Vita.Figma.Toolbar" parent="Widget.Material3.Toolbar">
         <item name="android:minHeight">48dp</item>
+        <item name="buttonGravity">center_vertical</item>
         <item name="titleTextAppearance">@style/TextAppearance.Vita.Figma.Toolbar</item>
         <item name="navigationIconTint">@color/vita_teal</item>
         <item name="contentInsetStart">0dp</item>

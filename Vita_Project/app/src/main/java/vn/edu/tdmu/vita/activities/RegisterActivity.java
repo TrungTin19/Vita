@@ -31,7 +31,6 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputLayout tilUsername;
     private TextInputLayout tilPassword;
     private TextInputLayout tilConfirm;
-    private TextInputLayout tilFullname;
     private TextInputLayout tilBirthYear;
     private AutoCompleteTextView actGender;
     private TextInputLayout tilHeight;
@@ -48,19 +47,27 @@ public class RegisterActivity extends AppCompatActivity {
 
     private UserDao userDao;
     private SessionManager sessionManager;
+    private PendingRegistration pendingRegistration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        userDao = new UserDao(this);
+        userDao = new UserDao(getApplicationContext());
         sessionManager = new SessionManager(this);
 
         initViews();
         setupSpinner();
         setupListeners();
         showStep(savedInstanceState != null && savedInstanceState.getBoolean("register_profile_step"));
+        pendingRegistration = (PendingRegistration) getLastCustomNonConfigurationInstance();
+        if (pendingRegistration != null) {
+            btnSubmit.setEnabled(false);
+            btnSubmit.setText(R.string.auth_working);
+            pendingRegistration.activity = this;
+            btnSubmit.post(pendingRegistration::deliver);
+        }
         getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() { navigateBack(); }
         });
@@ -71,7 +78,6 @@ public class RegisterActivity extends AppCompatActivity {
         tilUsername = findViewById(R.id.til_reg_username);
         tilPassword = findViewById(R.id.til_reg_password);
         tilConfirm = findViewById(R.id.til_reg_confirm);
-        tilFullname = findViewById(R.id.til_reg_fullname);
         tilBirthYear = findViewById(R.id.til_reg_birth_year);
         actGender = findViewById(R.id.act_reg_gender);
         tilHeight = findViewById(R.id.til_reg_height);
@@ -100,10 +106,10 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupSpinner() {
-        String[] genders = new String[]{"Nam", "Nữ", "Khác"};
+        String[] genders = getResources().getStringArray(R.array.profile_genders);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, genders);
         actGender.setAdapter(adapter);
-        actGender.setText("Nam", false);
+        actGender.setText(getString(R.string.gender_male), false);
     }
 
     private void setupListeners() {
@@ -157,6 +163,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void handleRegister() {
+        if (!btnSubmit.isEnabled()) return;
         String username = etUsername.getText() != null ? etUsername.getText().toString().trim() : "";
         String password = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
         String confirm = etConfirm.getText() != null ? etConfirm.getText().toString().trim() : "";
@@ -272,7 +279,51 @@ public class RegisterActivity extends AppCompatActivity {
         newUser.setWaterGoalMl(2000);
         newUser.setBmiStandard("ASIAN");
 
-        long userId = userDao.register(newUser, password);
+        btnSubmit.setEnabled(false);
+        btnSubmit.setText(R.string.auth_working);
+        PendingRegistration pending = new PendingRegistration(newUser);
+        pending.activity = this;
+        pendingRegistration = pending;
+        UserDao backgroundUsers = userDao;
+        new Thread(() -> {
+            try {
+                pending.userId = backgroundUsers.register(newUser, password);
+            } catch (RuntimeException error) {
+                pending.failed = true;
+            }
+            pending.finished = true;
+            new android.os.Handler(android.os.Looper.getMainLooper()).post(pending::deliver);
+        }, "vita-register").start();
+    }
+
+    // Giữ kết quả đang lưu khi xoay màn hình, không tạo lại tài khoản lần thứ hai.
+    private static final class PendingRegistration {
+        final User user;
+        RegisterActivity activity;
+        volatile boolean finished;
+        boolean failed;
+        long userId;
+        PendingRegistration(User user) { this.user = user; }
+        void deliver() {
+            RegisterActivity screen = activity;
+            if (!finished || screen == null || screen.isFinishing() || screen.isDestroyed()) return;
+            activity = null;
+            screen.pendingRegistration = null;
+            screen.btnSubmit.setEnabled(true);
+            screen.showStep(screen.profileStep);
+            if (failed) Toast.makeText(screen, R.string.auth_storage_error, Toast.LENGTH_LONG).show();
+            else screen.completeRegistration(userId, user);
+        }
+    }
+
+    @Override public Object onRetainCustomNonConfigurationInstance() { return pendingRegistration; }
+
+    @Override protected void onDestroy() {
+        if (pendingRegistration != null) pendingRegistration.activity = null;
+        super.onDestroy();
+    }
+
+    private void completeRegistration(long userId, User user) {
         if (userId == -1) {
             showStep(false);
             tilUsername.setError(getString(R.string.register_error_username_exists));
@@ -280,7 +331,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // Lưu phiên đăng nhập và vào ứng dụng
-        sessionManager.saveSession(userId, username, fullname);
+        sessionManager.saveSession(userId, user.getUsername(), user.getFullname());
         Toast.makeText(this, R.string.register_success, Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
@@ -303,6 +354,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void navigateBack() {
+        if (pendingRegistration != null) return;
         if (profileStep) showStep(false); else finish();
     }
 

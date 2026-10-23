@@ -135,7 +135,8 @@ public class ProfileActivity extends AppCompatActivity {
         String displayName = (currentUser.getFullname() != null && !currentUser.getFullname().trim().isEmpty())
                 ? currentUser.getFullname() : currentUser.getUsername();
         tvFullname.setText(displayName);
-        tvUsername.setText("@" + currentUser.getUsername() + " · " + getString(R.string.figma_profile_on_device));
+        tvUsername.setText(getString(R.string.profile_account_summary,
+                currentUser.getUsername(), getString(R.string.figma_profile_on_device)));
 
         // Năm sinh và tuổi
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -150,9 +151,9 @@ public class ProfileActivity extends AppCompatActivity {
         tvHeight.setText(getString(R.string.profile_height_format, currentUser.getHeightCm()));
         tvBaseWeight.setText(getString(R.string.profile_weight_format, currentUser.getBaseWeightKg()));
         tvWaterGoal.setText(getString(R.string.profile_water_goal_format, currentUser.getWaterGoalMl()));
-        ((TextView) findViewById(R.id.tv_profile_water_schedule)).setText(getString(R.string.profile_water_schedule,
-                currentUser.getWaterStart(), currentUser.getWaterEnd(), currentUser.getWaterAmount()) + "\n"
-                + (currentUser.getWaterTimes().isEmpty() ? getString(R.string.water_every_two_hours)
+        ((TextView) findViewById(R.id.tv_profile_water_schedule)).setText(getString(R.string.profile_schedule_summary,
+                getString(R.string.profile_water_schedule, currentUser.getWaterStart(), currentUser.getWaterEnd(), currentUser.getWaterAmount()),
+                currentUser.getWaterTimes().isEmpty() ? getString(R.string.water_every_two_hours)
                 : getString(R.string.water_custom_summary, currentUser.getWaterTimes().replace(",", " · "))));
 
         String standard = (currentUser.getBmiStandard() != null && !currentUser.getBmiStandard().trim().isEmpty())
@@ -161,7 +162,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Hiển thị thẻ BMI
         renderBmiCard(standard);
 
-        ((MaterialButton) findViewById(R.id.btn_profile_open_bmi)).setText("BMI " + tvBmiValue.getText() + " · " + tvBmiCategory.getText());
+        ((MaterialButton) findViewById(R.id.btn_profile_open_bmi)).setText(getString(R.string.profile_bmi_action,
+                tvBmiValue.getText(), tvBmiCategory.getText()));
 
         // Lựa chọn tiêu chuẩn BMI
         isInitialCheck = true;

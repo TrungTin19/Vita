@@ -44,28 +44,47 @@ public final class ProfileAccountActions {
 
     public void showDeleteConfirmDialog() {
         if (!ownsSession()) { activity.finish(); return; }
-        android.view.View form = activity.getLayoutInflater().inflate(R.layout.dialog_delete_profile, null);
-        TextInputLayout passwordLayout = form.findViewById(R.id.til_delete_profile_password);
-        TextInputEditText password = form.findViewById(R.id.et_delete_profile_password);
         AppCompatDialog dialog = VitaDialog.create(activity, activity.getString(R.string.figma_delete_profile_title),
                 activity.getString(R.string.figma_delete_profile_message), R.string.profile_delete_confirm, true);
-        ((android.widget.FrameLayout) dialog.findViewById(R.id.account_dialog_form)).addView(form);
+        android.widget.FrameLayout container = dialog.findViewById(R.id.account_dialog_form);
+        android.view.View form = activity.getLayoutInflater().inflate(R.layout.dialog_delete_profile, container, false);
+        TextInputLayout passwordLayout = form.findViewById(R.id.til_delete_profile_password);
+        TextInputEditText password = form.findViewById(R.id.et_delete_profile_password);
+        container.addView(form);
         dialog.setOnDismissListener(ignored -> password.setText(null));
         dialog.findViewById(android.R.id.button1).setOnClickListener(v -> {
             if (!ownsSession()) { dialog.dismiss(); activity.finish(); return; }
             String entered = password.getText() == null ? "" : password.getText().toString();
-            try {
-                List<Medicine> medicines = new MedicineDao(activity).getAllByUserId(currentUser.getId());
-                if (!userDao.deleteProfileWithPassword(currentUser.getId(), entered)) {
-                    passwordLayout.setError(activity.getString(R.string.profile_delete_password_error));
-                    password.requestFocus();
-                    return;
+            v.setEnabled(false);
+            dialog.findViewById(android.R.id.button2).setEnabled(false);
+            dialog.setCancelable(false);
+            new Thread(() -> {
+                try {
+                    List<Medicine> medicines = new MedicineDao(activity).getAllByUserId(currentUser.getId());
+                    boolean deleted = userDao.deleteProfileWithPassword(currentUser.getId(), entered);
+                    activity.runOnUiThread(() -> {
+                        if (deleted) {
+                            if (!activity.isDestroyed()) dialog.dismiss();
+                            finishSession(medicines, R.string.profile_delete_success);
+                            return;
+                        }
+                        if (activity.isFinishing() || activity.isDestroyed()) return;
+                        v.setEnabled(true);
+                        dialog.findViewById(android.R.id.button2).setEnabled(true);
+                        dialog.setCancelable(true);
+                        passwordLayout.setError(activity.getString(R.string.profile_delete_password_error));
+                        password.requestFocus();
+                    });
+                } catch (SQLiteException | IllegalStateException error) {
+                    activity.runOnUiThread(() -> {
+                        if (activity.isFinishing() || activity.isDestroyed()) return;
+                        v.setEnabled(true);
+                        dialog.findViewById(android.R.id.button2).setEnabled(true);
+                        dialog.setCancelable(true);
+                        Toast.makeText(activity, R.string.profile_delete_error, Toast.LENGTH_LONG).show();
+                    });
                 }
-                dialog.dismiss();
-                finishSession(medicines, R.string.profile_delete_success);
-            } catch (SQLiteException error) {
-                Toast.makeText(activity, R.string.profile_delete_error, Toast.LENGTH_LONG).show();
-            }
+            }, "vita-delete-profile").start();
         });
         dialog.show();
     }
@@ -74,13 +93,15 @@ public final class ProfileAccountActions {
         for (Medicine medicine : medicines) {
             vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver.cancel(activity, medicine);
         }
+        if (!ownsSession()) return;
         vn.edu.tdmu.vita.receivers.WaterReminderReceiver.cancel(activity);
         androidx.core.app.NotificationManagerCompat.from(activity).cancelAll();
         sessionManager.clearSession();
-        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show();
-        activity.startActivity(new Intent(activity, LoginActivity.class)
+        android.content.Context context = activity.getApplicationContext();
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        context.startActivity(new Intent(context, LoginActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-        activity.finish();
+        if (!activity.isDestroyed()) activity.finish();
     }
 
 }

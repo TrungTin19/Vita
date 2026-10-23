@@ -14,7 +14,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -26,7 +25,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -210,7 +208,7 @@ public class ReminderFragment extends Fragment {
                 notifications ? R.string.alarm_inexact_help : R.string.reminder_notifications_disabled);
         getView().findViewById(R.id.btn_notification_settings).setOnClickListener(v -> {
             Intent settings;
-            if (notifications && !exact && Build.VERSION.SDK_INT >= 31) {
+            if (notifications && !exact) {
                 startActivity(new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                         android.net.Uri.parse("package:" + requireContext().getPackageName()))); return;
             }

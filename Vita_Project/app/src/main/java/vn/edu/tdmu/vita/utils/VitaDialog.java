@@ -2,7 +2,6 @@ package vn.edu.tdmu.vita.utils;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -18,7 +17,8 @@ public final class VitaDialog {
     public static AppCompatDialog create(Context context, CharSequence title, CharSequence message,
                                          int actionLabel, boolean destructive) {
         AppCompatDialog dialog = new AppCompatDialog(context);
-        View content = LayoutInflater.from(context).inflate(R.layout.dialog_profile_action, null);
+        dialog.setContentView(R.layout.dialog_profile_action);
+        View content = dialog.findViewById(android.R.id.content);
         ((TextView) content.findViewById(R.id.tv_account_dialog_title)).setText(title);
         ((TextView) content.findViewById(R.id.tv_account_dialog_message)).setText(message);
         MaterialButton action = content.findViewById(android.R.id.button1);
@@ -28,7 +28,6 @@ public final class VitaDialog {
             action.setTextColor(ContextCompat.getColor(context, R.color.vita_status_danger));
         }
         content.findViewById(android.R.id.button2).setOnClickListener(v -> dialog.dismiss());
-        dialog.setContentView(content);
         dialog.setOnShowListener(ignored -> {
             if (dialog.getWindow() == null) return;
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);

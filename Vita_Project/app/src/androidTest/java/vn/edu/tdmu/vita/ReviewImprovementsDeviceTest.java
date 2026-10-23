@@ -65,7 +65,9 @@ public class ReviewImprovementsDeviceTest {
         MedicineDao dao=new MedicineDao(context);
         long id=dao.insert(new Medicine(0,owner,"Test","1","07:00,12:00,19:00",127,true));
         Intent action=new Intent(NotificationActionReceiver.ACTION_TAKEN).putExtra(NotificationActionReceiver.EXTRA_MEDICINE_ID,id)
-                .putExtra(MedicineAlarmReceiver.EXTRA_DOSE_DATE,"2026-01-01").putExtra(MedicineAlarmReceiver.EXTRA_DOSE_TIME,"19:00");
+                .putExtra(MedicineAlarmReceiver.EXTRA_DOSE_DATE,"2026-01-01").putExtra(MedicineAlarmReceiver.EXTRA_DOSE_TIME,"19:00")
+                .putExtra("medicine_name", "Test").putExtra("medicine_dosage", "1")
+                .putExtra("medicine_times", "07:00,12:00,19:00").putExtra("medicine_days", 127);
         androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().runOnMainSync(()->new NotificationActionReceiver().onReceive(context,action));
         assertEquals("TAKEN",dao.getLogForDose(id,owner,"2026-01-01","19:00").getStatus());
         assertNull(dao.getLogForDose(id,owner,"2026-01-01","07:00"));
@@ -103,6 +105,45 @@ public class ReviewImprovementsDeviceTest {
         User saved=new UserDao(context).getUserById(owner);
         assertEquals("08:00",saved.getWaterStart()); assertEquals(350,saved.getWaterAmount());
     }
+    @Test public void healthEditor_addThenEditKeepsOneRecordAndClearsRemovedMetric() {
+        HealthDao health = new HealthDao(context);
+        try (ActivityScenario<AddHealthActivity> activity = ActivityScenario.launch(AddHealthActivity.class)) {
+            activity.onActivity(screen -> {
+                ((TextView) screen.findViewById(R.id.et_add_weight)).setText("62.5");
+                ((TextView) screen.findViewById(R.id.et_add_sugar)).setText("95");
+                ((Spinner) screen.findViewById(R.id.sp_meal_context)).setSelection(1);
+                screen.findViewById(R.id.btn_add_health_save).performClick();
+                assertTrue(screen.isFinishing());
+            });
+        }
+        List<HealthRecord> records = health.getAllByUserId(owner, null);
+        assertEquals(1, records.size());
+        HealthRecord added = records.get(0);
+        assertEquals(62.5f, added.getWeightKg(), 0f);
+        assertEquals(95f, added.getBloodSugar(), 0f);
+        assertEquals(HealthRecord.MealContext.FASTING, added.getMealContext());
+        assertNotNull(added.getMeasuredTime());
+        try (ActivityScenario<AddHealthActivity> activity = ActivityScenario.launch(
+                new Intent(context, AddHealthActivity.class).putExtra(AddHealthActivity.EXTRA_RECORD_ID, added.getId()))) {
+            activity.onActivity(screen -> {
+                ((TextView) screen.findViewById(R.id.et_add_weight)).setText("");
+                ((TextView) screen.findViewById(R.id.et_add_sugar)).setText("110");
+                screen.findViewById(R.id.btn_add_health_save).performClick();
+                assertTrue(screen.isFinishing());
+            });
+        }
+        assertEquals(1, health.getAllByUserId(owner, null).size());
+        HealthRecord edited = health.getById(added.getId(), owner);
+        assertNull(edited.getWeightKg());
+        assertNull(edited.getSystolic());
+        assertNull(edited.getDiastolic());
+        assertNull(edited.getHeartRate());
+        assertEquals(110f, edited.getBloodSugar(), 0f);
+        assertEquals(added.getDate(), edited.getDate());
+        assertEquals(added.getMeasuredTime(), edited.getMeasuredTime());
+        assertEquals(added.getMealContext(), edited.getMealContext());
+    }
+
     @Test public void healthEditor_keepsMealAndTime() {
         HealthRecord record=new HealthRecord(0,owner,DateTimeUtils.getTodayDate(),null,null,null,null,100f,null);
         record.setMeasuredTime("07:00"); record.setMealContext("FASTING");

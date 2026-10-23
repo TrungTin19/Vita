@@ -19,6 +19,40 @@ import static androidx.test.espresso.action.ViewActions.click;
 
 @RunWith(AndroidJUnit4.class)
 public class WaterJournalDeviceTest {
+    @Test public void staleMedicineActionCannotRecordChangedDose() {
+        vn.edu.tdmu.vita.database.MedicineDao medicines = new vn.edu.tdmu.vita.database.MedicineDao(context);
+        vn.edu.tdmu.vita.models.Medicine med = new vn.edu.tdmu.vita.models.Medicine(0, owner, "Original", "1 tablet", "08:00", 127, true);
+        med.setId(medicines.insert(med));
+        Intent action = new Intent(vn.edu.tdmu.vita.receivers.NotificationActionReceiver.ACTION_TAKEN)
+                .putExtra("extra_medicine_id", med.getId()).putExtra("dose_date", DateTimeUtils.getTodayDate())
+                .putExtra("dose_time", "08:00").putExtra("medicine_name", "Original")
+                .putExtra("medicine_dosage", "1 tablet").putExtra("medicine_times", "08:00")
+                .putExtra("medicine_days", 127);
+        med.setName("Changed"); med.setDosage("2 tablets");
+        assertTrue(medicines.update(med, owner));
+        androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().runOnMainSync(() ->
+                new vn.edu.tdmu.vita.receivers.NotificationActionReceiver().onReceive(context, action));
+        assertTrue(medicines.getHistory(med.getId(), owner).isEmpty());
+    }
+    @Test public void newEntryUsesSaveTimeInsteadOfOldDraftTime() {
+        try (ActivityScenario<MainActivity> screen = ActivityScenario.launch(MainActivity.class)) {
+            screen.onActivity(a -> {
+                WaterJournalDialog.showAddAmount(a, owner, null);
+                a.getSupportFragmentManager().executePendingTransactions();
+                WaterJournalDialog entry = (WaterJournalDialog) a.getSupportFragmentManager().findFragmentByTag("water_entry");
+                try {
+                    java.lang.reflect.Field time = WaterJournalDialog.class.getDeclaredField("selectedTime");
+                    time.setAccessible(true);
+                    time.set(entry, "23:59");
+                } catch (ReflectiveOperationException error) { throw new AssertionError(error); }
+            });
+            String before = DateTimeUtils.getCurrentTimestamp();
+            onView(withId(android.R.id.button1)).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).perform(click());
+            vn.edu.tdmu.vita.models.WaterLog log = new WaterDao(context).getLogsByDate(owner, DateTimeUtils.getTodayDate()).get(0);
+            assertTrue(log.getLoggedAt().compareTo(before) >= 0);
+            assertTrue(log.getLoggedAt().compareTo(DateTimeUtils.getCurrentTimestamp()) <= 0);
+        }
+    }
     @Test public void deleteConfirmation_cancelKeepsLog_andConfirmDeletesOnlySelectedLog() {
         WaterDao water = new WaterDao(context);
         String today = DateTimeUtils.getTodayDate();

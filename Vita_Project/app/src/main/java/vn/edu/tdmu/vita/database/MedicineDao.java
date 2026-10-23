@@ -70,38 +70,31 @@ public class MedicineDao {
 
     public Medicine getById(long id, long userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 DatabaseHelper.TABLE_MEDICINES,
                 null,
                 DatabaseHelper.COL_MED_ID + " = ? AND " + DatabaseHelper.COL_MED_USER_ID + " = ?",
                 new String[]{String.valueOf(id), String.valueOf(userId)},
                 null, null, null
-        );
-        if (cursor != null && cursor.moveToFirst()) {
-            Medicine med = cursorToMedicine(cursor);
-            cursor.close();
-            return med;
+        )) {
+            return cursor.moveToFirst() ? cursorToMedicine(cursor) : null;
         }
-        if (cursor != null) cursor.close();
-        return null;
     }
 
     public List<Medicine> getAllByUserId(long userId) {
         List<Medicine> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 DatabaseHelper.TABLE_MEDICINES,
                 null,
                 DatabaseHelper.COL_MED_USER_ID + " = ?",
                 new String[]{String.valueOf(userId)},
                 null, null,
                 DatabaseHelper.COL_MED_TIME + " ASC"
-        );
-        if (cursor != null) {
+        )) {
             while (cursor.moveToNext()) {
                 list.add(cursorToMedicine(cursor));
             }
-            cursor.close();
         }
         return list;
     }
@@ -109,19 +102,17 @@ public class MedicineDao {
     public List<Medicine> getActiveMedicines(long userId) {
         List<Medicine> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 DatabaseHelper.TABLE_MEDICINES,
                 null,
                 DatabaseHelper.COL_MED_USER_ID + " = ? AND " + DatabaseHelper.COL_MED_IS_ACTIVE + " = 1",
                 new String[]{String.valueOf(userId)},
                 null, null,
                 DatabaseHelper.COL_MED_TIME + " ASC"
-        );
-        if (cursor != null) {
+        )) {
             while (cursor.moveToNext()) {
                 list.add(cursorToMedicine(cursor));
             }
-            cursor.close();
         }
         return list;
     }

@@ -17,7 +17,6 @@ import java.util.List;
 
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.models.HealthRecord;
-import vn.edu.tdmu.vita.utils.DateTimeUtils;
 import vn.edu.tdmu.vita.utils.HealthEvaluator;
 
 public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapter.ViewHolder> {

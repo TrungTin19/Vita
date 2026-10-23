@@ -15,7 +15,7 @@ import vn.edu.tdmu.vita.utils.NotificationHelper;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 /**
- * Kiểm tra khung giờ nhắc và mục tiêu nước trong hồ sơ theo chu kỳ hai giờ hiện tại.
+ * Kiểm tra khung giờ nhắc và mục tiêu nước theo lịch đã chọn trong hồ sơ.
  */
 public class WaterReminderReceiver extends BroadcastReceiver {
 
@@ -35,8 +35,8 @@ public class WaterReminderReceiver extends BroadcastReceiver {
                 WaterDao waterDao = new WaterDao(context);
                 int amount = intent.getIntExtra(EXTRA_AMOUNT, 250);
                 if (amount < 50 || amount > 2000) return;
-                long saved = waterDao.addWater(userId, DateTimeUtils.getTodayDate(), amount,
-                        DateTimeUtils.getCurrentTimestamp());
+                String stamp = DateTimeUtils.getCurrentTimestamp();
+                long saved = waterDao.addWater(userId, stamp.substring(0, 10), amount, stamp);
                 if (saved > 0) Toast.makeText(context, context.getString(vn.edu.tdmu.vita.R.string.water_added, amount), Toast.LENGTH_SHORT).show();
             }
             NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID);
@@ -50,7 +50,7 @@ public class WaterReminderReceiver extends BroadcastReceiver {
         int minute = now.get(java.util.Calendar.HOUR_OF_DAY) * 60 + now.get(java.util.Calendar.MINUTE);
         int total = new WaterDao(context).getDailyTotal(user.getId(), DateTimeUtils.getTodayDate());
         if (vn.edu.tdmu.vita.utils.WaterReminderPolicy.shouldNotify(user.getWaterStart(), user.getWaterEnd(),
-                minute, total, vn.edu.tdmu.vita.utils.HydrationGoal.forUserGoal(user != null ? user.getWaterGoalMl() : 0))) {
+                minute, total, vn.edu.tdmu.vita.utils.HydrationGoal.forUserGoal(user.getWaterGoalMl()))) {
             NotificationHelper.showWaterReminder(context, NOTIFICATION_ID);
         } else {
             NotificationManagerCompat.from(context).cancel(NOTIFICATION_ID);

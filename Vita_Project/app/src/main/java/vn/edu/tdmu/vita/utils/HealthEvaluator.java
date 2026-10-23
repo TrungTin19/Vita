@@ -39,6 +39,10 @@ public class HealthEvaluator {
         int diaLevel = classifyDiastolic(diastolic);
         int level = Math.max(sysLevel, diaLevel);
 
+        if (level < 2 && (systolic < 90 || diastolic < 60)) {
+            return new BpResult("Huyết áp thấp", STATUS_WARNING);
+        }
+
         switch (level) {
             case 0: return new BpResult("Bình thường tối ưu", STATUS_GOOD);
             case 1: return new BpResult("Bình thường", STATUS_GOOD);
@@ -78,6 +82,9 @@ public class HealthEvaluator {
      * Trả về lời khuyến nghị ngắn cho kết quả huyết áp.
      */
     public static String getBpAdvice(BpResult result) {
+        if ("Huyết áp thấp".equals(result.label)) {
+            return "Huyết áp thấp, hãy đo lại sau khi nghỉ. Nếu chóng mặt, ngất hoặc khó chịu, hãy liên hệ cơ sở y tế.";
+        }
         switch (result.severity) {
             case STATUS_GOOD:
                 return "Huyết áp ổn định, tiếp tục duy trì lối sống lành mạnh.";

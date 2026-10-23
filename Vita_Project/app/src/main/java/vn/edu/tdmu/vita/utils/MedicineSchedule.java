@@ -42,17 +42,10 @@ public final class MedicineSchedule {
     }
 
     private static long computeSingleTrigger(String timeHHmm, int daysMask, long nowMillis) {
-        if (timeHHmm == null || daysMask == 0) return -1;
-        String[] parts = timeHHmm.split(":");
-        if (parts.length != 2) return -1;
-        int hour, min;
-        try {
-            hour = Integer.parseInt(parts[0].trim());
-            min = Integer.parseInt(parts[1].trim());
-        } catch (NumberFormatException e) {
-            return -1;
-        }
-        if (hour < 0 || hour > 23 || min < 0 || min > 59) return -1;
+        if (daysMask == 0) return -1;
+        // Chỉ nhận giờ HH:mm đã được normalizeTimes kiểm tra.
+        int hour = Integer.parseInt(timeHHmm.substring(0, 2));
+        int min = Integer.parseInt(timeHHmm.substring(3));
 
         for (int offset = 0; offset <= 7; offset++) {
             Calendar c = Calendar.getInstance();

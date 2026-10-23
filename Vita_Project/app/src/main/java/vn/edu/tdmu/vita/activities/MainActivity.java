@@ -73,7 +73,9 @@ public class MainActivity extends AppCompatActivity implements vn.edu.tdmu.vita.
     protected void onResume() {
         super.onResume();
         vn.edu.tdmu.vita.utils.SessionManager session = new vn.edu.tdmu.vita.utils.SessionManager(this);
-        if (!session.isLoggedIn()) {
+        if (!session.isLoggedIn()
+                || new vn.edu.tdmu.vita.database.UserDao(this).getUserById(session.getUserId()) == null) {
+            session.clearSession();
             startActivity(new Intent(this, LoginActivity.class));
             finish();
             return;

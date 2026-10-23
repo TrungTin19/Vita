@@ -165,8 +165,9 @@ public class DetailHealthActivity extends AppCompatActivity {
 
             if (hasBp) {
                 ((View) layoutBpSection.getParent()).setVisibility(View.VISIBLE);
-                tvBpValue.setText((record.getSystolic() == null ? "—" : record.getSystolic())
-                        + " / " + (record.getDiastolic() == null ? "—" : record.getDiastolic()));
+                tvBpValue.setText(getString(R.string.measurement_bp_value,
+                        record.getSystolic() == null ? getString(R.string.measurement_missing) : record.getSystolic(),
+                        record.getDiastolic() == null ? getString(R.string.measurement_missing) : record.getDiastolic()));
 
                 tvBpValue.setContentDescription(tvBpValue.getText() + " mmHg");
                 if (completeBp) {

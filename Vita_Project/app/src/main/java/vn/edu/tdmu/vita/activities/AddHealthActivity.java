@@ -50,7 +50,6 @@ public class AddHealthActivity extends AppCompatActivity {
     private TextInputLayout tilSugar;
     private TextInputEditText etSugar;
 
-    private TextInputLayout tilNote;
     private TextInputEditText etNote;
 
     private MaterialButton btnSave;
@@ -195,7 +194,6 @@ public class AddHealthActivity extends AppCompatActivity {
         tilSugar = findViewById(R.id.til_add_sugar);
         etSugar = findViewById(R.id.et_add_sugar);
 
-        tilNote = findViewById(R.id.til_add_note);
         etNote = findViewById(R.id.et_add_note);
 
         btnSave = findViewById(R.id.btn_add_health_save);
@@ -433,43 +431,29 @@ public class AddHealthActivity extends AppCompatActivity {
             return;
         }
 
-        long userId = sessionManager.getUserId();
-        String note = !noteStr.isEmpty() ? noteStr : null;
+        boolean editing = recordId > 0;
+        HealthRecord record = editing ? healthDao.getById(recordId, formUserId) : new HealthRecord();
+        if (record == null) return;
+        if (!editing) record.setUserId(sessionManager.getUserId());
+        record.setDate(selectedDate);
+        record.setMeasuredTime(measuredTime);
+        record.setMealContext(HealthRecord.MealContext.values()[mealContext.getSelectedItemPosition()].name());
+        record.setSystolic(systolic);
+        record.setDiastolic(diastolic);
+        record.setHeartRate(heartRate);
+        record.setWeightKg(weight);
+        record.setBloodSugar(bloodSugar);
+        record.setNote(noteStr.isEmpty() ? null : noteStr);
 
-        if (recordId > 0) {
-            HealthRecord record = healthDao.getById(recordId, formUserId);
-            if (record != null) {
-                record.setDate(selectedDate);
-                record.setMeasuredTime(measuredTime);
-                record.setMealContext(HealthRecord.MealContext.values()[mealContext.getSelectedItemPosition()].name());
-                record.setSystolic(systolic);
-                record.setDiastolic(diastolic);
-                record.setHeartRate(heartRate);
-                record.setWeightKg(weight);
-                record.setBloodSugar(bloodSugar);
-                record.setNote(note);
-
-                boolean success = healthDao.update(record, formUserId);
-                if (success) {
-                    Toast.makeText(this, getString(R.string.add_health_success_edit), Toast.LENGTH_SHORT).show();
-                    setResult(RESULT_OK);
-                    finish();
-                } else {
-                    Toast.makeText(this, getString(R.string.add_health_error_update), Toast.LENGTH_SHORT).show();
-                }
-            }
+        boolean success = editing ? healthDao.update(record, formUserId) : healthDao.insert(record) > 0;
+        if (success) {
+            Toast.makeText(this, editing ? R.string.add_health_success_edit : R.string.add_health_success_add,
+                    Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK);
+            finish();
         } else {
-            HealthRecord record = new HealthRecord(0, userId, selectedDate, weight, systolic, diastolic, heartRate, bloodSugar, note);
-            record.setMeasuredTime(measuredTime);
-            record.setMealContext(HealthRecord.MealContext.values()[mealContext.getSelectedItemPosition()].name());
-            long id = healthDao.insert(record);
-            if (id > 0) {
-                Toast.makeText(this, getString(R.string.add_health_success_add), Toast.LENGTH_SHORT).show();
-                setResult(RESULT_OK);
-                finish();
-            } else {
-                Toast.makeText(this, getString(R.string.add_health_error_save), Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(this, editing ? R.string.add_health_error_update : R.string.add_health_error_save,
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -77,6 +77,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleLogin() {
+        if (!btnSubmit.isEnabled()) return;
         String username = etUsername.getText() != null ? etUsername.getText().toString().trim() : "";
         String password = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
 
@@ -96,7 +97,34 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        User user = userDao.login(username, password);
+        btnSubmit.setEnabled(false);
+        btnSubmit.setText(R.string.auth_working);
+        tvGotoRegister.setEnabled(false);
+        new Thread(() -> {
+            try {
+                User user = userDao.login(username, password);
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    restoreLoginButton();
+                    completeLogin(user);
+                });
+            } catch (RuntimeException error) {
+                runOnUiThread(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    restoreLoginButton();
+                    Toast.makeText(this, R.string.auth_storage_error, Toast.LENGTH_LONG).show();
+                });
+            }
+        }, "vita-login").start();
+    }
+
+    private void restoreLoginButton() {
+        btnSubmit.setEnabled(true);
+        btnSubmit.setText(R.string.login_btn_submit);
+        tvGotoRegister.setEnabled(true);
+    }
+
+    private void completeLogin(User user) {
         if (user != null) {
             sessionManager.saveSession(user.getId(), user.getUsername(), user.getFullname());
             String displayName = (user.getFullname() != null && !user.getFullname().trim().isEmpty())

@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.MarkerView;
@@ -178,6 +179,8 @@ public class StatsFragment extends Fragment {
 
         List<HealthRecord> records = healthDao.getRecordsRange(userId, start, end);
         displayedDays = days;
+        displayedWater = selectedMetric == 4 ? waterDao.getDailyTotalsRange(userId, start, end)
+                : java.util.Collections.emptyMap();
         displayedRecords.clear();
         for (HealthRecord record : records) if (matchesSelectedMetric(record)) displayedRecords.add(record);
         View[] cards = { (View) chartWeight.getParent().getParent(), (View) chartBp.getParent().getParent(),
@@ -203,11 +206,10 @@ public class StatsFragment extends Fragment {
                 : selectedMetric == 4 ? tvWaterGoal.getText() : getString(R.string.figma_stats_point_note, displayedRecords.size()));
         tvWaterGoal.setVisibility(View.GONE);
         if (selectedMetric == 4) {
-            displayedWater = waterDao.getDailyTotalsRange(userId, start, end);
             summary = getString(R.string.health_result_count, displayedWater.size());
             for (int i = days.size() - 1; i >= 0; i--) if (displayedWater.containsKey(days.get(i))) {
                 summary += "\n" + DateTimeUtils.formatDisplayDate(days.get(i));
-                latestValue.setText(displayedWater.get(days.get(i)) + " ml");
+                latestValue.setText(getString(R.string.water_amount_value, displayedWater.get(days.get(i))));
                 break;
             }
         } else {
@@ -334,8 +336,9 @@ public class StatsFragment extends Fragment {
                                  List<String> days, HealthChartData.Metric metric) {
         styleLineChart(requireContext(), chart);
         chart.setNoDataText(getString(R.string.stats_no_records));
+        List<HealthChartData.Point> points = HealthChartData.metricPoints(records, days, metric);
         List<Entry> entries = new ArrayList<>();
-        for (HealthChartData.Point point : HealthChartData.metricPoints(records, days, metric)) {
+        for (HealthChartData.Point point : points) {
             entries.add(new Entry(point.x, point.value,
                     vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(requireContext(), point.record)));
         }
@@ -370,7 +373,7 @@ public class StatsFragment extends Fragment {
             int[] colors = {R.color.vita_text_secondary, R.color.vita_water, R.color.vita_status_warning, R.color.vita_teal};
             for (HealthRecord.MealContext context : HealthRecord.MealContext.values()) {
                 List<Entry> values = new ArrayList<>();
-                for (HealthChartData.Point point : HealthChartData.metricPoints(records, days, metric))
+                for (HealthChartData.Point point : points)
                     if (point.record.getMealContext() == context) values.add(new Entry(point.x, point.value,
                             vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(requireContext(), point.record)));
                 if (values.isEmpty()) continue;
@@ -448,7 +451,7 @@ public class StatsFragment extends Fragment {
 
     private void drawWaterChart(long userId, List<String> days) {
         Context context = requireContext();
-        Map<String, Integer> totals = waterDao.getDailyTotalsRange(userId, days.get(0), days.get(days.size() - 1));
+        Map<String, Integer> totals = displayedWater;
 
         User user = userDao.getUserById(userId);
         int goal = HydrationGoal.forUserGoal(user != null ? user.getWaterGoalMl() : 0);
@@ -464,7 +467,8 @@ public class StatsFragment extends Fragment {
             entries.add(new BarEntry(i, total));
         }
 
-        styleBarChart(context, chartWater);
+        styleChart(context, chartWater);
+        chartWater.getAxisLeft().setAxisMinimum(0f);
         chartWater.setNoDataText(getString(R.string.stats_not_enough_data));
         if (!hasData) {
             chartWater.clear();
@@ -490,24 +494,7 @@ public class StatsFragment extends Fragment {
     }
 
     private void styleLineChart(Context context, LineChart chart) {
-        chart.getDescription().setEnabled(false);
-        chart.getLayoutParams().height = Math.round(180 * getResources().getDisplayMetrics().density * getResources().getConfiguration().fontScale);
-        chart.setPinchZoom(false);
-        chart.setDoubleTapToZoomEnabled(false);
-        chart.setNoDataTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
-        chart.getAxisRight().setEnabled(false);
-        chart.getAxisLeft().setTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
-        chart.getAxisLeft().setTextSize(12f * getResources().getConfiguration().fontScale);
-        chart.getAxisLeft().setDrawAxisLine(false);
-        chart.getAxisLeft().setGridColor(ContextCompat.getColor(context, R.color.vita_divider));
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(false);
-        xAxis.setGranularity(1f);
-        xAxis.setTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
-        xAxis.setTextSize(12f * getResources().getConfiguration().fontScale);
-        chart.getLegend().setEnabled(false);
+        styleChart(context, chart);
         chart.getLegend().setTextColor(ContextCompat.getColor(context, R.color.vita_text_primary));
         chart.getLegend().setTextSize(12f * getResources().getConfiguration().fontScale);
         chart.getLegend().setWordWrapEnabled(true);
@@ -515,14 +502,13 @@ public class StatsFragment extends Fragment {
         chart.getXAxis().setLabelCount(3, false);
     }
 
-    private void styleBarChart(Context context, BarChart chart) {
+    private void styleChart(Context context, BarLineChartBase<?> chart) {
         chart.getDescription().setEnabled(false);
         chart.getLayoutParams().height = Math.round(180 * getResources().getDisplayMetrics().density * getResources().getConfiguration().fontScale);
         chart.setPinchZoom(false);
         chart.setDoubleTapToZoomEnabled(false);
         chart.setNoDataTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
         chart.getAxisRight().setEnabled(false);
-        chart.getAxisLeft().setAxisMinimum(0f);
         chart.getAxisLeft().setTextColor(ContextCompat.getColor(context, R.color.vita_text_secondary));
         chart.getAxisLeft().setTextSize(12f * getResources().getConfiguration().fontScale);
         chart.getAxisLeft().setDrawAxisLine(false);
@@ -554,7 +540,7 @@ public class StatsFragment extends Fragment {
             int x = (int) e.getX();
             String label = (x >= 0 && x < labels.size()) ? labels.get(x) : "";
             if (e.getData() instanceof String) label = (String) e.getData();
-            tvText.setText(label + ": " + e.getY() + unit);
+            tvText.setText(getContext().getString(R.string.chart_marker_value, label, String.valueOf(e.getY()), unit));
             super.refreshContent(e, highlight);
         }
 

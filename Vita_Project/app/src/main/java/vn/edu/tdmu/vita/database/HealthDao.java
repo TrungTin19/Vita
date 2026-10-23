@@ -55,20 +55,15 @@ public class HealthDao {
 
     public HealthRecord getById(long id, long userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 DatabaseHelper.TABLE_HEALTH_RECORDS,
                 null,
                 DatabaseHelper.COL_HEALTH_ID + " = ? AND " + DatabaseHelper.COL_HEALTH_USER_ID + " = ?",
                 new String[]{String.valueOf(id), String.valueOf(userId)},
                 null, null, null
-        );
-        if (cursor != null && cursor.moveToFirst()) {
-            HealthRecord record = cursorToRecord(cursor);
-            cursor.close();
-            return record;
+        )) {
+            return cursor.moveToFirst() ? cursorToRecord(cursor) : null;
         }
-        if (cursor != null) cursor.close();
-        return null;
     }
 
     public List<HealthRecord> getAllByUserId(long userId, String dateFilter) {
@@ -85,20 +80,17 @@ public class HealthDao {
         }
 
         String[] selectionArgs = argsList.toArray(new String[0]);
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 DatabaseHelper.TABLE_HEALTH_RECORDS,
                 null,
                 selection,
                 selectionArgs,
                 null, null,
                 DatabaseHelper.COL_HEALTH_DATE + " DESC, COALESCE(measured_time, '') DESC, " + DatabaseHelper.COL_HEALTH_ID + " DESC"
-        );
-
-        if (cursor != null) {
+        )) {
             while (cursor.moveToNext()) {
                 list.add(cursorToRecord(cursor));
             }
-            cursor.close();
         }
         return list;
     }
@@ -106,7 +98,7 @@ public class HealthDao {
     public List<HealthRecord> getRecordsRange(long userId, String startDate, String endDate) {
         List<HealthRecord> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 DatabaseHelper.TABLE_HEALTH_RECORDS,
                 null,
                 DatabaseHelper.COL_HEALTH_USER_ID + " = ? AND " +
@@ -115,12 +107,10 @@ public class HealthDao {
                 new String[]{String.valueOf(userId), startDate, endDate},
                 null, null,
                 DatabaseHelper.COL_HEALTH_DATE + " ASC, COALESCE(measured_time, '') ASC, " + DatabaseHelper.COL_HEALTH_ID + " ASC"
-        );
-        if (cursor != null) {
+        )) {
             while (cursor.moveToNext()) {
                 list.add(cursorToRecord(cursor));
             }
-            cursor.close();
         }
         return list;
     }
@@ -173,20 +163,11 @@ public class HealthDao {
         values.put("measured_time", record.getMeasuredTime());
         values.put("meal_context", record.getMealContext().name());
 
-        if (record.getWeightKg() != null) values.put(DatabaseHelper.COL_HEALTH_WEIGHT_KG, record.getWeightKg());
-        else values.putNull(DatabaseHelper.COL_HEALTH_WEIGHT_KG);
-
-        if (record.getSystolic() != null) values.put(DatabaseHelper.COL_HEALTH_SYSTOLIC, record.getSystolic());
-        else values.putNull(DatabaseHelper.COL_HEALTH_SYSTOLIC);
-
-        if (record.getDiastolic() != null) values.put(DatabaseHelper.COL_HEALTH_DIASTOLIC, record.getDiastolic());
-        else values.putNull(DatabaseHelper.COL_HEALTH_DIASTOLIC);
-
-        if (record.getHeartRate() != null) values.put(DatabaseHelper.COL_HEALTH_HEART_RATE, record.getHeartRate());
-        else values.putNull(DatabaseHelper.COL_HEALTH_HEART_RATE);
-
-        if (record.getBloodSugar() != null) values.put(DatabaseHelper.COL_HEALTH_BLOOD_SUGAR, record.getBloodSugar());
-        else values.putNull(DatabaseHelper.COL_HEALTH_BLOOD_SUGAR);
+        values.put(DatabaseHelper.COL_HEALTH_WEIGHT_KG, record.getWeightKg());
+        values.put(DatabaseHelper.COL_HEALTH_SYSTOLIC, record.getSystolic());
+        values.put(DatabaseHelper.COL_HEALTH_DIASTOLIC, record.getDiastolic());
+        values.put(DatabaseHelper.COL_HEALTH_HEART_RATE, record.getHeartRate());
+        values.put(DatabaseHelper.COL_HEALTH_BLOOD_SUGAR, record.getBloodSugar());
 
         values.put(DatabaseHelper.COL_HEALTH_NOTE, record.getNote());
         return values;

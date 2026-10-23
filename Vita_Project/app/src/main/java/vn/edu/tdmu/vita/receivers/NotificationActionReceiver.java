@@ -36,9 +36,24 @@ public class NotificationActionReceiver extends BroadcastReceiver {
         String date = intent.getStringExtra(MedicineAlarmReceiver.EXTRA_DOSE_DATE);
         String time = intent.getStringExtra(MedicineAlarmReceiver.EXTRA_DOSE_TIME);
         if (date == null || time == null) return;
+        if (!medicine.isActive()
+                || !java.util.Objects.equals(medicine.getName(), intent.getStringExtra("medicine_name"))
+                || !java.util.Objects.equals(medicine.getDosage(), intent.getStringExtra("medicine_dosage"))
+                || !java.util.Objects.equals(medicine.getTime(), intent.getStringExtra("medicine_times"))
+                || medicine.getDaysMask() != intent.getIntExtra("medicine_days", -1)
+                || !java.util.Arrays.asList(medicine.getTime().split(",")).contains(time)) {
+            NotificationManagerCompat.from(context).cancel(vn.edu.tdmu.vita.utils.NotificationHelper.doseNotificationId(medicineId, date, time));
+            Toast.makeText(context, "Lịch thuốc đã thay đổi. Hãy mở ứng dụng để kiểm tra cữ thuốc.", Toast.LENGTH_LONG).show();
+            return;
+        }
         String medicineName = medicine.getName();
-        dao.logMedicineStatus(medicineId, medicine.getUserId(), date, time, status,
-                DateTimeUtils.getCurrentTimestamp());
+        try {
+            if (dao.logMedicineStatus(medicineId, medicine.getUserId(), date, time, status,
+                    DateTimeUtils.getCurrentTimestamp()) <= 0) return;
+        } catch (android.database.sqlite.SQLiteException error) {
+            Toast.makeText(context, "Chưa lưu được cữ thuốc. Hãy thử lại trong ứng dụng.", Toast.LENGTH_LONG).show();
+            return;
+        }
 
         NotificationManagerCompat.from(context).cancel(vn.edu.tdmu.vita.utils.NotificationHelper.doseNotificationId(medicineId, date, time));
 

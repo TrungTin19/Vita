@@ -12,6 +12,27 @@ import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
 public class ProfileDeletionDaoDeviceTest {
+    @Test public void legacyLoginUpgradesOnlyAfterCorrectPasswordAndKeepsProfile() throws Exception {
+        try (SQLiteDatabase db = fixture()) {
+            UserDao users = new UserDao(helper(db));
+            User original = users.getUserById(1);
+            byte[] bytes = java.security.MessageDigest.getInstance("SHA-256").digest(
+                    (original.getSalt() + "password1").getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            StringBuilder legacy = new StringBuilder();
+            for (byte value : bytes) legacy.append(String.format("%02x", value));
+            db.execSQL("UPDATE users SET password_hash=? WHERE id=1", new Object[]{legacy.toString()});
+            assertNull(users.login("user1", "wrong"));
+            assertEquals(legacy.toString(), users.getUserById(1).getPasswordHash());
+            User loggedIn = users.login("user1", "password1");
+            assertNotNull(loggedIn);
+            assertFalse(vn.edu.tdmu.vita.utils.SecurityUtils.isLegacyHash(loggedIn.getPasswordHash()));
+            assertEquals(loggedIn.getPasswordHash(), users.getUserById(1).getPasswordHash());
+            assertEquals(original.getHeightCm(), loggedIn.getHeightCm(), 0.0f);
+            assertNotNull(users.login("user1", "password1"));
+            assertTrue(users.deleteProfileWithPassword(1, "password1"));
+            assertNotNull(users.getUserById(2));
+        }
+    }
     private DatabaseHelper helper(SQLiteDatabase db) {
         return new DatabaseHelper(ApplicationProvider.getApplicationContext()) {
             @Override public SQLiteDatabase getWritableDatabase() { return db; }

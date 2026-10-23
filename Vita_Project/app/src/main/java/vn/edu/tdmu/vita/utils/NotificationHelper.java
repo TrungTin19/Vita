@@ -61,9 +61,9 @@ public final class NotificationHelper {
         ensureChannel(context);
         int notificationId = doseNotificationId(medicine.getId(), date, time);
 
-        PendingIntent takenIntent = actionPendingIntent(context, medicine.getId(),
+        PendingIntent takenIntent = actionPendingIntent(context, medicine,
                 NotificationActionReceiver.ACTION_TAKEN, date, time);
-        PendingIntent skippedIntent = actionPendingIntent(context, medicine.getId(),
+        PendingIntent skippedIntent = actionPendingIntent(context, medicine,
                 NotificationActionReceiver.ACTION_SKIPPED, date, time);
 
         Intent openReminder = new Intent(context,
@@ -99,14 +99,19 @@ public final class NotificationHelper {
         }
     }
 
-    private static PendingIntent actionPendingIntent(Context context, long medicineId,
+    private static PendingIntent actionPendingIntent(Context context, Medicine medicine,
                                                      String action, String date, String time) {
+        long medicineId = medicine.getId();
         Intent intent = new Intent(context, NotificationActionReceiver.class);
         intent.setAction(action);
         intent.setData(android.net.Uri.parse("vita://dose/" + medicineId + "/" + date + "/" + time));
         intent.putExtra(vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver.EXTRA_DOSE_DATE, date);
         intent.putExtra(vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver.EXTRA_DOSE_TIME, time);
         intent.putExtra(NotificationActionReceiver.EXTRA_MEDICINE_ID, medicineId);
+        intent.putExtra("medicine_name", medicine.getName());
+        intent.putExtra("medicine_dosage", medicine.getDosage());
+        intent.putExtra("medicine_times", medicine.getTime());
+        intent.putExtra("medicine_days", medicine.getDaysMask());
         return PendingIntent.getBroadcast(context, 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }

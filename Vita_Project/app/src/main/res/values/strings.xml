@@ -1,4 +1,19 @@
 <resources>
+    <string name="measurement_missing">—</string>
+    <string name="measurement_bp_value">%1$s / %2$s</string>
+    <string name="profile_account_summary">\u0040%1$s · %2$s</string>
+    <string name="profile_schedule_summary">%1$s\n%2$s</string>
+    <string name="profile_bmi_action">BMI %1$s · %2$s</string>
+    <string name="water_amount_value">%1$d ml</string>
+    <string name="chart_marker_value">%1$s: %2$s%3$s</string>
+    <string name="gender_male">Nam</string>
+    <string-array name="profile_genders">
+        <item>@string/gender_male</item>
+        <item>Nữ</item>
+        <item>Khác</item>
+    </string-array>
+    <string name="auth_working">Đang xử lý…</string>
+    <string name="auth_storage_error">Chưa thể xử lý tài khoản. Vui lòng thử lại.</string>
     <!-- Thương hiệu và nhận diện ứng dụng -->
     <string name="app_name">Vita</string>
     <string name="app_logo_content_desc">Biểu tượng ứng dụng quản lý sức khỏe Vita</string>
@@ -113,7 +128,7 @@
     <string name="add_health_hint_sugar">Đường huyết · mg/dL</string>
     <string name="add_health_suffix_sugar">mg/dL</string>
     <string name="add_health_section_notes">GHI CHÚ BỔ SUNG</string>
-    <string name="add_health_hint_notes">Ghi chú (cảm giác cơ thể, triệu chứng, sau ăn...)</string>
+    <string name="add_health_hint_notes">Ghi chú (cảm giác cơ thể, triệu chứng, sau ăn…)</string>
     <string name="add_health_guidance_nullable">Bạn có thể bỏ trống các chỉ số chưa đo, hệ thống sẽ lưu các chỉ số bạn nhập.</string>
     <string name="add_health_btn_save">Lưu bản ghi</string>
     <string name="add_health_error_no_input">Vui lòng nhập ít nhất một chỉ số đo hoặc ghi chú.</string>

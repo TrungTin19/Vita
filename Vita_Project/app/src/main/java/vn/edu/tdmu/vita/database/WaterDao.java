@@ -41,33 +41,25 @@ public class WaterDao {
                 DatabaseHelper.TABLE_WATER_LOGS + " WHERE " +
                 DatabaseHelper.COL_WATER_USER_ID + " = ? AND " +
                 DatabaseHelper.COL_WATER_DATE + " = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), date});
-        int total = 0;
-        if (cursor != null && cursor.moveToFirst()) {
-            total = cursor.getInt(0);
-            cursor.close();
-        } else if (cursor != null) {
-            cursor.close();
+        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), date})) {
+            return cursor.moveToFirst() ? cursor.getInt(0) : 0;
         }
-        return total;
     }
 
     public List<WaterLog> getLogsByDate(long userId, String date) {
         List<WaterLog> list = new ArrayList<>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 DatabaseHelper.TABLE_WATER_LOGS,
                 null,
                 DatabaseHelper.COL_WATER_USER_ID + " = ? AND " + DatabaseHelper.COL_WATER_DATE + " = ?",
                 new String[]{String.valueOf(userId), date},
                 null, null,
                 "CASE WHEN length(logged_at) <= 8 THEN logged_at ELSE substr(logged_at,12) END DESC, id DESC"
-        );
-        if (cursor != null) {
+        )) {
             while (cursor.moveToNext()) {
                 list.add(cursorToLog(cursor));
             }
-            cursor.close();
         }
         return list;
     }
@@ -83,14 +75,10 @@ public class WaterDao {
                 "GROUP BY " + DatabaseHelper.COL_WATER_DATE + " " +
                 "ORDER BY " + DatabaseHelper.COL_WATER_DATE + " ASC";
 
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), startDate, endDate});
-        if (cursor != null) {
+        try (Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), startDate, endDate})) {
             while (cursor.moveToNext()) {
-                String date = cursor.getString(0);
-                int total = cursor.getInt(1);
-                totals.put(date, total);
+                totals.put(cursor.getString(0), cursor.getInt(1));
             }
-            cursor.close();
         }
         return totals;
     }

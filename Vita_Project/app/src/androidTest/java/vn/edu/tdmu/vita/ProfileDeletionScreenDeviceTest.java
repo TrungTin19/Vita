@@ -48,7 +48,14 @@ public class ProfileDeletionScreenDeviceTest {
     }
     private void confirm(String password) {
         onView(withId(id("et_delete_profile_password"))).perform(replaceText(password),closeSoftKeyboard());
+        java.util.concurrent.atomic.AtomicReference<View> submit = new java.util.concurrent.atomic.AtomicReference<>();
+        onView(withId(android.R.id.button1)).check((view, error) -> {
+            if (error != null) throw error;
+            submit.set(view);
+        });
         onView(withId(android.R.id.button1)).perform(click());
+        DeviceTestWait.until("Password verification must finish", () ->
+                !session.isLoggedIn() || session.getUserId() != owner || submit.get().isEnabled());
     }
     @Test public void cancellingDeletion_keepsProfileAndSession() {
         try(ActivityScenario<ProfileActivity> screen=ActivityScenario.launch(ProfileActivity.class)) {

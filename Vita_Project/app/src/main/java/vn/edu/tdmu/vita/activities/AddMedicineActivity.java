@@ -35,7 +35,6 @@ public class AddMedicineActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private TextInputLayout tilName;
     private TextInputEditText etName;
-    private TextInputLayout tilDosage;
     private TextInputEditText etDosage;
     private TextInputLayout tilTime;
     private TextInputEditText etTime;
@@ -86,7 +85,6 @@ public class AddMedicineActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar_add_medicine);
         tilName = findViewById(R.id.til_med_name);
         etName = findViewById(R.id.et_med_name);
-        tilDosage = findViewById(R.id.til_med_dosage);
         etDosage = findViewById(R.id.et_med_dosage);
         tilTime = findViewById(R.id.til_med_time);
         etTime = findViewById(R.id.et_med_time);

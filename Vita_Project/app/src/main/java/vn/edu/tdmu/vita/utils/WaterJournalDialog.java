@@ -85,7 +85,7 @@ public class WaterJournalDialog extends DialogFragment {
         LinearLayout root = new LinearLayout(requireContext()); root.setOrientation(LinearLayout.VERTICAL);
         root.setBackgroundColor(androidx.core.content.ContextCompat.getColor(requireContext(), R.color.vita_bg));
         com.google.android.material.appbar.MaterialToolbar toolbar = (com.google.android.material.appbar.MaterialToolbar)
-                android.view.LayoutInflater.from(requireContext()).inflate(R.layout.view_page_toolbar, root, false);
+                getLayoutInflater().inflate(R.layout.view_page_toolbar, root, false);
         ((android.widget.TextView) toolbar.findViewById(R.id.tv_page_title)).setText(title);
         toolbar.setNavigationOnClickListener(v -> dismiss()); root.addView(toolbar);
         android.widget.ScrollView scroll = new android.widget.ScrollView(requireContext());
@@ -220,8 +220,11 @@ public class WaterJournalDialog extends DialogFragment {
             int amount;
             try { amount = Integer.parseInt(amountField.getText().toString()); } catch (NumberFormatException invalid) { amount = 0; }
             if (amount < 50 || amount > 2000) { amountLayout.setError(getString(R.string.water_entry_invalid)); amountField.requestFocus(); return; }
-            String date = args.getLong("id") > 0 ? args.getString("date") : DateTimeUtils.getTodayDate();
-            long user = args.getLong("user"); String stamp = date + " " + selectedTime + ":00";
+            String stamp = args.getLong("id") > 0
+                    ? args.getString("date") + " " + selectedTime + ":00"
+                    : DateTimeUtils.getCurrentTimestamp();
+            String date = stamp.substring(0, 10);
+            long user = args.getLong("user");
             try {
                 WaterDao dao = new WaterDao(requireContext());
                 boolean saved = args.getLong("id") > 0 ? dao.updateLog(args.getLong("id"), user, amount, stamp)
@@ -306,7 +309,7 @@ public class WaterJournalDialog extends DialogFragment {
         int amount = profile.getWaterAmount(); String stamp = DateTimeUtils.getCurrentTimestamp();
         try {
             WaterDao dao = new WaterDao(activity);
-            long id = dao.addWater(user, DateTimeUtils.getTodayDate(), amount, stamp);
+            long id = dao.addWater(user, stamp.substring(0, 10), amount, stamp);
             if (id <= 0) { Toast.makeText(activity, R.string.water_entry_error, Toast.LENGTH_SHORT).show(); return; }
             notifyChanged(activity, user, callback);
             Snackbar.make(snackbarAnchor(activity), activity.getString(R.string.water_added_undo, amount), Snackbar.LENGTH_LONG)

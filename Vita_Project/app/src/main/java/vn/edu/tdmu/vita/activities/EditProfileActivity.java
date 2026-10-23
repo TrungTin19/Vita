@@ -29,7 +29,6 @@ public class EditProfileActivity extends AppCompatActivity {
     private String selectedWaterTimes = "";
 
     private MaterialToolbar toolbar;
-    private TextInputLayout tilFullname;
     private TextInputLayout tilBirthYear;
     private AutoCompleteTextView actGender;
     private TextInputLayout tilHeight;
@@ -83,7 +82,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void initViews() {
         toolbar = findViewById(R.id.toolbar_edit_profile);
-        tilFullname = findViewById(R.id.til_edit_fullname);
         tilBirthYear = findViewById(R.id.til_edit_birth_year);
         actGender = findViewById(R.id.act_edit_gender);
         tilHeight = findViewById(R.id.til_edit_height);
@@ -162,7 +160,7 @@ public class EditProfileActivity extends AppCompatActivity {
         if (currentUser.getGender() != null && !currentUser.getGender().isEmpty()) {
             actGender.setText(currentUser.getGender(), false);
         } else {
-            actGender.setText("Nam", false);
+            actGender.setText(getString(R.string.gender_male), false);
         }
     }
 

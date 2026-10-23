@@ -23,16 +23,15 @@ public class UserDao {
     public boolean isUsernameExists(String username) {
         if (username == null) return false;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 DatabaseHelper.TABLE_USERS,
                 new String[]{DatabaseHelper.COL_USER_ID},
                 DatabaseHelper.COL_USER_USERNAME + " = ?",
                 new String[]{username.trim()},
                 null, null, null
-        );
-        boolean exists = (cursor != null && cursor.getCount() > 0);
-        if (cursor != null) cursor.close();
-        return exists;
+        )) {
+            return cursor.moveToFirst();
+        }
     }
 
     public long register(User user, String rawPassword) {
@@ -70,46 +69,46 @@ public class UserDao {
         if (username == null || rawPassword == null) return null;
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 DatabaseHelper.TABLE_USERS,
                 null,
                 DatabaseHelper.COL_USER_USERNAME + " = ?",
                 new String[]{username.trim()},
                 null, null, null
-        );
-
-        if (cursor != null && cursor.moveToFirst()) {
+        )) {
+            if (!cursor.moveToFirst()) return null;
             String dbHash = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_USER_PASSWORD_HASH));
             String dbSalt = cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_USER_SALT));
 
-            String computedHash = SecurityUtils.hashPassword(rawPassword, dbSalt);
-            if (dbHash != null && dbHash.equals(computedHash)) {
+            if (SecurityUtils.verifyPassword(rawPassword, dbSalt, dbHash)) {
                 User user = cursorToUser(cursor);
-                cursor.close();
+                if (SecurityUtils.isLegacyHash(dbHash)) {
+                    String upgraded = SecurityUtils.hashPassword(rawPassword, dbSalt);
+                    ContentValues values = new ContentValues();
+                    values.put(DatabaseHelper.COL_USER_PASSWORD_HASH, upgraded);
+                    int changed = dbHelper.getWritableDatabase().update(DatabaseHelper.TABLE_USERS, values,
+                            "id = ? AND " + DatabaseHelper.COL_USER_PASSWORD_HASH + " = ?",
+                            new String[]{String.valueOf(user.getId()), dbHash});
+                    if (changed != 1) return null;
+                    user.setPasswordHash(upgraded);
+                }
                 return user;
             }
-            cursor.close();
         }
         return null;
     }
 
     public User getUserById(long userId) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 DatabaseHelper.TABLE_USERS,
                 null,
                 DatabaseHelper.COL_USER_ID + " = ?",
                 new String[]{String.valueOf(userId)},
                 null, null, null
-        );
-
-        if (cursor != null && cursor.moveToFirst()) {
-            User user = cursorToUser(cursor);
-            cursor.close();
-            return user;
+        )) {
+            return cursor.moveToFirst() ? cursorToUser(cursor) : null;
         }
-        if (cursor != null) cursor.close();
-        return null;
     }
 
     public boolean updateProfile(User user) {
@@ -152,8 +151,7 @@ public class UserDao {
     public boolean deleteProfileWithPassword(long userId, String password) {
         if (userId <= 0 || password == null || password.isEmpty()) return false;
         User user = getUserById(userId);
-        if (user == null || user.getPasswordHash() == null || !user.getPasswordHash().equals(
-                SecurityUtils.hashPassword(password, user.getSalt()))) return false;
+        if (user == null || !SecurityUtils.verifyPassword(password, user.getSalt(), user.getPasswordHash())) return false;
         return dbHelper.getWritableDatabase().delete(DatabaseHelper.TABLE_USERS,
                 DatabaseHelper.COL_USER_ID + " = ? AND " + DatabaseHelper.COL_USER_PASSWORD_HASH + " = ?",
                 new String[]{String.valueOf(userId), user.getPasswordHash()}) == 1;

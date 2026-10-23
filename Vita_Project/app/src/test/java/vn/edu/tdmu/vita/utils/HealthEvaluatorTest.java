@@ -10,6 +10,17 @@ import org.junit.Test;
  */
 public class HealthEvaluatorTest {
 
+    @Test public void lowPressureIsNotReassuringAndKeepsHighPressurePriority() {
+        for (int[] reading : new int[][]{{80, 50}, {89, 70}, {110, 59}}) {
+            HealthEvaluator.BpResult result = HealthEvaluator.classifyBloodPressure(reading[0], reading[1]);
+            assertEquals("Huyết áp thấp", result.label);
+            assertEquals(HealthEvaluator.STATUS_WARNING, result.severity);
+            org.junit.Assert.assertFalse(HealthEvaluator.getBpAdvice(result).contains("Hạn chế muối"));
+        }
+        assertEquals("Bình thường tối ưu", HealthEvaluator.classifyBloodPressure(90, 60).label);
+        assertEquals("Tăng huyết áp độ 2", HealthEvaluator.classifyBloodPressure(170, 50).label);
+    }
+
     // ---- Kiểm thử phân loại huyết áp ----
 
     @Test

@@ -9,9 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.materialswitch.MaterialSwitch;
-
 import java.util.List;
 
 import vn.edu.tdmu.vita.R;
@@ -54,7 +51,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.bind(medicines.get(position), position);
+        holder.bind(medicines.get(position));
     }
 
     @Override
@@ -78,7 +75,6 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
-        private final MaterialCardView cardView;
         private final TextView tvName;
         private final com.google.android.material.button.MaterialButton swActive;
         private final TextView tvTime;
@@ -86,7 +82,6 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
-            cardView = itemView.findViewById(R.id.cv_medicine_item);
             tvName = itemView.findViewById(R.id.tv_med_item_name);
             swActive = itemView.findViewById(R.id.sw_med_active);
             tvTime = itemView.findViewById(R.id.tv_med_item_time);
@@ -95,7 +90,7 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
             itemView.setOnCreateContextMenuListener(this);
         }
 
-        void bind(Medicine medicine, int position) {
+        void bind(Medicine medicine) {
             tvName.setText(medicine.getName());
 
             String dosage = medicine.getDosage() == null || medicine.getDosage().trim().isEmpty()
@@ -118,11 +113,6 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
                 if (switchListener != null) {
                     switchListener.onSwitchChanged(medicine, getBindingAdapterPosition(), isChecked);
                 }
-            });
-
-            cardView.setOnLongClickListener(v -> {
-                contextMenuPosition = getBindingAdapterPosition();
-                return false;
             });
 
         }
