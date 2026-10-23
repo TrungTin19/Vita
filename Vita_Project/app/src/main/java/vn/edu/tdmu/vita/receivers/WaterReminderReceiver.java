@@ -15,7 +15,7 @@ import vn.edu.tdmu.vita.utils.NotificationHelper;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 /**
- * Checks the profile reminder window and goal on the existing two-hour cadence.
+ * Kiểm tra khung giờ nhắc và mục tiêu nước trong hồ sơ theo chu kỳ hai giờ hiện tại.
  */
 public class WaterReminderReceiver extends BroadcastReceiver {
 
@@ -62,7 +62,7 @@ public class WaterReminderReceiver extends BroadcastReceiver {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (alarmManager == null) return;
         Intent intent = new Intent(context, WaterReminderReceiver.class);
-        // App resumes keep the pending check; each delivery schedules the next allowed check.
+        // Khi ứng dụng hoạt động lại, giữ lần kiểm tra đang chờ; mỗi lần nhắc sẽ lên lịch lần kế tiếp trong khung giờ cho phép.
         if (PendingIntent.getBroadcast(context, REQUEST_CODE, intent,
                 PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE) != null) return;
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, REQUEST_CODE, intent,

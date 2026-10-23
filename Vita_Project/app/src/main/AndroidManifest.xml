@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Permissions required for Vita specifications -->
+    <!-- Các quyền cần thiết cho chức năng của ViTa -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Vita">
 
-        <!-- Splash Activity is the App Launcher -->
+        <!-- SplashActivity là màn hình khởi chạy ứng dụng -->
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true">

@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import vn.edu.tdmu.vita.R;
 
-/** Compare user-editable values, not validation messages, focus or scroll position. */
+/** So sánh giá trị người dùng chỉnh sửa, không so sánh thông báo lỗi, tiêu điểm hay vị trí cuộn. */
 public final class UnsavedChangesGuard {
     private final AppCompatActivity activity;
     private final String baseline;

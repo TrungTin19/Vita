@@ -1,20 +1,20 @@
 <resources>
-    <!-- App Brand & Identity -->
+    <!-- Thương hiệu và nhận diện ứng dụng -->
     <string name="app_name">Vita</string>
     <string name="app_logo_content_desc">Biểu tượng ứng dụng quản lý sức khỏe Vita</string>
 
-    <!-- Common Button Actions (Sentence Case) -->
+    <!-- Thao tác nút dùng chung (viết hoa đầu câu) -->
     <string name="btn_cancel">Hủy bỏ</string>
     <string name="btn_delete">Xóa</string>
 
-    <!-- Accessibility Descriptions -->
+    <!-- Mô tả hỗ trợ tiếp cận -->
     <string name="a11y_navigate_back">Quay lại</string>
 
-    <!-- Splash Screen -->
+    <!-- Màn hình khởi động -->
     <string name="splash_title">Vita</string>
     <string name="splash_logo_desc">Biểu tượng ứng dụng quản lý sức khỏe Vita</string>
 
-    <!-- Login Screen -->
+    <!-- Màn hình đăng nhập -->
     <string name="login_hint_username">Tên đăng nhập</string>
     <string name="login_hint_password">Mật khẩu</string>
     <string name="login_btn_submit">Đăng nhập</string>
@@ -23,7 +23,7 @@
     <string name="login_error_invalid_credentials">Tên đăng nhập hoặc mật khẩu chưa chính xác. Vui lòng kiểm tra lại.</string>
     <string name="login_welcome_back">Chào mừng %1$s quay trở lại!</string>
 
-    <!-- Register Screen -->
+    <!-- Màn hình đăng ký -->
     <string name="register_toolbar_title">Tạo tài khoản mới</string>
     <string name="register_hint_username">Tên đăng nhập *</string>
     <string name="register_hint_password">Mật khẩu (tối thiểu 6 ký tự) *</string>
@@ -51,7 +51,7 @@
     <string name="register_error_username_exists">Tên đăng nhập đã tồn tại, vui lòng chọn tên khác</string>
     <string name="register_success">Đăng ký thành công! Chào mừng bạn đến với Vita.</string>
 
-    <!-- Profile Screen -->
+    <!-- Màn hình hồ sơ -->
     <string name="profile_toolbar_title">Hồ sơ</string>
     <string name="profile_avatar_desc">Ảnh đại diện tài khoản</string>
     <string name="profile_default_user">Người dùng Vita</string>
@@ -70,7 +70,7 @@
     <string name="profile_snackbar_standard_who">Đã đổi sang Chuẩn Quốc tế (WHO)</string>
     <string name="profile_snackbar_standard_asian">Đã đổi sang Chuẩn Châu Á (IDI &amp; WPRO)</string>
 
-    <!-- Edit Profile Screen -->
+    <!-- Màn hình chỉnh sửa hồ sơ -->
     <string name="edit_profile_toolbar_title">Chỉnh sửa hồ sơ</string>
     <string name="edit_profile_hint_fullname">Họ và tên</string>
     <string name="edit_profile_hint_birth_year">Năm sinh</string>
@@ -82,7 +82,7 @@
     <string name="edit_profile_save_error">Không thể cập nhật hồ sơ. Vui lòng thử lại.</string>
     <string name="edit_profile_error_invalid_water_goal">Mục tiêu nước từ %1$,d đến %2$,d ml / ngày</string>
 
-    <!-- Health Log List (HealthFragment & Adapter) -->
+    <!-- Danh sách nhật ký sức khỏe (HealthFragment và Adapter) -->
     <string name="health_filter_all_dates">Tất cả ngày</string>
     <string name="health_empty_title">Chưa có bản ghi sức khỏe nào</string>
     <string name="health_empty_desc">Nhấn nút + để ghi nhận chỉ số đo đầu tiên</string>
@@ -95,7 +95,7 @@
     <string name="health_delete_success">Đã xóa bản ghi thành công</string>
     <string name="health_delete_error">Không thể xóa bản ghi. Vui lòng thử lại.</string>
 
-    <!-- Detail Health Screen -->
+    <!-- Màn hình chi tiết sức khỏe -->
     <string name="detail_health_bp_unit">mmHg</string>
     <string name="detail_health_advice_format">Đánh giá: %1$s</string>
     <string name="detail_health_section_notes">GHI CHÚ ĐÍNH KÈM</string>
@@ -104,7 +104,7 @@
     <string name="detail_health_record_not_found">Không tìm thấy bản ghi</string>
     <string name="detail_health_invalid_record">Bản ghi không hợp lệ</string>
 
-    <!-- Add / Edit Health Screen -->
+    <!-- Màn hình thêm hoặc chỉnh sửa chỉ số sức khỏe -->
     <string name="add_health_title_edit">Chỉnh sửa số đo</string>
     <string name="add_health_hint_hr">Nhịp tim · bpm</string>
     <string name="add_health_suffix_bpm">bpm</string>
@@ -129,7 +129,7 @@
     <string name="add_health_error_save">Không thể lưu chỉ số. Vui lòng thử lại.</string>
     <string name="add_health_error_update">Không thể cập nhật chỉ số. Vui lòng thử lại.</string>
 
-    <!-- Add / Edit Medicine Screen -->
+    <!-- Màn hình thêm hoặc chỉnh sửa thuốc -->
     <string name="add_med_title_add">Lịch uống thuốc mới</string>
     <string name="add_med_title_edit">Chỉnh sửa lịch uống thuốc</string>
     <string name="add_med_day_mon">T2</string>
@@ -147,7 +147,7 @@
     <string name="add_med_error_save">Không thể lưu lịch uống thuốc. Vui lòng thử lại.</string>
     <string name="add_med_error_update">Không thể cập nhật lịch uống thuốc. Vui lòng thử lại.</string>
 
-    <!-- Reminder Screen (Medicines + Water) -->
+    <!-- Màn hình nhắc nhở (thuốc và nước) -->
     <string name="reminder_water_title">Tiến độ uống nước hôm nay</string>
     <string name="reminder_water_progress_format">%1$,d / %2$,d ml (%3$d%%)</string>
     <string name="reminder_btn_add_water">+ %1$d ml</string>
@@ -164,14 +164,14 @@
     <string name="reminder_undo">Hoàn tác</string>
 
 
-    <!-- Stats Screen -->
+    <!-- Màn hình thống kê -->
     <string name="stats_bp_title">Biến thiên huyết áp (mmHg)</string>
     <string name="stats_bp_sys_label">Tâm thu</string>
     <string name="stats_bp_dia_label">Tâm trương</string>
     <string name="stats_water_title">Lượng nước uống mỗi ngày (ml)</string>
     <string name="stats_not_enough_data">Chưa đủ dữ liệu vẽ đồ thị. Hãy ghi nhận ít nhất 2 ngày để theo dõi xu hướng nhé.</string>
 
-    <!-- Home Screen -->
+    <!-- Màn hình chính -->
     <string name="home_bmi_title">CHỈ SỐ THỂ TRẠNG (BMI)</string>
     <string name="home_bmi_info_format">Chiều cao: %1$.0f cm • Cân nặng: %2$.0f kg%3$s</string>
     <string name="home_bmi_info_initial_suffix"> (ban đầu)</string>
@@ -183,18 +183,18 @@
     <string name="home_greeting_afternoon">Chào buổi chiều, %1$s</string>
     <string name="home_greeting_evening">Chào buổi tối, %1$s</string>
 
-    <!-- Main Navigation -->
+    <!-- Điều hướng chính -->
     <string name="nav_home">Hôm nay</string>
     <string name="nav_health">Chỉ số</string>
     <string name="nav_reminder">Nhắc nhở</string>
     <string name="nav_stats">Xu hướng</string>
 
-    <!-- Water Reminder -->
+    <!-- Nhắc uống nước -->
     <string name="water_reminder_title">Đến giờ uống nước</string>
     <string name="water_reminder_text">Uống một ly nước để cơ thể tỉnh táo nhé!</string>
     <string name="water_reminder_action">Đã uống %1$d ml</string>
 
-    <!-- Exact Alarm Permission -->
+    <!-- Quyền đặt báo thức chính xác -->
     <string name="exact_alarm_needed">Vita cần quyền Báo thức chính xác để nhắc thuốc đúng giờ</string>
     <string name="exact_alarm_open_settings">Mở cài đặt</string>
     <string name="stats_weight_title">Cân nặng (kg)</string>

@@ -154,7 +154,7 @@ public class AccessibilityDeviceTest {
         new SessionManager(context).saveSession(owner, user.getUsername(), "");
         MedicineDao medicines = new MedicineDao(context);
         long medicineId = medicines.insert(new Medicine(0, owner, "Vitamin C", "1 viên sau ăn", "12:00", 127, true));
-        // A save toast from the previous scenario can still cover the next screen.
+        // Thông báo lưu từ kịch bản trước có thể vẫn che màn hình tiếp theo.
         android.os.SystemClock.sleep(3000);
         try {
             try (ActivityScenario<vn.edu.tdmu.vita.activities.MainActivity> screen = ActivityScenario.launch(vn.edu.tdmu.vita.activities.MainActivity.class)) {

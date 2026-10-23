@@ -33,14 +33,14 @@ public class DaosTest {
 
     @Test
     public void testHealthRecord_NullableMetricsHandling() {
-        // User only records blood pressure; weight, heart rate, blood sugar, and note are omitted (null)
+        // Người dùng chỉ ghi huyết áp; cân nặng, nhịp tim, đường huyết và ghi chú được để trống (null).
         HealthRecord partialRecord = new HealthRecord(2L, 10L, "2026-10-14", null, 125, 82, null, null, null);
         assertNotNull(partialRecord.getSystolic());
         assertEquals(Integer.valueOf(125), partialRecord.getSystolic());
         assertNotNull(partialRecord.getDiastolic());
         assertEquals(Integer.valueOf(82), partialRecord.getDiastolic());
 
-        // Nullable fields must be null without NPE
+        // Các trường cho phép null phải trả về null mà không phát sinh NullPointerException.
         assertNull(partialRecord.getWeightKg());
         assertNull(partialRecord.getHeartRate());
         assertNull(partialRecord.getBloodSugar());

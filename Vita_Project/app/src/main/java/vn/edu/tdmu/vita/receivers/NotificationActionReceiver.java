@@ -13,7 +13,7 @@ import vn.edu.tdmu.vita.utils.DateTimeUtils;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 /**
- * Ghi medicine_logs khi bấm nút trên notification rồi đặt lại lịch ngày kế tiếp.
+ * Ghi vào medicine_logs khi bấm nút trên thông báo, sau đó lên lịch cho ngày kế tiếp.
  */
 public class NotificationActionReceiver extends BroadcastReceiver {
 

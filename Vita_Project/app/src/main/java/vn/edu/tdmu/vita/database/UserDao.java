@@ -40,7 +40,7 @@ public class UserDao {
             return -1;
         }
         if (isUsernameExists(user.getUsername())) {
-            return -1; // Duplicate username
+            return -1; // Tên đăng nhập đã tồn tại
         }
 
         String salt = SecurityUtils.generateSalt();

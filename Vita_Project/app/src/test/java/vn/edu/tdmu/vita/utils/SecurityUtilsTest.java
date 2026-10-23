@@ -13,7 +13,7 @@ public class SecurityUtilsTest {
         assertNotNull(salt1);
         assertNotNull(salt2);
         assertNotEquals(salt1, salt2);
-        assertEquals(32, salt1.length()); // 16 bytes hex = 32 chars
+        assertEquals(32, salt1.length()); // 16 byte biểu diễn dạng hex = 32 ký tự
     }
 
     @Test
@@ -26,7 +26,7 @@ public class SecurityUtilsTest {
 
         assertNotNull(hash1);
         assertEquals(hash1, hash2);
-        assertEquals(64, hash1.length()); // SHA-256 = 64 hex chars
+        assertEquals(64, hash1.length()); // SHA-256 biểu diễn dạng hex = 64 ký tự
     }
 
     @Test

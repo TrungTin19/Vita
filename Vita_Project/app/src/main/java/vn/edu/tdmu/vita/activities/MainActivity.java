@@ -101,10 +101,10 @@ public class MainActivity extends AppCompatActivity implements vn.edu.tdmu.vita.
 
     private void openTab(int itemId) {
         if (bottomNav.getSelectedItemId() != itemId) {
-            bottomNav.setSelectedItemId(itemId); // khác tab -> listener tự bắn
+            bottomNav.setSelectedItemId(itemId); // nếu đổi tab, hàm lắng nghe sẽ tự chạy
         } else {
-            // setSelectedItemId không bắn listener khi item đã checked sẵn
-            // -> gọi transaction trực tiếp thay vì trông chờ callback.
+            // setSelectedItemId không gọi hàm lắng nghe khi mục đó đã được chọn
+            // -> gọi giao dịch hiển thị trực tiếp thay vì chờ hàm phản hồi sự kiện.
             onTabSelected(bottomNav.getMenu().findItem(itemId));
         }
     }

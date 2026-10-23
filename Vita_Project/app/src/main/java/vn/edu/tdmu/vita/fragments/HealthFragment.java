@@ -65,7 +65,7 @@ public class HealthFragment extends Fragment {
         addHealthLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    // Reload data when returning from Add/Edit
+                    // Tải lại dữ liệu khi quay về từ màn hình thêm hoặc chỉnh sửa
                     loadData();
                 }
         );
@@ -221,7 +221,7 @@ public class HealthFragment extends Fragment {
         int itemId = item.getItemId();
 
         if (itemId == R.id.menu_health_edit) {
-            // Open AddHealthActivity in edit mode
+            // Mở AddHealthActivity ở chế độ chỉnh sửa
             Intent intent = new Intent(requireContext(), AddHealthActivity.class);
             intent.putExtra(AddHealthActivity.EXTRA_RECORD_ID, record.getId());
             addHealthLauncher.launch(intent);

@@ -39,7 +39,7 @@ public class DateTimeUtils {
                 return displayFormat.format(date);
             }
         } catch (ParseException e) {
-            // Return raw string if parse fails
+            // Trả về chuỗi ban đầu nếu không thể phân tích dữ liệu
             return dateStr;
         }
         return dateStr;

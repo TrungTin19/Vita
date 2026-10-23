@@ -6,8 +6,8 @@ import java.math.RoundingMode;
 import vn.edu.tdmu.vita.R;
 
 /**
- * Utility class calculating Body Mass Index (BMI) and classifying nutritional status
- * supporting both Asian (IDI & WPRO) and International (WHO) standards.
+ * Lớp tiện ích tính chỉ số khối cơ thể (BMI) và phân loại tình trạng dinh dưỡng
+ * theo tiêu chuẩn châu Á (IDI và WPRO) lẫn tiêu chuẩn quốc tế (WHO).
  */
 public final class BMICalculator {
 
@@ -15,7 +15,7 @@ public final class BMICalculator {
     public static final String STANDARD_WHO = "WHO";
 
     private BMICalculator() {
-        // Prevent instantiation
+        // Ngăn tạo đối tượng từ lớp tiện ích này
     }
 
     public static float currentWeight(Float latestWeight, float baseWeight) {
@@ -23,7 +23,7 @@ public final class BMICalculator {
     }
 
     /**
-     * Data class holding complete BMI calculation and classification result.
+     * Lớp dữ liệu lưu kết quả tính BMI và phân loại đầy đủ.
      */
     public static class BmiResult {
         private final float bmi;
@@ -62,12 +62,12 @@ public final class BMICalculator {
     }
 
     /**
-     * Calculates BMI from weight (kg) and height (cm).
-     * BMI = weight (kg) / [height (m)]^2
+     * Tính BMI từ cân nặng (kg) và chiều cao (cm).
+     * BMI = cân nặng (kg) / [chiều cao (m)]^2
      *
-     * @param weightKg body weight in kilograms
-     * @param heightCm body height in centimeters
-     * @return rounded BMI value (2 decimal places), or 0.0 if inputs are invalid
+     * @param weightKg cân nặng tính bằng kilôgam
+     * @param heightCm chiều cao tính bằng xentimét
+     * @return BMI làm tròn đến 2 chữ số thập phân, hoặc 0.0 nếu dữ liệu không hợp lệ
      */
     public static float calculate(float weightKg, float heightCm) {
         if (weightKg <= 0 || heightCm <= 0) {
@@ -81,11 +81,11 @@ public final class BMICalculator {
     }
 
     /**
-     * Classifies a given BMI value according to the specified standard.
+     * Phân loại chỉ số BMI theo tiêu chuẩn được chọn.
      *
-     * @param bmi calculated BMI
-     * @param standard "ASIAN" or "WHO" (defaults to ASIAN)
-     * @return BmiResult with category and color
+     * @param bmi chỉ số BMI đã tính
+     * @param standard "ASIAN" hoặc "WHO" (mặc định là ASIAN)
+     * @return BmiResult chứa nhóm phân loại và màu sắc
      */
     public static BmiResult classify(float bmi, String standard) {
         if (bmi <= 0) {
@@ -117,7 +117,7 @@ public final class BMICalculator {
                 colorRes = R.color.vita_status_danger;
             }
         } else {
-            // Asian (IDI & WPRO / National Institute of Nutrition Vietnam)
+            // Tiêu chuẩn châu Á (IDI và WPRO / Viện Dinh dưỡng Quốc gia Việt Nam)
             if (bmi < 23.0f) {
                 category = "Bình thường";
                 colorRes = R.color.vita_status_good;
@@ -137,17 +137,17 @@ public final class BMICalculator {
     }
 
     /**
-     * Calculates BMI, classifies health status, and computes the healthy weight range.
+     * Tính BMI, phân loại tình trạng sức khỏe và tính khoảng cân nặng phù hợp.
      *
-     * @param weightKg weight in kg
-     * @param heightCm height in cm
+     * @param weightKg cân nặng tính bằng kg
+     * @param heightCm chiều cao tính bằng cm
      * @param standard "ASIAN" or "WHO"
-     * @return complete BmiResult
+     * @return BmiResult chứa đầy đủ kết quả
      */
     public static BmiResult calculateAndClassify(float weightKg, float heightCm, String standard,
                                                 int birthYear, int currentYear) {
         int approximateAge = currentYear - birthYear;
-        // shortcut: year-only age is approximate; use a full birth date if exact age is needed.
+        // shortcut: chỉ có năm sinh nên tuổi mang tính ước lượng; cần ngày sinh đầy đủ nếu muốn tính tuổi chính xác.
         if (birthYear <= 0 || approximateAge < 20 || approximateAge > 120) {
             return new BmiResult(calculate(weightKg, heightCm), "", R.color.vita_text_secondary, 0f, 0f);
         }

@@ -229,7 +229,7 @@ public class AddHealthActivity extends AppCompatActivity {
             float textEnd = inputPosition[0] + input.getCompoundPaddingLeft()
                     + input.getPaint().measureText(input.getText().toString())
                     + 6 * getResources().getDisplayMetrics().density;
-            // Figma places units beside the entered value; Material anchors suffixes at the field edge.
+            // Figma đặt đơn vị cạnh giá trị nhập; Material đặt hậu tố ở mép ô nhập.
             suffix.setTranslationX(suffix.getTranslationX() + textEnd - suffixPosition[0] - suffix.getPaddingLeft());
         };
         input.addTextChangedListener(new SimpleTextWatcher(() -> input.post(align)));
@@ -256,7 +256,7 @@ public class AddHealthActivity extends AppCompatActivity {
         recordId = getIntent().getLongExtra(EXTRA_RECORD_ID, -1);
 
         if (recordId > 0) {
-            // Edit Mode
+            // Chế độ chỉnh sửa
             toolbar.setTitle(getString(R.string.add_health_title_edit));
             HealthRecord record = healthDao.getById(recordId, formUserId);
             if (record != null && record.getUserId() == sessionManager.getUserId()) {
@@ -285,7 +285,7 @@ public class AddHealthActivity extends AppCompatActivity {
                 }
             }
         } else {
-            // Add Mode
+            // Chế độ thêm mới
             toolbar.setTitle(getString(R.string.figma_health_record));
             measuredTime = DateTimeUtils.getCurrentTime();
             selectedDate = DateTimeUtils.getTodayDate();
@@ -325,7 +325,7 @@ public class AddHealthActivity extends AppCompatActivity {
         String sugarStr = getText(etSugar);
         String noteStr = getText(etNote);
 
-        // Sanity check: must provide at least one measurement or note
+        // Kiểm tra dữ liệu: cần nhập ít nhất một chỉ số hoặc ghi chú
         if (systolicStr.isEmpty() && diastolicStr.isEmpty() && heartRateStr.isEmpty()
                 && weightStr.isEmpty() && sugarStr.isEmpty() && noteStr.isEmpty()) {
             Toast.makeText(this, getString(R.string.add_health_error_no_input), Toast.LENGTH_SHORT).show();
@@ -340,7 +340,7 @@ public class AddHealthActivity extends AppCompatActivity {
         Float weight = null;
         Float bloodSugar = null;
 
-        // Validate Systolic
+        // Kiểm tra huyết áp tâm thu
         if (!systolicStr.isEmpty()) {
             try {
                 systolic = Integer.parseInt(systolicStr);
@@ -354,7 +354,7 @@ public class AddHealthActivity extends AppCompatActivity {
             }
         }
 
-        // Validate Diastolic
+        // Kiểm tra huyết áp tâm trương
         if (!diastolicStr.isEmpty()) {
             try {
                 diastolic = Integer.parseInt(diastolicStr);
@@ -368,7 +368,7 @@ public class AddHealthActivity extends AppCompatActivity {
             }
         }
 
-        // Validate Blood Pressure relation: Systolic must be greater than Diastolic
+        // Kiểm tra quan hệ huyết áp: tâm thu phải lớn hơn tâm trương
         if (systolic != null && diastolic != null && !hasError) {
             if (!InputValidator.isValidBloodPressure(systolic, diastolic)) {
                 tilSystolic.setError(getString(R.string.add_health_error_bp_relation));
@@ -376,7 +376,7 @@ public class AddHealthActivity extends AppCompatActivity {
             }
         }
 
-        // Validate Heart Rate
+        // Kiểm tra nhịp tim
         if (!heartRateStr.isEmpty()) {
             try {
                 heartRate = Integer.parseInt(heartRateStr);
@@ -390,7 +390,7 @@ public class AddHealthActivity extends AppCompatActivity {
             }
         }
 
-        // Validate Weight
+        // Kiểm tra cân nặng
         if (!weightStr.isEmpty()) {
             try {
                 weight = Float.parseFloat(weightStr);
@@ -404,7 +404,7 @@ public class AddHealthActivity extends AppCompatActivity {
             }
         }
 
-        // Validate Blood Sugar
+        // Kiểm tra đường huyết
         if (!sugarStr.isEmpty()) {
             try {
                 bloodSugar = Float.parseFloat(sugarStr);

@@ -3,7 +3,7 @@ package vn.edu.tdmu.vita.utils;
 import java.util.Calendar;
 
 /**
- * Utility class for validating user input fields across registration and profile updates.
+ * Lớp tiện ích kiểm tra dữ liệu người dùng nhập khi đăng ký và cập nhật hồ sơ.
  */
 public final class InputValidator {
 
@@ -31,7 +31,7 @@ public final class InputValidator {
     public static final float MAX_BLOOD_SUGAR = 600.0f;
 
     private InputValidator() {
-        // Prevent instantiation
+        // Ngăn tạo đối tượng từ lớp tiện ích này
     }
 
     public static boolean isValidUsername(String username) {

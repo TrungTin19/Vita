@@ -22,7 +22,7 @@ import vn.edu.tdmu.vita.models.User;
 import vn.edu.tdmu.vita.models.WaterLog;
 import vn.edu.tdmu.vita.receivers.WaterReminderReceiver;
 
-/** Shared journal and entry form; arguments and draft survive Activity recreation. */
+/** Dùng chung nhật ký và biểu mẫu nhập; tham số cùng nội dung đang nhập được giữ khi Activity tạo lại. */
 public class WaterJournalDialog extends DialogFragment {
     public interface Host { void onWaterJournalChanged(); }
     private Runnable callback;

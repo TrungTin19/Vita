@@ -18,7 +18,7 @@ import vn.edu.tdmu.vita.models.*;
 import vn.edu.tdmu.vita.utils.*;
 import static org.junit.Assert.*;
 
-/** Real SQLite fixtures confined to the verification application. */
+/** Dữ liệu SQLite thật chỉ được dùng trong ứng dụng kiểm thử. */
 @RunWith(AndroidJUnit4.class)
 public class FigmaScreenshotsDeviceTest {
     private Context context;

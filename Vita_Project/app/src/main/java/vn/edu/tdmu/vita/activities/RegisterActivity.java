@@ -169,7 +169,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         boolean hasError = false;
 
-        // Validate username
+        // Kiểm tra tên đăng nhập
         if (username.isEmpty()) {
             tilUsername.setError(getString(R.string.register_error_empty_username));
             hasError = true;
@@ -181,7 +181,7 @@ public class RegisterActivity extends AppCompatActivity {
             hasError = true;
         }
 
-        // Validate password
+        // Kiểm tra mật khẩu
         if (password.isEmpty()) {
             tilPassword.setError(getString(R.string.register_error_empty_password));
             hasError = true;
@@ -190,7 +190,7 @@ public class RegisterActivity extends AppCompatActivity {
             hasError = true;
         }
 
-        // Validate confirm password
+        // Kiểm tra mật khẩu xác nhận
         if (confirm.isEmpty()) {
             tilConfirm.setError(getString(R.string.register_error_empty_confirm));
             hasError = true;
@@ -204,7 +204,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Validate height
+        // Kiểm tra chiều cao
         float height = 0f;
         if (heightStr.isEmpty()) {
             tilHeight.setError(getString(R.string.register_error_empty_height));
@@ -223,7 +223,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }
 
-        // Validate weight
+        // Kiểm tra cân nặng
         float weight = 0f;
         if (weightStr.isEmpty()) {
             tilWeight.setError(getString(R.string.register_error_empty_weight));
@@ -242,7 +242,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         }
 
-        // Validate birth year if provided
+        // Kiểm tra năm sinh nếu người dùng đã nhập
         int birthYear = 0;
         if (!birthYearStr.isEmpty()) {
             try {
@@ -279,7 +279,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Save session and enter main app
+        // Lưu phiên đăng nhập và vào ứng dụng
         sessionManager.saveSession(userId, username, fullname);
         Toast.makeText(this, R.string.register_success, Toast.LENGTH_SHORT).show();
 

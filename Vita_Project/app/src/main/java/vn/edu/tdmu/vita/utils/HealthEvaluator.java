@@ -1,10 +1,10 @@
 package vn.edu.tdmu.vita.utils;
 
 /**
- * Health metric evaluation utilities.
- * Blood pressure classification follows Vietnamese Heart Association
- * (Hội Tim mạch học Việt Nam) standards — 5 levels based on JNC 7/ESH.
- * Uses the HIGHER category when systolic and diastolic fall in different levels.
+ * Các tiện ích đánh giá chỉ số sức khỏe.
+ * Phân loại huyết áp theo tiêu chuẩn của Hội Tim mạch học Việt Nam
+ * gồm 5 mức dựa trên JNC 7/ESH.
+ * Nếu tâm thu và tâm trương thuộc hai mức khác nhau, chọn mức cao hơn.
  */
 public class HealthEvaluator {
 
@@ -23,16 +23,16 @@ public class HealthEvaluator {
     }
 
     /**
-     * Classifies blood pressure according to Vietnamese Heart Association standards.
-     * When systolic and diastolic fall into different categories,
-     * the HIGHER (worse) category is used.
+     * Phân loại huyết áp theo tiêu chuẩn của Hội Tim mạch học Việt Nam.
+     * Khi tâm thu và tâm trương thuộc hai mức khác nhau,
+     * chọn mức cao hơn (nghiêm trọng hơn).
      *
-     * Levels:
-     * - Bình thường tối ưu: < 120 AND < 80
-     * - Bình thường: 120-129 OR 80-84
-     * - Tiền tăng huyết áp: 130-139 OR 85-89
-     * - Tăng huyết áp độ 1: 140-159 OR 90-99
-     * - Tăng huyết áp độ 2: >= 160 OR >= 100
+     * Các mức:
+     * - Bình thường tối ưu: < 120 VÀ < 80
+     * - Bình thường: 120-129 HOẶC 80-84
+     * - Tiền tăng huyết áp: 130-139 HOẶC 85-89
+     * - Tăng huyết áp độ 1: 140-159 HOẶC 90-99
+     * - Tăng huyết áp độ 2: >= 160 HOẶC >= 100
      */
     public static BpResult classifyBloodPressure(int systolic, int diastolic) {
         int sysLevel = classifySystolic(systolic);
@@ -65,8 +65,8 @@ public class HealthEvaluator {
     }
 
     /**
-     * Classifies heart rate.
-     * Normal range: 60-100 bpm (resting, adults).
+     * Phân loại nhịp tim.
+     * Khoảng bình thường: 60–100 nhịp/phút (người trưởng thành khi nghỉ ngơi).
      */
     public static String classifyHeartRate(int bpm) {
         if (bpm < 60) return "Nhịp chậm";
@@ -75,7 +75,7 @@ public class HealthEvaluator {
     }
 
     /**
-     * Returns a brief advisory text for the BP result.
+     * Trả về lời khuyến nghị ngắn cho kết quả huyết áp.
      */
     public static String getBpAdvice(BpResult result) {
         switch (result.severity) {

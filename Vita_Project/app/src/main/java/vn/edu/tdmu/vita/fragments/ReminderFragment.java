@@ -144,7 +144,7 @@ public class ReminderFragment extends Fragment {
     }
 
     private void initViews(View view) {
-        // ToggleGroup applies single-line labels while adding its children.
+        // ToggleGroup giữ nhãn trên một dòng khi thêm các nút lựa chọn.
         for (int id : new int[]{R.id.tab_today_doses, R.id.tab_medicine_list}) {
             TextView tab = view.findViewById(id);
             tab.setSingleLine(false);

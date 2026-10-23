@@ -53,15 +53,15 @@ public class BMICalculatorTest {
 
     @Test
     public void classification_usesUnroundedMeasurement() {
-        // 66.46 / 1.7^2 = 22.9965: rounding must not move it into overweight.
+        // 66,46 / 1,7^2 = 22,9965: làm tròn không được khiến kết quả bị xếp sang thừa cân.
         assertEquals("Bình thường",
                 BMICalculator.calculateAndClassify(66.46f, 170f, "ASIAN").getCategory());
     }
 
     @Test
     public void testCalculate_ValidInputs() {
-        // Height: 170cm, Weight: 68kg
-        // BMI = 68 / (1.7 * 1.7) = 23.529...
+        // Chiều cao: 170 cm, cân nặng: 68 kg
+        // BMI = 68 / (1,7 * 1,7) = 23,529...
         float bmi = BMICalculator.calculate(68.0f, 170.0f);
         assertEquals(23.53f, bmi, 0.1f);
     }
@@ -76,7 +76,7 @@ public class BMICalculatorTest {
 
     @Test
     public void testClassify_AsianVsWhoComparison() {
-        // Height 170cm, Weight 68kg -> BMI ~ 23.53
+        // Chiều cao 170 cm, cân nặng 68 kg -> BMI khoảng 23,53
         float bmi = 23.53f;
 
         BMICalculator.BmiResult asianResult = BMICalculator.classify(bmi, "ASIAN");

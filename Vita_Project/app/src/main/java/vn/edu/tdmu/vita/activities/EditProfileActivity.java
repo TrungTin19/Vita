@@ -169,7 +169,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private void setupListeners() {
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        // Clear errors automatically as user types
+        // Tự xóa thông báo lỗi khi người dùng nhập
         etBirthYear.addTextChangedListener(new SimpleTextWatcher(() -> tilBirthYear.setError(null)));
         etHeight.addTextChangedListener(new SimpleTextWatcher(() -> tilHeight.setError(null)));
         etWeight.addTextChangedListener(new SimpleTextWatcher(() -> tilWeight.setError(null)));
@@ -280,7 +280,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         boolean hasError = false;
 
-        // Height validation
+        // Kiểm tra chiều cao
         float height = 0f;
         if (heightStr.isEmpty()) {
             tilHeight.setError(getString(R.string.register_error_empty_height));
@@ -301,7 +301,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         }
 
-        // Weight validation
+        // Kiểm tra cân nặng
         float weight = 0f;
         if (weightStr.isEmpty()) {
             tilWeight.setError(getString(R.string.register_error_empty_weight));
@@ -322,7 +322,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         }
 
-        // Birth year validation
+        // Kiểm tra năm sinh
         int birthYear = 0;
         if (!birthYearStr.isEmpty()) {
             try {

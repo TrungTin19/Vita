@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="bmi_numeric_only">Chỉ số tham khảo</string>
-    <!-- Adult scope: https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html -->
+    <!-- Phạm vi áp dụng cho người trưởng thành: https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html -->
     <string name="bmi_adult_scope">Ứng dụng chỉ phân loại BMI và gợi ý cân nặng cho người từ 20 tuổi (theo phạm vi BMI người lớn của CDC). Tuổi được ước tính từ năm sinh.</string>
     <string name="bmi_outside_adult_scope">Chưa áp dụng phân loại BMI hoặc gợi ý cân nặng: chưa đủ 20 tuổi hoặc năm sinh chưa hợp lệ. Tuổi được ước tính từ năm sinh; ứng dụng chưa đánh giá BMI trẻ em.</string>
 </resources>

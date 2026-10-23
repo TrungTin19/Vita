@@ -1,4 +1,4 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+// Tệp build cấp cao nhất, khai báo cấu hình dùng chung cho các mô-đun và dự án con.
 plugins {
     alias(libs.plugins.android.application) apply false
 }

@@ -22,14 +22,14 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         ((com.google.android.material.appbar.MaterialToolbar) findViewById(R.id.toolbar_splash)).setNavigationOnClickListener(v -> finish());
 
-        // Smooth brand fade-in animation
+        // Hiệu ứng hiện dần mượt mà cho nhận diện thương hiệu
         View brandLayout = findViewById(R.id.ll_splash_brand);
         if (brandLayout != null) {
             brandLayout.setAlpha(0f);
             brandLayout.animate().alpha(1.0f).setDuration(600).start();
         }
 
-        // Navigate after delay
+        // Chuyển màn hình sau một khoảng trễ
         new Handler(Looper.getMainLooper()).postDelayed(this::checkSessionAndNavigate, SPLASH_DELAY_MS);
     }
 

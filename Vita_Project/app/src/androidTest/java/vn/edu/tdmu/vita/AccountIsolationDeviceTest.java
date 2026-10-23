@@ -31,7 +31,7 @@ public class AccountIsolationDeviceTest {
             session.saveSession(actorId, actor.getUsername(), "");
             try { screen.recreate(); }
             catch (AssertionError closedDuringRecreation) {
-                // ActivityScenario expects RESUMED, but rejecting the changed owner must finish.
+                // ActivityScenario yêu cầu trạng thái RESUMED, nhưng phải đóng màn hình khi chủ tài khoản đã thay đổi.
                 if (screen.getState() != Lifecycle.State.DESTROYED) throw closedDuringRecreation;
             }
             assertEquals(Lifecycle.State.DESTROYED, screen.getState());

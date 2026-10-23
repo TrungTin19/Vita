@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Brand Primary Teal -->
+    <!-- Màu xanh teal chính của thương hiệu -->
     <color name="vita_teal">#0B786E</color>
     <color name="vita_teal_dark">#104B47</color>
     <color name="vita_teal_50">#DFF4EB</color>
 
-    <!-- Brand Secondary Aqua -->
+    <!-- Màu xanh aqua phụ của thương hiệu -->
     <color name="vita_aqua">#00ACC1</color>
 
-    <!-- Neutrals & Surfaces -->
+    <!-- Màu trung tính và màu bề mặt -->
     <color name="vita_bg">#F4F8F7</color>
     <color name="vita_surface">#FFFFFF</color>
     <color name="vita_divider">#D9E6E3</color>
@@ -16,7 +16,7 @@
     <color name="vita_text_secondary">#526B6B</color>
     <color name="vita_text_disabled">#627979</color>
 
-    <!-- Semantic Status & Features -->
+    <!-- Màu trạng thái và chức năng -->
     <color name="vita_status_good">#0B786E</color>
     <color name="vita_status_good_bg">#DFF4EB</color>
     <color name="vita_status_warning">#8D5716</color>
@@ -26,7 +26,7 @@
     <color name="vita_status_neutral_bg">#EEF4F2</color>
     <color name="vita_water">#286DAD</color>
 
-    <!-- Component Level Aliases -->
+    <!-- Bí danh màu theo từng thành phần -->
     <color name="btn_primary_bg">@color/vita_teal</color>
     <color name="btn_primary_fg">#FFFFFF</color>
     <color name="card_bg">@color/vita_surface</color>

@@ -5,7 +5,7 @@ public class MedicineLog {
     private long medicineId;
     private String date;
     private String scheduledTime;
-    private String status; // 'TAKEN' or 'SKIPPED'
+    private String status; // 'TAKEN' (đã uống) hoặc 'SKIPPED' (bỏ qua)
     private String loggedAt;
     private String medicineNameSnapshot;
     private String dosageSnapshot;

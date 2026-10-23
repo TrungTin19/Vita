@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.button.MaterialButton;
 import vn.edu.tdmu.vita.R;
 
-/** Shared Figma dialog shell; callers retain validation and action handling. */
+/** Khung hộp thoại Figma dùng chung; màn hình gọi vẫn tự xử lý kiểm tra dữ liệu và thao tác. */
 public final class VitaDialog {
     private VitaDialog() {}
 

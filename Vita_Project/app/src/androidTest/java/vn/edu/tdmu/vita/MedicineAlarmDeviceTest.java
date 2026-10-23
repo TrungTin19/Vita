@@ -27,7 +27,7 @@ import vn.edu.tdmu.vita.utils.SessionManager;
 import vn.edu.tdmu.vita.utils.NotificationHelper;
 
 /**
- * Chạy trên thiết bị: đặt thuốc 1 phút sau, chờ chuông, xác nhận noti hiện.
+ * Chạy trên thiết bị: đặt lịch thuốc sau 1 phút, chờ báo thức và xác nhận thông báo xuất hiện.
  */
 @RunWith(AndroidJUnit4.class)
 public class MedicineAlarmDeviceTest {

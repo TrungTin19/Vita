@@ -10,7 +10,7 @@ import vn.edu.tdmu.vita.database.MedicineDao;
 import vn.edu.tdmu.vita.models.Medicine;
 
 /**
- * Khôi phục báo thức sau reboot (Alarm trong RAM bị xóa sạch).
+ * Khôi phục báo thức sau khi khởi động lại máy (các báo thức trong RAM bị xóa).
  */
 public class BootReceiver extends BroadcastReceiver {
 

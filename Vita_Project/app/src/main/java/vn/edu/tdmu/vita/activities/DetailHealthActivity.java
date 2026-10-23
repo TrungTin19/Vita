@@ -73,7 +73,7 @@ public class DetailHealthActivity extends AppCompatActivity {
 
         editLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                result -> loadAndDisplay() // Reload after edit
+                result -> loadAndDisplay() // Tải lại dữ liệu sau khi chỉnh sửa
         );
 
         initViews();
@@ -108,7 +108,7 @@ public class DetailHealthActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> finish());
 
         toolbar.inflateMenu(R.menu.context_menu_health);
-        // Only keep the delete option in toolbar
+        // Chỉ giữ thao tác xóa trên thanh công cụ
         Menu menu = toolbar.getMenu();
         MenuItem editItem = menu.findItem(R.id.menu_health_edit);
         if (editItem != null) editItem.setVisible(false);
@@ -142,7 +142,7 @@ public class DetailHealthActivity extends AppCompatActivity {
     }
 
     private void displayRecord(HealthRecord record) {
-        // Date (no emoji)
+        // Ngày đo (không dùng biểu tượng cảm xúc)
         String displayDate = DateTimeUtils.formatDisplayDate(record.getDate()) + " · "
                 + (record.getMeasuredTime() == null ? getString(R.string.measurement_time_unknown) : record.getMeasuredTime());
         tvDate.setText(displayDate);
@@ -150,7 +150,7 @@ public class DetailHealthActivity extends AppCompatActivity {
         context.setVisibility(record.getBloodSugar() == null ? View.GONE : View.VISIBLE);
         context.setText(getString(R.string.figma_health_sugar_context, getResources().getStringArray(R.array.meal_contexts)[record.getMealContext().ordinal()]));
 
-        // Blood Pressure & Heart Rate section
+        // Nhóm huyết áp và nhịp tim
         boolean hasBp = record.getSystolic() != null || record.getDiastolic() != null;
         boolean completeBp = record.getSystolic() != null && record.getDiastolic() != null;
         boolean hasHr = record.getHeartRate() != null;
@@ -220,7 +220,7 @@ public class DetailHealthActivity extends AppCompatActivity {
             dividerBp.setVisibility(hasBp && hasHr ? View.VISIBLE : View.GONE);
         }
 
-        // Weight & Blood Sugar section (Hide if both null)
+        // Nhóm cân nặng và đường huyết (ẩn nếu cả hai đều trống)
         boolean hasWeight = record.getWeightKg() != null;
         boolean hasSugar = record.getBloodSugar() != null;
 
@@ -243,7 +243,7 @@ public class DetailHealthActivity extends AppCompatActivity {
             }
         }
 
-        // Note section (Hide if empty)
+        // Nhóm ghi chú (ẩn nếu không có nội dung)
         boolean hasNote = record.getNote() != null && !record.getNote().trim().isEmpty();
         if (!hasNote) {
             cvNote.setVisibility(View.GONE);

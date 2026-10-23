@@ -14,7 +14,7 @@ import vn.edu.tdmu.vita.utils.SessionManager;
 import vn.edu.tdmu.vita.utils.NotificationHelper;
 
 /**
- * Bắn notification khi tới giờ + đặt lại báo thức cho cữ kế tiếp.
+ * Hiển thị thông báo khi đến giờ và đặt lại báo thức cho liều kế tiếp.
  */
 public class MedicineAlarmReceiver extends BroadcastReceiver {
 

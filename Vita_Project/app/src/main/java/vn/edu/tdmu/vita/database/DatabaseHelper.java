@@ -9,7 +9,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "vita_health.db";
     public static final int DATABASE_VERSION = 6;
 
-    // Table: users
+    // Bảng: người dùng
     public static final String TABLE_USERS = "users";
     public static final String COL_USER_ID = "id";
     public static final String COL_USER_USERNAME = "username";
@@ -23,7 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_USER_WATER_GOAL_ML = "water_goal_ml";
     public static final String COL_USER_BMI_STANDARD = "bmi_standard";
 
-    // Table: health_records
+    // Bảng: hồ sơ sức khỏe
     public static final String TABLE_HEALTH_RECORDS = "health_records";
     public static final String COL_HEALTH_ID = "id";
     public static final String COL_HEALTH_USER_ID = "user_id";
@@ -35,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_HEALTH_BLOOD_SUGAR = "blood_sugar";
     public static final String COL_HEALTH_NOTE = "note";
 
-    // Table: medicines
+    // Bảng: thuốc
     public static final String TABLE_MEDICINES = "medicines";
     public static final String COL_MED_ID = "id";
     public static final String COL_MED_USER_ID = "user_id";
@@ -45,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_MED_DAYS_MASK = "days_mask";
     public static final String COL_MED_IS_ACTIVE = "is_active";
 
-    // Table: medicine_logs
+    // Bảng: nhật ký uống thuốc
     public static final String TABLE_MEDICINE_LOGS = "medicine_logs";
     public static final String COL_MED_LOG_ID = "id";
     public static final String COL_MED_LOG_MEDICINE_ID = "medicine_id";
@@ -54,7 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_MED_LOG_STATUS = "status";
     public static final String COL_MED_LOG_LOGGED_AT = "logged_at";
 
-    // Table: water_logs
+    // Bảng: nhật ký uống nước
     public static final String TABLE_WATER_LOGS = "water_logs";
     public static final String COL_WATER_ID = "id";
     public static final String COL_WATER_USER_ID = "user_id";
@@ -62,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_WATER_AMOUNT_ML = "amount_ml";
     public static final String COL_WATER_LOGGED_AT = "logged_at";
 
-    // DDL Queries
+    // Các câu lệnh tạo cấu trúc cơ sở dữ liệu
     public static final String CREATE_TABLE_USERS =
             "CREATE TABLE " + TABLE_USERS + " (" +
             COL_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -130,7 +130,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             "FOREIGN KEY(" + COL_WATER_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COL_USER_ID + ") ON DELETE CASCADE" +
             ");";
 
-    // Indexes
+    // Các chỉ mục cơ sở dữ liệu
     public static final String CREATE_INDEX_HEALTH =
             "CREATE INDEX IF NOT EXISTS idx_health_user_date ON " + TABLE_HEALTH_RECORDS + "(" + COL_HEALTH_USER_ID + ", " + COL_HEALTH_DATE + ");";
 

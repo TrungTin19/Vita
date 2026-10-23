@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * Unit test for HealthEvaluator — blood pressure classification
- * following Vietnamese Heart Association (Hội Tim mạch học Việt Nam) standards.
+ * Kiểm thử đơn vị cho HealthEvaluator — phân loại huyết áp
+ * theo tiêu chuẩn của Hội Tim mạch học Việt Nam.
  */
 public class HealthEvaluatorTest {
 
-    // ---- Blood Pressure Classification Tests ----
+    // ---- Kiểm thử phân loại huyết áp ----
 
     @Test
     public void testOptimalBP() {
@@ -54,26 +54,26 @@ public class HealthEvaluatorTest {
 
     @Test
     public void testBoundaryOptimalToNormal() {
-        // Exactly 120/80 → Normal (not optimal)
+        // Đúng 120/80 → Bình thường (không phải mức tối ưu)
         HealthEvaluator.BpResult result = HealthEvaluator.classifyBloodPressure(120, 80);
         assertEquals("Bình thường", result.label);
     }
 
     @Test
     public void testSystolicHigherCategory() {
-        // Systolic 142 (Grade 1), Diastolic 78 (Optimal) → use higher: Grade 1
+        // Tâm thu 142 (độ 1), tâm trương 78 (tối ưu) → chọn mức cao hơn: độ 1
         HealthEvaluator.BpResult result = HealthEvaluator.classifyBloodPressure(142, 78);
         assertEquals("Tăng huyết áp độ 1", result.label);
     }
 
     @Test
     public void testDiastolicHigherCategory() {
-        // Systolic 118 (Optimal), Diastolic 92 (Grade 1) → use higher: Grade 1
+        // Tâm thu 118 (tối ưu), tâm trương 92 (độ 1) → chọn mức cao hơn: độ 1
         HealthEvaluator.BpResult result = HealthEvaluator.classifyBloodPressure(118, 92);
         assertEquals("Tăng huyết áp độ 1", result.label);
     }
 
-    // ---- Heart Rate Classification Tests ----
+    // ---- Kiểm thử phân loại nhịp tim ----
 
     @Test
     public void testNormalHeartRate() {

@@ -10,8 +10,8 @@ public class InputValidatorTest {
     public void testIsValidUsername() {
         assertFalse(InputValidator.isValidUsername(null));
         assertFalse(InputValidator.isValidUsername(""));
-        assertFalse(InputValidator.isValidUsername("ab")); // < 3 chars
-        assertFalse(InputValidator.isValidUsername("user name")); // Contains space
+        assertFalse(InputValidator.isValidUsername("ab")); // Ít hơn 3 ký tự
+        assertFalse(InputValidator.isValidUsername("user name")); // Có chứa khoảng trắng
         assertTrue(InputValidator.isValidUsername("trungtin19"));
         assertTrue(InputValidator.isValidUsername("user_123"));
     }
@@ -20,7 +20,7 @@ public class InputValidatorTest {
     public void testIsValidPassword() {
         assertFalse(InputValidator.isValidPassword(null));
         assertFalse(InputValidator.isValidPassword(""));
-        assertFalse(InputValidator.isValidPassword("12345")); // < 6 chars
+        assertFalse(InputValidator.isValidPassword("12345")); // Ít hơn 6 ký tự
         assertTrue(InputValidator.isValidPassword("123456"));
         assertTrue(InputValidator.isValidPassword("StrongPass@123"));
     }
@@ -74,7 +74,7 @@ public class InputValidatorTest {
         assertFalse(InputValidator.isValidDiastolic(151));
         assertTrue(InputValidator.isValidDiastolic(80));
 
-        // Systolic must be strictly greater than Diastolic
+        // Huyết áp tâm thu phải lớn hơn huyết áp tâm trương
         assertTrue(InputValidator.isValidBloodPressure(120, 80));
         assertFalse(InputValidator.isValidBloodPressure(80, 120));
         assertFalse(InputValidator.isValidBloodPressure(100, 100));

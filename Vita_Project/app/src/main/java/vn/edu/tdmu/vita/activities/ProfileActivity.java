@@ -137,7 +137,7 @@ public class ProfileActivity extends AppCompatActivity {
         tvFullname.setText(displayName);
         tvUsername.setText("@" + currentUser.getUsername() + " · " + getString(R.string.figma_profile_on_device));
 
-        // Birth year & age
+        // Năm sinh và tuổi
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         int age = currentYear - currentUser.getBirthYear();
         if (currentUser.getBirthYear() > 0 && age >= 0 && age <= 120) {
@@ -158,12 +158,12 @@ public class ProfileActivity extends AppCompatActivity {
         String standard = (currentUser.getBmiStandard() != null && !currentUser.getBmiStandard().trim().isEmpty())
                 ? currentUser.getBmiStandard() : BMICalculator.STANDARD_ASIAN;
 
-        // Render BMI Card
+        // Hiển thị thẻ BMI
         renderBmiCard(standard);
 
         ((MaterialButton) findViewById(R.id.btn_profile_open_bmi)).setText("BMI " + tvBmiValue.getText() + " · " + tvBmiCategory.getText());
 
-        // BMI Standard radio selection
+        // Lựa chọn tiêu chuẩn BMI
         isInitialCheck = true;
         if (BMICalculator.STANDARD_WHO.equalsIgnoreCase(standard)) {
             rbWho.setChecked(true);

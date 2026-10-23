@@ -6,8 +6,8 @@ import static org.junit.Assert.*;
 import java.util.Calendar;
 
 /**
- * TDD RED: MedicineSchedule chưa tồn tại -> test phải FAIL khi chạy.
- * Quy ước bit: bit0=T2 ... bit6=CN (127 = hằng ngày).
+ * Ghi chú TDD ban đầu: MedicineSchedule chưa được cài đặt nên kiểm thử khi đó phải thất bại.
+ * Quy ước bit: bit0=Thứ Hai ... bit6=Chủ Nhật (127 = hằng ngày).
  */
 public class MedicineScheduleTest {
 
@@ -40,7 +40,7 @@ public class MedicineScheduleTest {
 
     @Test
     public void daily_futureTimeToday_returnsToday() {
-        // T2 12/10/2026 08:00, hẹn 09:00 hằng ngày -> hôm nay 09:00
+        // Thứ Hai 12/10/2026 lúc 08:00, hẹn 09:00 hằng ngày -> lần kế tiếp hôm nay lúc 09:00
         long now = millis(2026, Calendar.OCTOBER, 12, 8, 0);
         long next = MedicineSchedule.computeNextTriggerMillis("09:00", 127, now);
         assertEquals(millis(2026, Calendar.OCTOBER, 12, 9, 0), next);
@@ -48,7 +48,7 @@ public class MedicineScheduleTest {
 
     @Test
     public void daily_pastTimeToday_returnsTomorrow() {
-        // T2 08:00 đã qua 09:00? Không: dùng now=10:00, hẹn 09:00 -> T3 09:00
+        // Đã qua 09:00 chưa? Có: hiện là 10:00, hẹn 09:00 -> lần kế tiếp Thứ Ba lúc 09:00
         long now = millis(2026, Calendar.OCTOBER, 12, 10, 0);
         long next = MedicineSchedule.computeNextTriggerMillis("09:00", 127, now);
         assertEquals(millis(2026, Calendar.OCTOBER, 13, 9, 0), next);
@@ -56,23 +56,23 @@ public class MedicineScheduleTest {
 
     @Test
     public void mondayOnly_futureTime_returnsToday() {
-        long now = millis(2026, Calendar.OCTOBER, 12, 8, 0); // T2
-        long next = MedicineSchedule.computeNextTriggerMillis("09:00", 1, now); // bit0 = T2
+        long now = millis(2026, Calendar.OCTOBER, 12, 8, 0); // Thứ Hai
+        long next = MedicineSchedule.computeNextTriggerMillis("09:00", 1, now); // bit0 = Thứ Hai
         assertEquals(millis(2026, Calendar.OCTOBER, 12, 9, 0), next);
     }
 
     @Test
     public void mondayOnly_pastTime_returnsNextMonday() {
-        long now = millis(2026, Calendar.OCTOBER, 12, 10, 0); // T2, đã qua giờ
+        long now = millis(2026, Calendar.OCTOBER, 12, 10, 0); // Thứ Hai, đã qua giờ hẹn
         long next = MedicineSchedule.computeNextTriggerMillis("09:00", 1, now);
-        assertEquals(millis(2026, Calendar.OCTOBER, 19, 9, 0), next); // T2 tuần sau
+        assertEquals(millis(2026, Calendar.OCTOBER, 19, 9, 0), next); // Thứ Hai tuần sau
     }
 
     @Test
     public void sundayOnly_fromMonday_returnsSunday() {
-        long now = millis(2026, Calendar.OCTOBER, 12, 8, 0); // T2
-        long next = MedicineSchedule.computeNextTriggerMillis("07:30", 64, now); // bit6 = CN
-        assertEquals(millis(2026, Calendar.OCTOBER, 18, 7, 30), next); // CN 18/10
+        long now = millis(2026, Calendar.OCTOBER, 12, 8, 0); // Thứ Hai
+        long next = MedicineSchedule.computeNextTriggerMillis("07:30", 64, now); // bit6 = Chủ Nhật
+        assertEquals(millis(2026, Calendar.OCTOBER, 18, 7, 30), next); // Chủ Nhật 18/10
     }
 
     @Test

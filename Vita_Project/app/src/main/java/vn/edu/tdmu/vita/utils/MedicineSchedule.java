@@ -4,8 +4,8 @@ import java.util.Calendar;
 import java.util.TreeSet;
 
 /**
- * Tính mốc báo thức kế tiếp từ giờ "HH:mm" + mặt nạ bit 7 ngày.
- * ponytail: bit0=T2 ... bit6=CN; pure Java để test JVM được, dùng chung cho
+ * Tính thời điểm báo thức kế tiếp từ giờ "HH:mm" và mặt nạ bit của 7 ngày.
+ * ponytail: bit0=Thứ Hai ... bit6=Chủ Nhật; dùng Java thuần để kiểm thử JVM, dùng chung cho
  * AlarmReceiver/BootReceiver/AddMedicineActivity.
  */
 public final class MedicineSchedule {
@@ -58,7 +58,7 @@ public final class MedicineSchedule {
             Calendar c = Calendar.getInstance();
             c.setTimeInMillis(nowMillis);
             c.add(Calendar.DAY_OF_YEAR, offset);
-            int bit = (c.get(Calendar.DAY_OF_WEEK) + 5) % 7; // T2=0 ... CN=6
+            int bit = (c.get(Calendar.DAY_OF_WEEK) + 5) % 7; // Thứ Hai=0 ... CN=6
             if ((daysMask & (1 << bit)) == 0) continue;
             c.set(Calendar.HOUR_OF_DAY, hour);
             c.set(Calendar.MINUTE, min);

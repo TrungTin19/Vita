@@ -89,18 +89,18 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
         }
 
         void bind(HealthRecord record, int position) {
-            // Date
+            // Ngày đo
             tvDate.setText(vn.edu.tdmu.vita.utils.HealthDisplay.measurementLabel(itemView.getContext(), record));
             tvNote.setText(record.getNote());
             tvNote.setVisibility(record.getNote() == null || record.getNote().trim().isEmpty() ? View.GONE : View.VISIBLE);
 
-            // Blood Pressure
+            // Huyết áp
             if (record.getSystolic() != null && record.getDiastolic() != null) {
                 layoutBpRow.setVisibility(View.VISIBLE);
                 tvBp.setText(itemView.getContext().getString(R.string.health_bp_value_with_unit,
                         record.getSystolic().toString(), record.getDiastolic().toString()));
 
-                // BP status badge — delegate to HealthEvaluator (single source of truth)
+                // Nhãn trạng thái huyết áp — dùng HealthEvaluator làm nguồn phân loại thống nhất.
                 HealthEvaluator.BpResult bpResult = HealthEvaluator.classifyBloodPressure(
                         record.getSystolic(), record.getDiastolic());
                 tvBpStatus.setVisibility(View.VISIBLE);
@@ -132,7 +132,7 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
                 tvBpStatus.setVisibility(View.GONE);
             }
 
-            // Weight
+            // Cân nặng
             if (record.getWeightKg() != null) {
                 tvWeight.setVisibility(View.VISIBLE);
                 tvWeight.setText(itemView.getContext().getString(R.string.figma_health_weight_value, record.getWeightKg()));
@@ -143,7 +143,7 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
                 tvWeight.setVisibility(View.GONE);
             }
 
-            // Heart Rate
+            // Nhịp tim
             if (record.getHeartRate() != null) {
                 tvHeartRate.setVisibility(View.VISIBLE);
                 tvHeartRate.setText(itemView.getContext().getString(R.string.figma_health_hr_value, record.getHeartRate()));
@@ -154,7 +154,7 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
                 tvHeartRate.setVisibility(View.GONE);
             }
 
-            // Blood Sugar
+            // Đường huyết
             if (record.getBloodSugar() != null) {
                 tvSugar.setVisibility(View.VISIBLE);
                 tvSugar.setText(itemView.getContext().getString(R.string.figma_health_sugar_value, record.getBloodSugar()));
@@ -165,17 +165,17 @@ public class HealthRecordAdapter extends RecyclerView.Adapter<HealthRecordAdapte
                 tvSugar.setVisibility(View.GONE);
             }
 
-            // Click listener
+            // Bộ xử lý khi chạm vào mục
             cardView.setOnClickListener(v -> {
                 if (listener != null) {
                     listener.onItemClick(record, position);
                 }
             });
 
-            // Long click sets context menu position
+            // Nhấn giữ để xác định vị trí hiển thị menu ngữ cảnh
             cardView.setOnLongClickListener(v -> {
                 contextMenuPosition = getBindingAdapterPosition();
-                return false; // Return false to allow context menu to show
+                return false; // Trả về false để menu ngữ cảnh có thể hiển thị
             });
         }
 

@@ -94,7 +94,7 @@ public final class NotificationHelper {
         try {
             NotificationManagerCompat.from(context).notify(notificationId, builder.build());
         } catch (SecurityException revoked) {
-            // Notification access can be revoked after canNotify().
+            // Quyền thông báo có thể bị thu hồi sau khi canNotify() trả về kết quả.
             return;
         }
     }
@@ -150,7 +150,7 @@ public final class NotificationHelper {
         try {
             NotificationManagerCompat.from(context).notify(notificationId, builder.build());
         } catch (SecurityException revoked) {
-            // Notification access can be revoked after canNotify().
+            // Quyền thông báo có thể bị thu hồi sau khi canNotify() trả về kết quả.
             return;
         }
     }
