@@ -13,7 +13,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Calendar;
 import java.util.Locale;
 
 import vn.edu.tdmu.vita.R;
@@ -21,6 +20,7 @@ import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.database.HealthDao;
 import vn.edu.tdmu.vita.models.User;
 import vn.edu.tdmu.vita.utils.BMICalculator;
+import vn.edu.tdmu.vita.utils.DateTimeUtils;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -139,7 +139,7 @@ public class ProfileActivity extends AppCompatActivity {
                 currentUser.getUsername(), getString(R.string.figma_profile_on_device)));
 
         // Năm sinh và tuổi
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int currentYear = DateTimeUtils.getCurrentYear();
         int age = currentYear - currentUser.getBirthYear();
         if (currentUser.getBirthYear() > 0 && age >= 0 && age <= 120) {
             tvBirthYear.setText(getString(R.string.figma_profile_age, currentUser.getBirthYear(), age));
@@ -192,7 +192,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (heightCm > 0 && weightKg > 0) {
             BMICalculator.BmiResult result = BMICalculator.calculateAndClassify(weightKg, heightCm, standard,
-                    currentUser.getBirthYear(), Calendar.getInstance().get(Calendar.YEAR));
+                    currentUser.getBirthYear(), DateTimeUtils.getCurrentYear());
             float bmi = result.getBmi();
             tvBmiValue.setText(String.format(Locale.getDefault(), "%.1f", bmi));
 

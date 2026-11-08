@@ -8,6 +8,7 @@ public class Medicine {
     private String time;
     private int daysMask;
     private boolean isActive;
+    private boolean trackingStopped;
 
     public Medicine() {
         this.daysMask = 127;
@@ -42,6 +43,8 @@ public class Medicine {
     public int getDaysMask() { return daysMask; }
     public void setDaysMask(int daysMask) { this.daysMask = daysMask; }
 
-    public boolean isActive() { return isActive; }
+    public boolean isActive() { return isActive && !trackingStopped; }
     public void setActive(boolean active) { isActive = active; }
+    public boolean isTrackingStopped() { return trackingStopped; }
+    public void setTrackingStopped(boolean stopped) { trackingStopped = stopped; }
 }

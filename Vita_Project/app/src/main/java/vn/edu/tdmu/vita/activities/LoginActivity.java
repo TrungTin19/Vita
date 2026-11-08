@@ -2,6 +2,8 @@ package vn.edu.tdmu.vita.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.TextView;
@@ -13,7 +15,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import vn.edu.tdmu.vita.activities.MainActivity;
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.models.User;
@@ -30,17 +31,24 @@ public class LoginActivity extends AppCompatActivity {
 
     private UserDao userDao;
     private SessionManager sessionManager;
+    private PendingLogin pendingLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        userDao = new UserDao(this);
+        userDao = new UserDao(getApplicationContext());
         sessionManager = new SessionManager(this);
 
         initViews();
         setupListeners();
+        pendingLogin = (PendingLogin) getLastCustomNonConfigurationInstance();
+        if (pendingLogin != null) {
+            pendingLogin.screen = this;
+            showLoginProgress();
+            btnSubmit.post(pendingLogin::deliver);
+        }
     }
 
     private void initViews() {
@@ -97,25 +105,50 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
+        showLoginProgress();
+        PendingLogin pending = new PendingLogin();
+        pending.screen = this;
+        pendingLogin = pending;
+        UserDao backgroundUsers = userDao;
+        new Thread(() -> {
+            try {
+                pending.user = backgroundUsers.login(username, password);
+            } catch (RuntimeException error) {
+                pending.failed = true;
+            }
+            pending.finished = true;
+            new Handler(Looper.getMainLooper()).post(pending::deliver);
+        }, "vita-login").start();
+    }
+
+    private static final class PendingLogin {
+        LoginActivity screen;
+        User user;
+        boolean failed;
+        volatile boolean finished;
+
+        void deliver() {
+            LoginActivity activity = screen;
+            if (!finished || activity == null || activity.isFinishing() || activity.isDestroyed()) return;
+            screen = null;
+            activity.pendingLogin = null;
+            activity.restoreLoginButton();
+            if (failed) Toast.makeText(activity, R.string.auth_storage_error, Toast.LENGTH_LONG).show();
+            else activity.completeLogin(user);
+        }
+    }
+
+    @Override public Object onRetainCustomNonConfigurationInstance() { return pendingLogin; }
+
+    @Override protected void onDestroy() {
+        if (pendingLogin != null && pendingLogin.screen == this) pendingLogin.screen = null;
+        super.onDestroy();
+    }
+
+    private void showLoginProgress() {
         btnSubmit.setEnabled(false);
         btnSubmit.setText(R.string.auth_working);
         tvGotoRegister.setEnabled(false);
-        new Thread(() -> {
-            try {
-                User user = userDao.login(username, password);
-                runOnUiThread(() -> {
-                    if (isFinishing() || isDestroyed()) return;
-                    restoreLoginButton();
-                    completeLogin(user);
-                });
-            } catch (RuntimeException error) {
-                runOnUiThread(() -> {
-                    if (isFinishing() || isDestroyed()) return;
-                    restoreLoginButton();
-                    Toast.makeText(this, R.string.auth_storage_error, Toast.LENGTH_LONG).show();
-                });
-            }
-        }, "vita-login").start();
     }
 
     private void restoreLoginButton() {

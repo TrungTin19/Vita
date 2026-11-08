@@ -79,7 +79,7 @@ public class ProfileDeletionScreenDeviceTest {
         NotificationHelper.showMedicineNotification(context,med,"2026-10-17","07:00");
         new HealthDao(context).insert(new HealthRecord(0,other,"2026-10-17",60f,null,null,null,null,null));
         try(ActivityScenario<ProfileActivity> screen=ActivityScenario.launch(ProfileActivity.class)) {
-            openDelete(screen); confirm("test-password");
+            openDelete(screen); confirm(" test-password ");
         }
         assertNull(users.getUserById(owner)); assertNotNull(users.getUserById(other));
         assertEquals(1,new HealthDao(context).getRecordsRange(other,"2026-10-17","2026-10-17").size());

@@ -1,4 +1,5 @@
 <resources>
+    <string name="decimal_input_characters" translatable="false">0123456789٠١٢٣٤٥٦٧٨٩۰۱۲۳۴۵۶۷۸۹.,٫</string>
     <string name="measurement_missing">—</string>
     <string name="measurement_bp_value">%1$s / %2$s</string>
     <string name="profile_account_summary">\u0040%1$s · %2$s</string>
@@ -135,6 +136,7 @@
     <string name="add_health_error_systolic_range">Tâm thu từ 50 đến 250 mmHg</string>
     <string name="add_health_error_diastolic_range">Tâm trương từ 30 đến 150 mmHg</string>
     <string name="add_health_error_bp_relation">Tâm thu phải lớn hơn tâm trương</string>
+    <string name="add_health_error_bp_pair">Nhập đủ cả tâm thu và tâm trương</string>
     <string name="add_health_error_hr_range">Nhịp tim từ 30 đến 250 bpm</string>
     <string name="add_health_error_weight_range">Cân nặng từ 20kg đến 300kg</string>
     <string name="add_health_error_sugar_range">Đường huyết từ 20 đến 600 mg/dL</string>
@@ -161,6 +163,11 @@
     <string name="add_med_success_edit">Đã cập nhật lịch uống thuốc thành công!</string>
     <string name="add_med_error_save">Không thể lưu lịch uống thuốc. Vui lòng thử lại.</string>
     <string name="add_med_error_update">Không thể cập nhật lịch uống thuốc. Vui lòng thử lại.</string>
+    <string name="medicine_tracking_stop">Ngừng theo dõi</string>
+    <string name="medicine_tracking_stopped">Đã ngừng theo dõi</string>
+    <string name="medicine_tracking_resume">Theo dõi lại</string>
+    <string name="medicine_tracking_stop_message">ViTa sẽ dừng nhắc và không tạo thêm cữ cho thuốc này. Lịch sử đã ghi vẫn được giữ lại.</string>
+    <string name="medicine_tracking_error">Không thể đổi trạng thái theo dõi. Vui lòng thử lại.</string>
 
     <!-- Màn hình nhắc nhở (thuốc và nước) -->
     <string name="reminder_water_title">Tiến độ uống nước hôm nay</string>

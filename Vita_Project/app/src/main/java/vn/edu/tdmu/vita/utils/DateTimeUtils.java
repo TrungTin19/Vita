@@ -2,6 +2,7 @@ package vn.edu.tdmu.vita.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -13,17 +14,21 @@ public class DateTimeUtils {
     public static final String DATE_FORMAT_DISPLAY = "dd/MM/yyyy";
 
     public static String getTodayDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_DB, Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_DB, Locale.US);
         return sdf.format(new Date());
     }
 
+    public static int getCurrentYear() {
+        return Calendar.getInstance(Locale.US).get(Calendar.YEAR);
+    }
+
     public static String getCurrentTime() {
-        SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT, Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat(TIME_FORMAT, Locale.US);
         return sdf.format(new Date());
     }
 
     public static String getCurrentTimestamp() {
-        SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMP_FORMAT, Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMP_FORMAT, Locale.US);
         return sdf.format(new Date());
     }
 
@@ -32,7 +37,7 @@ public class DateTimeUtils {
             return "";
         }
         try {
-            SimpleDateFormat dbFormat = new SimpleDateFormat(DATE_FORMAT_DB, Locale.getDefault());
+            SimpleDateFormat dbFormat = new SimpleDateFormat(DATE_FORMAT_DB, Locale.US);
             Date date = dbFormat.parse(dateStr);
             if (date != null) {
                 SimpleDateFormat displayFormat = new SimpleDateFormat(DATE_FORMAT_DISPLAY, Locale.getDefault());

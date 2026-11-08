@@ -2,11 +2,16 @@ package vn.edu.tdmu.vita;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 
 import android.content.Context;
 
@@ -60,6 +65,57 @@ public class MedicineStatusUiTest {
     @After public void cleanUp() {
         new UserDao(context).deleteProfileWithPassword(userId, "matkhau123");
         new SessionManager(context).clearSession();
+    }
+
+    @Test
+    public void stoppedMedicineKeepsHistoryAndCanResumeWithoutEnablingAlarms() {
+        MedicineDao dao = new MedicineDao(context);
+        Medicine medicine = dao.getAllByUserId(userId).get(0);
+        long id = medicine.getId();
+        medicine.setTime("08:00,20:00");
+        assertTrue(dao.update(medicine, userId));
+        String today = vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate();
+        assertTrue(dao.logMedicineStatus(id, userId, today, "08:00", "TAKEN", today + " 08:00:00") > 0);
+
+        try (ActivityScenario<MainActivity> screen = ActivityScenario.launch(new android.content.Intent(context, MainActivity.class)
+                .putExtra(MainActivity.EXTRA_TAB, MainActivity.TAB_REMINDER))) {
+            onView(withId(R.id.tab_medicine_list)).perform(androidx.test.espresso.action.ViewActions.scrollTo(), click());
+            onView(withId(R.id.btn_med_history)).perform(androidx.test.espresso.action.ViewActions.scrollTo(), click());
+            onView(withText(R.string.medicine_tracking_stop)).perform(androidx.test.espresso.action.ViewActions.scrollTo(), click());
+            onView(withId(android.R.id.button1)).perform(click());
+            onView(withText(R.string.medicine_tracking_stopped)).check(matches(isDisplayed()));
+            assertFalse(dao.toggleActive(id, userId, true));
+            assertNull(dao.getNextUnloggedDose(userId, System.currentTimeMillis()));
+            assertEquals(1, dao.getHistory(id, userId).size());
+            assertEquals(-1L, dao.logMedicineStatus(id, userId, today, "20:00", "TAKEN", today + " 20:00:00"));
+
+            onView(withId(R.id.tab_today_doses)).perform(androidx.test.espresso.action.ViewActions.scrollTo(), click());
+            onView(allOf(withId(R.id.tv_dose_time), withText("08:00"))).check(matches(isDisplayed()));
+            onView(allOf(withId(R.id.tv_dose_time), withText("20:00"))).check(doesNotExist());
+            onView(withId(R.id.tab_medicine_list)).perform(androidx.test.espresso.action.ViewActions.scrollTo(), click());
+            onView(withId(R.id.btn_med_history)).perform(androidx.test.espresso.action.ViewActions.scrollTo(), click());
+            onView(withText(R.string.medicine_tracking_resume)).perform(androidx.test.espresso.action.ViewActions.scrollTo(), click());
+            assertFalse(dao.getById(id, userId).isActive());
+            assertEquals(1, dao.getHistory(id, userId).size());
+            assertTrue(dao.toggleActive(id, userId, true));
+        }
+    }
+
+    @Test
+    public void historyLabelsScheduledAndConfirmationTimesSeparately() {
+        MedicineDao dao = new MedicineDao(context);
+        long id = dao.getAllByUserId(userId).get(0).getId();
+        assertTrue(dao.logMedicineStatus(id, userId, "2025-10-21", "23:55",
+                "TAKEN", "2025-10-22 00:05:00") > 0);
+
+        try (ActivityScenario<MainActivity> screen = ActivityScenario.launch(new android.content.Intent(context, MainActivity.class)
+                .putExtra(MainActivity.EXTRA_TAB, MainActivity.TAB_REMINDER))) {
+            onView(withId(R.id.tab_medicine_list)).perform(androidx.test.espresso.action.ViewActions.scrollTo(), click());
+            onView(withId(R.id.btn_med_history)).perform(androidx.test.espresso.action.ViewActions.scrollTo(), click());
+            onView(withText("Giờ theo lịch: 21/10/2025 · 23:55")).check(matches(isDisplayed()));
+            onView(withText(org.hamcrest.Matchers.containsString("Xác nhận lúc: 2025-10-22 00:05:00")))
+                    .check(matches(isDisplayed()));
+        }
     }
 
     @Test

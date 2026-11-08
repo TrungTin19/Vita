@@ -319,7 +319,9 @@ public class ReminderFragment extends Fragment {
             for (vn.edu.tdmu.vita.models.MedicineLog log : medicineDao.getLogsForDay(medicine.getId(), userId, today))
                 logs.putIfAbsent(log.getScheduledTime(), log);
             java.util.Set<String> times = new java.util.TreeSet<>(logs.keySet());
-            if ((medicine.getDaysMask() & (1 << bit)) != 0) java.util.Collections.addAll(times, medicine.getTime().split(","));
+            if (!medicine.isTrackingStopped() && (medicine.getDaysMask() & (1 << bit)) != 0) {
+                java.util.Collections.addAll(times, medicine.getTime().split(","));
+            }
             for (String time : times) doses.add(new DoseRow(medicine, time, logs.get(time)));
         }
         doses.sort(java.util.Comparator.comparing(row -> row.time));

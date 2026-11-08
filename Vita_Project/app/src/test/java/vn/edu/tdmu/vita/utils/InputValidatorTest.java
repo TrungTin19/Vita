@@ -2,6 +2,7 @@ package vn.edu.tdmu.vita.utils;
 
 import org.junit.Test;
 import java.util.Calendar;
+import java.util.Locale;
 import static org.junit.Assert.*;
 
 public class InputValidatorTest {
@@ -46,6 +47,13 @@ public class InputValidatorTest {
     }
 
     @Test
+    public void parseDecimal_acceptsVietnameseAndArabicSeparators() {
+        assertEquals(25.5f, InputValidator.parseDecimal("25,5"), 0f);
+        assertEquals(25.5f, InputValidator.parseDecimal("٢٥٫٥"), 0f);
+        assertThrows(NumberFormatException.class, () -> InputValidator.parseDecimal("25,5.5"));
+    }
+
+    @Test
     public void testIsValidBirthYear() {
         int currentYear = Calendar.getInstance().get(Calendar.YEAR);
         assertFalse(InputValidator.isValidBirthYear(1899));
@@ -53,6 +61,19 @@ public class InputValidatorTest {
         assertTrue(InputValidator.isValidBirthYear(1900));
         assertTrue(InputValidator.isValidBirthYear(2000));
         assertTrue(InputValidator.isValidBirthYear(currentYear));
+    }
+
+    @Test
+    public void rejectsFutureGregorianBirthYearWithThaiLocale() {
+        Locale original = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.forLanguageTag("th-TH"));
+            int year = Calendar.getInstance(Locale.US).get(Calendar.YEAR);
+            assertTrue(InputValidator.isValidBirthYear(year));
+            assertFalse(InputValidator.isValidBirthYear(year + 1));
+        } finally {
+            Locale.setDefault(original);
+        }
     }
 
     @Test

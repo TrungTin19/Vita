@@ -15,7 +15,8 @@
     <string name="dose_skipped">Bỏ qua</string>
     <string name="dose_today_empty">Hôm nay chưa có cữ thuốc theo lịch.</string>
     <string name="dose_manage_title">QUẢN LÝ LỊCH THUỐC</string>
-    <string name="dose_recorded_at">Xác nhận: %1$s</string>
+    <string name="dose_scheduled_at">Giờ theo lịch: %1$s · %2$s</string>
+    <string name="dose_recorded_at">Xác nhận lúc: %1$s</string>
     <string name="dose_legacy_snapshot">Tên/liều kế thừa từ dữ liệu cũ</string>
     <string name="dose_saved">Đã cập nhật trạng thái cữ thuốc.</string>
     <string name="alarm_inexact_help">Chưa có quyền báo thức chính xác. Lời nhắc có thể đến chậm.</string>

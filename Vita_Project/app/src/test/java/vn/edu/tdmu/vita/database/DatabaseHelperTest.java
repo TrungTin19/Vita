@@ -8,7 +8,7 @@ public class DatabaseHelperTest {
     @Test
     public void testDatabaseConstants() {
         assertEquals("vita_health.db", DatabaseHelper.DATABASE_NAME);
-        assertEquals(6, DatabaseHelper.DATABASE_VERSION);
+        assertEquals(7, DatabaseHelper.DATABASE_VERSION);
     }
 
     @Test

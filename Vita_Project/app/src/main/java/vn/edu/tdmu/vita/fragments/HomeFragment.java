@@ -13,12 +13,12 @@ import androidx.fragment.app.Fragment;
 
 import java.util.Calendar;
 import java.util.Locale;
-
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.HealthDao;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.models.User;
 import vn.edu.tdmu.vita.utils.BMICalculator;
+import vn.edu.tdmu.vita.utils.DateTimeUtils;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class HomeFragment extends Fragment {
@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment {
         if (height > 0 && weight > 0) {
             BMICalculator.BmiResult result = BMICalculator.calculateAndClassify(
                     weight, height, user.getBmiStandard(), user.getBirthYear(),
-                    Calendar.getInstance().get(Calendar.YEAR));
+                    DateTimeUtils.getCurrentYear());
             tvBmiValue.setText(String.format(Locale.getDefault(), "%.1f", result.getBmi()));
             boolean adultClassification = !result.getCategory().isEmpty();
             tvBmiBadge.setText(adultClassification ? result.getCategory() : getString(R.string.bmi_numeric_only));

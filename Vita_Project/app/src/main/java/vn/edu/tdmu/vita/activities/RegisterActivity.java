@@ -16,12 +16,11 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.Calendar;
-
-import vn.edu.tdmu.vita.activities.MainActivity;
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.models.User;
+import vn.edu.tdmu.vita.utils.DateTimeUtils;
+import vn.edu.tdmu.vita.utils.InputValidator;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -192,7 +191,7 @@ public class RegisterActivity extends AppCompatActivity {
         if (password.isEmpty()) {
             tilPassword.setError(getString(R.string.register_error_empty_password));
             hasError = true;
-        } else if (!vn.edu.tdmu.vita.utils.InputValidator.isValidPassword(password)) {
+        } else if (!InputValidator.isValidPassword(password)) {
             tilPassword.setError(getString(R.string.register_error_short_password));
             hasError = true;
         }
@@ -218,10 +217,10 @@ public class RegisterActivity extends AppCompatActivity {
             hasError = true;
         } else {
             try {
-                height = Float.parseFloat(heightStr);
-                if (!vn.edu.tdmu.vita.utils.InputValidator.isValidHeight(height)) {
+                height = InputValidator.parseDecimal(heightStr);
+                if (!InputValidator.isValidHeight(height)) {
                     tilHeight.setError(getString(R.string.register_error_invalid_height,
-                            vn.edu.tdmu.vita.utils.InputValidator.MIN_HEIGHT_CM, vn.edu.tdmu.vita.utils.InputValidator.MAX_HEIGHT_CM));
+                            InputValidator.MIN_HEIGHT_CM, InputValidator.MAX_HEIGHT_CM));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
@@ -237,10 +236,10 @@ public class RegisterActivity extends AppCompatActivity {
             hasError = true;
         } else {
             try {
-                weight = Float.parseFloat(weightStr);
-                if (!vn.edu.tdmu.vita.utils.InputValidator.isValidWeight(weight)) {
+                weight = InputValidator.parseDecimal(weightStr);
+                if (!InputValidator.isValidWeight(weight)) {
                     tilWeight.setError(getString(R.string.register_error_invalid_weight,
-                            vn.edu.tdmu.vita.utils.InputValidator.MIN_WEIGHT_KG, vn.edu.tdmu.vita.utils.InputValidator.MAX_WEIGHT_KG));
+                            InputValidator.MIN_WEIGHT_KG, InputValidator.MAX_WEIGHT_KG));
                     hasError = true;
                 }
             } catch (NumberFormatException e) {
@@ -254,8 +253,8 @@ public class RegisterActivity extends AppCompatActivity {
         if (!birthYearStr.isEmpty()) {
             try {
                 birthYear = Integer.parseInt(birthYearStr);
-                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-                if (!vn.edu.tdmu.vita.utils.InputValidator.isValidBirthYear(birthYear)) {
+                int currentYear = DateTimeUtils.getCurrentYear();
+                if (!InputValidator.isValidBirthYear(birthYear)) {
                     tilBirthYear.setError(getString(R.string.register_error_invalid_birth_year, currentYear));
                     hasError = true;
                 }

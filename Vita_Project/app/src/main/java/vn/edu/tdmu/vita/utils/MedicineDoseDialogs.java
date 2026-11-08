@@ -1,5 +1,6 @@
 package vn.edu.tdmu.vita.utils;
 
+import android.database.sqlite.SQLiteException;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatDialog;
 import androidx.fragment.app.FragmentActivity;
@@ -8,6 +9,7 @@ import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.MedicineDao;
 import vn.edu.tdmu.vita.models.Medicine;
 import vn.edu.tdmu.vita.models.MedicineLog;
+import vn.edu.tdmu.vita.receivers.MedicineAlarmReceiver;
 
 public final class MedicineDoseDialogs {
     private MedicineDoseDialogs() {}
@@ -78,7 +80,9 @@ public final class MedicineDoseDialogs {
         android.widget.ScrollView scroll = new android.widget.ScrollView(activity);
         root.addView(scroll, new android.widget.LinearLayout.LayoutParams(-1, 0, 1));
         android.widget.LinearLayout body = new android.widget.LinearLayout(activity); body.setOrientation(android.widget.LinearLayout.VERTICAL); body.setPadding(gutter, gutter / 3, gutter, gutter); scroll.addView(body);
-        addText(activity, body, activity.getString(medicine.isActive() ? R.string.figma_reminder_on : R.string.figma_reminder_off), 11, R.color.vita_teal, false);
+        int reminderLabel = medicine.isTrackingStopped() ? R.string.medicine_tracking_stopped
+                : medicine.isActive() ? R.string.figma_reminder_on : R.string.figma_reminder_off;
+        addText(activity, body, activity.getString(reminderLabel), 11, R.color.vita_teal, false);
         android.widget.TextView reminder = (android.widget.TextView) body.getChildAt(0);
         android.graphics.drawable.GradientDrawable reminderPill = new android.graphics.drawable.GradientDrawable(); reminderPill.setColor(androidx.core.content.ContextCompat.getColor(activity, R.color.vita_mint)); reminderPill.setCornerRadius(gutter / 2);
         reminder.setBackground(reminderPill); reminder.setPadding(gutter / 3, gutter / 3, gutter / 3, gutter / 3); reminder.setLayoutParams(new android.widget.LinearLayout.LayoutParams(-2, -2));
@@ -90,13 +94,44 @@ public final class MedicineDoseDialogs {
         schedule.setText(R.string.figma_edit_schedule); schedule.setAllCaps(false); schedule.setCornerRadius(gutter / 2);
         body.addView(schedule, new android.widget.LinearLayout.LayoutParams(-1, Math.round(52 * activity.getResources().getDisplayMetrics().density)));
         schedule.setOnClickListener(v -> { history.dismiss(); activity.startActivity(new android.content.Intent(activity, vn.edu.tdmu.vita.activities.AddMedicineActivity.class).putExtra(vn.edu.tdmu.vita.activities.AddMedicineActivity.EXTRA_MEDICINE_ID, medicine.getId())); });
+
+        boolean stop = !medicine.isTrackingStopped();
+        com.google.android.material.button.MaterialButton tracking =
+                new com.google.android.material.button.MaterialButton(activity, null,
+                        com.google.android.material.R.attr.materialButtonOutlinedStyle);
+        tracking.setText(stop ? R.string.medicine_tracking_stop : R.string.medicine_tracking_resume);
+        tracking.setAllCaps(false);
+        tracking.setMinHeight(gutter * 2);
+        body.addView(tracking, new android.widget.LinearLayout.LayoutParams(-1, -2));
+        tracking.setOnClickListener(v -> {
+            Runnable change = () -> {
+                if (!setTrackingStopped(activity, owner, medicine, stop)) return;
+                history.dismiss();
+                if (changed != null) changed.run();
+            };
+            if (stop) {
+                AppCompatDialog confirm = VitaDialog.create(activity, activity.getString(R.string.medicine_tracking_stop),
+                        activity.getString(R.string.medicine_tracking_stop_message),
+                        R.string.medicine_tracking_stop, false);
+                confirm.findViewById(android.R.id.button1).setOnClickListener(button -> {
+                    confirm.dismiss();
+                    change.run();
+                });
+                confirm.show();
+            } else {
+                change.run();
+            }
+        });
+
         addText(activity, body, activity.getString(R.string.figma_dose_history), 20, R.color.vita_text_primary, true);
         if (logs.isEmpty()) addText(activity, body, activity.getString(R.string.med_history_empty), 14, R.color.vita_text_secondary, false);
         for (MedicineLog log : logs) {
             android.widget.LinearLayout card = new android.widget.LinearLayout(activity); card.setOrientation(android.widget.LinearLayout.VERTICAL); card.setPadding(gutter * 5 / 6, 0, gutter * 5 / 6, gutter / 3);
             android.graphics.drawable.GradientDrawable background = new android.graphics.drawable.GradientDrawable(); background.setColor(android.graphics.Color.WHITE); background.setCornerRadius(gutter * 5 / 6); card.setBackground(background);
             android.widget.LinearLayout.LayoutParams params = new android.widget.LinearLayout.LayoutParams(-1, -2); params.bottomMargin = gutter * 2 / 3; body.addView(card, params);
-            addText(activity, card, DateTimeUtils.formatDisplayDate(log.getDate()) + " · " + log.getScheduledTime(), 16, R.color.vita_text_primary, true);
+            addText(activity, card, activity.getString(R.string.dose_scheduled_at,
+                    DateTimeUtils.formatDisplayDate(log.getDate()), log.getScheduledTime()),
+                    16, R.color.vita_text_primary, true);
             addText(activity, card, activity.getString("TAKEN".equals(log.getStatus()) ? R.string.dose_taken : R.string.dose_skipped), 11, R.color.vita_teal, false);
             android.widget.TextView status = (android.widget.TextView) card.getChildAt(1);
             status.setBackgroundResource("TAKEN".equals(log.getStatus()) ? R.drawable.bg_badge_good : R.drawable.bg_badge_danger);
@@ -127,6 +162,25 @@ public final class MedicineDoseDialogs {
             history.getWindow().setBackgroundDrawableResource(R.color.vita_bg);
             history.getWindow().getDecorView().setPadding(0, 0, 0, 0); history.getWindow().setLayout(-1, -1);
         }
+    }
+
+    private static boolean setTrackingStopped(FragmentActivity activity, long owner, Medicine medicine, boolean stopped) {
+        if (!SessionManager.matchesUser(owner, new SessionManager(activity).getUserId())) return false;
+        boolean saved;
+        try {
+            saved = new MedicineDao(activity).setTrackingStopped(medicine.getId(), owner, stopped);
+        } catch (SQLiteException error) {
+            saved = false;
+        }
+        if (!saved) {
+            Toast.makeText(activity, R.string.medicine_tracking_error, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (stopped) {
+            MedicineAlarmReceiver.cancel(activity, medicine);
+            NotificationHelper.cancelMedicineNotifications(activity, medicine.getId());
+        }
+        return true;
     }
 
     public static void delete(FragmentActivity activity, long owner, Medicine medicine, Runnable changed) {

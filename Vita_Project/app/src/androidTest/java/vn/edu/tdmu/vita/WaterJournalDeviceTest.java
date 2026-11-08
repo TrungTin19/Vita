@@ -68,6 +68,8 @@ public class WaterJournalDeviceTest {
             onView(withText(R.string.figma_water_delete_action)).perform(click());
             assertEquals(0, water.getDailyTotal(owner, today));
             assertEquals(500, water.getDailyTotal(other, today));
+            screen.onActivity(a -> assertEquals("0",
+                    ((TextView) a.findViewById(R.id.tv_home_water_progress)).getText().toString()));
         }
     }
 
@@ -101,13 +103,21 @@ public class WaterJournalDeviceTest {
     }
     @Test public void journalLetsUserCorrectAnEntryAfterUndoHasGone() {
         WaterDao water = new WaterDao(context); String today = DateTimeUtils.getTodayDate();
+        java.util.Calendar previousDay = java.util.Calendar.getInstance();
+        previousDay.add(java.util.Calendar.DAY_OF_YEAR, -1);
+        String yesterday = new java.text.SimpleDateFormat(DateTimeUtils.DATE_FORMAT_DB, java.util.Locale.getDefault())
+                .format(previousDay.getTime());
+        water.addWater(owner, yesterday, 600, yesterday + " 23:59:00");
+        long entryId = water.addWater(owner, today, 350, today + " 00:01:00");
         water.addWater(owner, today, 250, today + " 07:00:00");
-        water.addWater(owner, today, 350, today + " 08:00:00");
-        water.addWater(other, today, 999, today + " 08:00:00");
+        water.addWater(other, today, 999, today + " 00:01:00");
+        assertEquals(600, water.getDailyTotal(owner, yesterday));
+        assertEquals(600, water.getDailyTotal(owner, today));
+        assertFalse(water.updateLog(entryId, owner, 500, yesterday + " 23:58:00"));
         try (ActivityScenario<MainActivity> screen = ActivityScenario.launch(new Intent(context, MainActivity.class)
                 .putExtra(MainActivity.EXTRA_TAB, MainActivity.TAB_REMINDER))) {
             onView(withId(R.id.tv_water_progress_text)).perform(androidx.test.espresso.action.ViewActions.scrollTo(),click());
-            onView(withText("08:00")).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).perform(click());
+            onView(withText("00:01")).inRoot(androidx.test.espresso.matcher.RootMatchers.isDialog()).perform(click());
             java.util.concurrent.atomic.AtomicReference<android.view.View> entryRoot = new java.util.concurrent.atomic.AtomicReference<>();
             screen.onActivity(a -> {
                 a.getSupportFragmentManager().executePendingTransactions();
@@ -119,7 +129,10 @@ public class WaterJournalDeviceTest {
                     .perform(androidx.test.espresso.action.ViewActions.replaceText("500"));
             onView(withId(android.R.id.button1)).inRoot(androidx.test.espresso.matcher.RootMatchers.withDecorView(org.hamcrest.Matchers.is(entryRoot.get()))).perform(click());
             assertEquals(750, water.getDailyTotal(owner, today));
+            assertEquals(600, water.getDailyTotal(owner, yesterday));
             assertEquals(999, water.getDailyTotal(other, today));
+            screen.onActivity(a -> assertEquals(context.getString(R.string.reminder_water_progress_format, 750, 2000, 38),
+                    ((TextView) a.findViewById(R.id.tv_water_progress_text)).getText().toString()));
         }
     }
 
@@ -192,6 +205,22 @@ public class WaterJournalDeviceTest {
             helper.onUpgrade(db,4,5); User saved=new UserDao(helper).getUserById(7);
             assertEquals("",saved.getWaterTimes()); assertEquals(1500,saved.getWaterGoalMl());
             assertEquals("20:00",saved.getWaterStart()); assertEquals(350,saved.getWaterAmount()); assertEquals(1990,saved.getBirthYear());
+        }
+    }
+    @Test public void upgradePreservesWaterLoggedWithLocalizedDigits() {
+        try (SQLiteDatabase db = SQLiteDatabase.create(null)) {
+            DatabaseHelper helper = new DatabaseHelper(context) {
+                @Override public SQLiteDatabase getReadableDatabase() { return db; }
+            };
+            helper.onCreate(db);
+            db.execSQL("INSERT INTO water_logs(user_id,date,amount_ml,logged_at) VALUES (1,'٢٠٢٥-١٠-٢١',250,'٢٠٢٥-١٠-٢١ ٠٨:٠٥:٠٠')");
+            db.execSQL("INSERT INTO water_logs(user_id,date,amount_ml,logged_at) VALUES (1,'2025-10-21',100,'2025-10-21 10:15:00')");
+
+            helper.onUpgrade(db, 6, 7);
+
+            WaterDao water = new WaterDao(helper);
+            assertEquals(350, water.getDailyTotal(1, "2025-10-21"));
+            assertEquals("2025-10-21 08:05:00", water.getLogsByDate(1, "2025-10-21").get(1).getLoggedAt());
         }
     }
     @Test public void customSettings_rejectOutsideWindowWithoutChangingOtherProfile() {

@@ -158,7 +158,7 @@ public class StatsFragment extends Fragment {
 
     private List<String> lastDaysDb(int n) {
         List<String> days = new ArrayList<>();
-        Calendar c = Calendar.getInstance();
+        Calendar c = Calendar.getInstance(Locale.US);
         c.add(Calendar.DAY_OF_YEAR, -(n - 1));
         for (int i = 0; i < n; i++) {
             days.add(String.format(Locale.US, "%04d-%02d-%02d",

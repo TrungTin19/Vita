@@ -41,6 +41,7 @@ import vn.edu.tdmu.vita.utils.SessionManager;
 
 public class HealthFragment extends Fragment {
 
+    private static final String DATE_RANGE_TAG = "health_date_range";
     private RecyclerView rvHealthRecords;
     private LinearLayout layoutHealthEmpty;
     private MaterialButton btnFilterDate;
@@ -97,6 +98,13 @@ public class HealthFragment extends Fragment {
         }
         renderFilter();
         loadData();
+        Fragment restoredPicker = getParentFragmentManager().findFragmentByTag(DATE_RANGE_TAG);
+        if (restoredPicker instanceof MaterialDatePicker<?>) {
+            @SuppressWarnings("unchecked")
+            MaterialDatePicker<androidx.core.util.Pair<Long, Long>> picker =
+                    (MaterialDatePicker<androidx.core.util.Pair<Long, Long>>) restoredPicker;
+            bindDateFilter(picker);
+        }
     }
 
     @Override
@@ -148,15 +156,20 @@ public class HealthFragment extends Fragment {
         MaterialDatePicker<androidx.core.util.Pair<Long, Long>> picker =
                 MaterialDatePicker.Builder.dateRangePicker()
                         .setTitleText(R.string.health_filter_range_title).build();
+        bindDateFilter(picker);
+        picker.show(getParentFragmentManager(), DATE_RANGE_TAG);
+    }
+
+    private void bindDateFilter(MaterialDatePicker<androidx.core.util.Pair<Long, Long>> picker) {
+        picker.clearOnPositiveButtonClickListeners();
         picker.addOnPositiveButtonClickListener(selection -> {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            SimpleDateFormat format = new SimpleDateFormat(DateTimeUtils.DATE_FORMAT_DB, Locale.US);
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
             startDate = format.format(new Date(selection.first));
             endDate = format.format(new Date(selection.second));
             renderFilter();
             loadData();
         });
-        picker.show(getParentFragmentManager(), "health_date_range");
     }
 
     private void renderFilter() {

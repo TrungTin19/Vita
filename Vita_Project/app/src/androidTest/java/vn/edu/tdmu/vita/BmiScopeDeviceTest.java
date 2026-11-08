@@ -10,6 +10,7 @@ import java.util.*;
 import vn.edu.tdmu.vita.activities.*;
 import vn.edu.tdmu.vita.database.*;
 import vn.edu.tdmu.vita.models.User;
+import vn.edu.tdmu.vita.models.HealthRecord;
 import vn.edu.tdmu.vita.receivers.WaterReminderReceiver;
 import vn.edu.tdmu.vita.utils.SessionManager;
 import static org.junit.Assert.*;
@@ -57,6 +58,28 @@ public class BmiScopeDeviceTest {
         }
         try(ActivityScenario<MainActivity> screen=ActivityScenario.launch(MainActivity.class)) {
             screen.onActivity(a->assertEquals("Béo phì độ III",((TextView)a.findViewById(R.id.tv_home_bmi_badge)).getText().toString()));
+        }
+    }
+
+    @Test public void bmiShowsProfileWeightThenMostRecentMeasuredWeightWithItsTime() {
+        profile(Calendar.getInstance().get(Calendar.YEAR) - 30);
+        try (ActivityScenario<BmiActivity> screen = ActivityScenario.launch(BmiActivity.class)) {
+            screen.onActivity(a -> assertEquals(context.getString(R.string.figma_bmi_source_initial, 170f, 130f),
+                    ((TextView) a.findViewById(R.id.tv_profile_weight_source)).getText().toString()));
+        }
+
+        HealthDao health = new HealthDao(context);
+        long userId = created.get(0);
+        HealthRecord later = new HealthRecord(0, userId, "2025-10-21", 72f, null, null, null, null, null);
+        later.setMeasuredTime("18:45");
+        assertTrue(health.insert(later) > 0);
+        HealthRecord earlier = new HealthRecord(0, userId, "2025-10-21", 75f, null, null, null, null, null);
+        earlier.setMeasuredTime("08:00");
+        assertTrue(health.insert(earlier) > 0);
+
+        try (ActivityScenario<BmiActivity> screen = ActivityScenario.launch(BmiActivity.class)) {
+            screen.onActivity(a -> assertEquals(context.getString(R.string.figma_bmi_source_log, 170f, 72f, "21/10/2025 · 18:45"),
+                    ((TextView) a.findViewById(R.id.tv_profile_weight_source)).getText().toString()));
         }
     }
 }

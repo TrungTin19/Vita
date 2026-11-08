@@ -1,13 +1,17 @@
 package vn.edu.tdmu.vita.database;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import vn.edu.tdmu.vita.utils.InputValidator;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "vita_health.db";
-    public static final int DATABASE_VERSION = 6;
+    public static final int DATABASE_VERSION = 7;
 
     // Bảng: người dùng
     public static final String TABLE_USERS = "users";
@@ -184,6 +188,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (oldVersion < 3 && newVersion >= 3) {
             db.execSQL("ALTER TABLE health_records ADD COLUMN measured_time TEXT");
             db.execSQL("ALTER TABLE health_records ADD COLUMN meal_context TEXT NOT NULL DEFAULT 'UNSPECIFIED'");
+        }
+        if (oldVersion < 7 && newVersion >= 7) {
+            // Các bản cũ có thể dùng chữ số của ngôn ngữ máy cho ngày giờ đã lưu.
+            normalizeDateDigits(db, TABLE_HEALTH_RECORDS, COL_HEALTH_DATE, "measured_time");
+            normalizeDateDigits(db, TABLE_MEDICINE_LOGS, COL_MED_LOG_DATE, COL_MED_LOG_LOGGED_AT);
+            normalizeDateDigits(db, TABLE_WATER_LOGS, COL_WATER_DATE, COL_WATER_LOGGED_AT);
+        }
+    }
+
+    private void normalizeDateDigits(SQLiteDatabase db, String table, String date, String time) {
+        String[] columns = {"id", date, time};
+        try (Cursor rows = db.query(table, columns, null, null, null, null, "id")) {
+            while (rows.moveToNext()) {
+                ContentValues changes = new ContentValues();
+                for (int column = 1; column < columns.length; column++) {
+                    String saved = rows.getString(column);
+                    if (saved == null) continue;
+                    String normalized = InputValidator.asciiDigits(saved);
+                    if (!saved.equals(normalized)) changes.put(columns[column], normalized);
+                }
+                if (changes.size() > 0) {
+                    db.update(table, changes, "id = ?", new String[]{String.valueOf(rows.getLong(0))});
+                }
+            }
         }
     }
 }

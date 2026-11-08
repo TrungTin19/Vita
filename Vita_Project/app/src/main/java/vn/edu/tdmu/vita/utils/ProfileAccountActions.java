@@ -54,7 +54,7 @@ public final class ProfileAccountActions {
         dialog.setOnDismissListener(ignored -> password.setText(null));
         dialog.findViewById(android.R.id.button1).setOnClickListener(v -> {
             if (!ownsSession()) { dialog.dismiss(); activity.finish(); return; }
-            String entered = password.getText() == null ? "" : password.getText().toString();
+            String entered = password.getText() == null ? "" : password.getText().toString().trim();
             v.setEnabled(false);
             dialog.findViewById(android.R.id.button2).setEnabled(false);
             dialog.setCancelable(false);

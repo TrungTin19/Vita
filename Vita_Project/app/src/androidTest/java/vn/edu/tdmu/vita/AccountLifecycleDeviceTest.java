@@ -64,6 +64,44 @@ public class AccountLifecycleDeviceTest {
         catch (InterruptedException error) { Thread.currentThread().interrupt(); throw new AssertionError(error); }
     }
 
+    @Test public void loginResultSurvivesRecreation() {
+        assertTrue(context.getPackageName().endsWith(".verification"));
+        UserDao users = new UserDao(context);
+        User user = new User();
+        String username = "rotated_login_" + System.nanoTime();
+        user.setUsername(username);
+        long owner = users.register(user, "test-password");
+        assertTrue(owner > 0);
+        SessionManager session = new SessionManager(context);
+        session.clearSession();
+        CountDownLatch started = new CountDownLatch(1), release = new CountDownLatch(1);
+        User authenticated = users.getUserById(owner);
+        UserDao delayed = new UserDao(context) {
+            @Override public User login(String name, String password) {
+                started.countDown();
+                await(release);
+                return authenticated;
+            }
+        };
+        try (ActivityScenario<LoginActivity> screen = ActivityScenario.launch(LoginActivity.class)) {
+            screen.onActivity(a -> {
+                replaceDao(a, LoginActivity.class, delayed);
+                ((TextView) a.findViewById(R.id.et_login_username)).setText(username);
+                ((TextView) a.findViewById(R.id.et_login_password)).setText("test-password");
+                a.findViewById(R.id.btn_login_submit).performClick();
+            });
+            await(started);
+            screen.recreate();
+            release.countDown();
+            DeviceTestWait.until("Login result was lost after recreation", session::isLoggedIn);
+            assertEquals(owner, session.getUserId());
+        } finally {
+            release.countDown();
+            users.deleteProfileWithPassword(owner, "test-password");
+            session.clearSession();
+        }
+    }
+
     @Test public void registrationCompletesOnceAfterRecreation() {
         assertTrue(context.getPackageName().endsWith(".verification"));
         SessionManager session = new SessionManager(context);

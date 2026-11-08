@@ -107,7 +107,9 @@ public class MedicineAdapter extends RecyclerView.Adapter<MedicineAdapter.ViewHo
 
             swActive.clearOnCheckedChangeListeners();
             swActive.setChecked(medicine.isActive());
-            swActive.setText(medicine.isActive() ? R.string.figma_reminder_on : R.string.figma_reminder_off);
+            swActive.setEnabled(!medicine.isTrackingStopped());
+            swActive.setText(medicine.isTrackingStopped() ? R.string.medicine_tracking_stopped
+                    : medicine.isActive() ? R.string.figma_reminder_on : R.string.figma_reminder_off);
             swActive.addOnCheckedChangeListener((buttonView, isChecked) -> {
                 swActive.setText(isChecked ? R.string.figma_reminder_on : R.string.figma_reminder_off);
                 if (switchListener != null) {

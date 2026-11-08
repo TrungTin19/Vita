@@ -1,5 +1,6 @@
 package vn.edu.tdmu.vita.utils;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.service.notification.StatusBarNotification;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -99,6 +101,26 @@ public final class NotificationHelper {
         }
     }
 
+    public static void cancelMedicineNotifications(Context context, long medicineId) {
+        NotificationManager manager = context.getSystemService(NotificationManager.class);
+        if (manager == null) return;
+        PendingIntent openReminder = PendingIntent.getActivity(context, (int) medicineId,
+                new Intent(context, vn.edu.tdmu.vita.activities.MainActivity.class),
+                PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE);
+        if (openReminder == null) return;
+
+        for (StatusBarNotification entry : manager.getActiveNotifications()) {
+            Notification notification = entry.getNotification();
+            if (!openReminder.equals(notification.contentIntent)) continue;
+            if (notification.actions != null) {
+                for (Notification.Action action : notification.actions) {
+                    if (action.actionIntent != null) action.actionIntent.cancel();
+                }
+            }
+            manager.cancel(entry.getTag(), entry.getId());
+        }
+    }
+
     private static PendingIntent actionPendingIntent(Context context, Medicine medicine,
                                                      String action, String date, String time) {
         long medicineId = medicine.getId();
@@ -139,7 +161,7 @@ public final class NotificationHelper {
                 new SessionManager(context).getUserId());
         drinked.putExtra(vn.edu.tdmu.vita.receivers.WaterReminderReceiver.EXTRA_AMOUNT, amount);
         PendingIntent drinkedIntent = PendingIntent.getBroadcast(context, 9002, drinked,
-                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, WATER_CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_water_drop)

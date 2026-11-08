@@ -13,6 +13,8 @@ import vn.edu.tdmu.vita.models.MedicineLog;
 
 public class MedicineDao {
 
+    // Giữ nguyên giá trị 0 (tắt nhắc) và 1 (bật nhắc) của dữ liệu cũ.
+    private static final int TRACKING_STOPPED = 2;
     private final DatabaseHelper dbHelper;
 
     public MedicineDao(Context context) {
@@ -27,6 +29,7 @@ public class MedicineDao {
         if (medicine == null) return -1;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = toContentValues(medicine);
+        values.put(DatabaseHelper.COL_MED_IS_ACTIVE, medicine.isActive() ? 1 : 0);
         return db.insert(DatabaseHelper.TABLE_MEDICINES, null, values);
     }
 
@@ -55,14 +58,23 @@ public class MedicineDao {
     }
 
     public boolean toggleActive(long id, long userId, boolean isActive) {
-        if (id <= 0) return false;
+        return updateReminderState(id, userId, isActive ? 1 : 0, false);
+    }
+
+    public boolean setTrackingStopped(long id, long userId, boolean stopped) {
+        return updateReminderState(id, userId, stopped ? TRACKING_STOPPED : 0, !stopped);
+    }
+
+    private boolean updateReminderState(long id, long userId, int state, boolean requiresStopped) {
+        if (id <= 0 || userId <= 0) return false;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(DatabaseHelper.COL_MED_IS_ACTIVE, isActive ? 1 : 0);
+        values.put(DatabaseHelper.COL_MED_IS_ACTIVE, state);
         int rows = db.update(
                 DatabaseHelper.TABLE_MEDICINES,
                 values,
-                DatabaseHelper.COL_MED_ID + " = ? AND " + DatabaseHelper.COL_MED_USER_ID + " = ?",
+                DatabaseHelper.COL_MED_ID + " = ? AND " + DatabaseHelper.COL_MED_USER_ID + " = ? AND "
+                        + DatabaseHelper.COL_MED_IS_ACTIVE + (requiresStopped ? " IS " : " IS NOT ") + TRACKING_STOPPED,
                 new String[]{String.valueOf(id), String.valueOf(userId)}
         );
         return rows > 0;
@@ -121,8 +133,6 @@ public class MedicineDao {
         if (!"TAKEN".equals(status) && !"SKIPPED".equals(status)) throw new IllegalArgumentException("Invalid dose status");
         if (scheduledTime == null || !scheduledTime.matches("([01]\\d|2[0-3]):[0-5]\\d")) throw new IllegalArgumentException("Invalid dose time");
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Medicine medicine = getById(medicineId, userId);
-        if (medicine == null) return -1;
         ContentValues values = new ContentValues();
         values.put(DatabaseHelper.COL_MED_LOG_MEDICINE_ID, medicineId);
         values.put(DatabaseHelper.COL_MED_LOG_DATE, date);
@@ -131,9 +141,12 @@ public class MedicineDao {
         values.put(DatabaseHelper.COL_MED_LOG_LOGGED_AT, loggedAt);
         db.beginTransaction();
         try {
+            Medicine medicine = getById(medicineId, userId);
+            if (medicine == null) return -1;
             MedicineLog previous = getLogForDose(medicineId, userId, date, scheduledTime);
             long id;
             if (previous == null) {
+                if (medicine.isTrackingStopped()) return -1;
                 values.put("medicine_name_snapshot", medicine.getName());
                 values.put("dosage_snapshot", medicine.getDosage());
                 values.put("snapshot_inherited", 0);
@@ -217,7 +230,6 @@ public class MedicineDao {
         values.put(DatabaseHelper.COL_MED_DOSAGE, med.getDosage());
         values.put(DatabaseHelper.COL_MED_TIME, vn.edu.tdmu.vita.utils.MedicineSchedule.normalizeTimes(med.getTime()));
         values.put(DatabaseHelper.COL_MED_DAYS_MASK, med.getDaysMask());
-        values.put(DatabaseHelper.COL_MED_IS_ACTIVE, med.isActive() ? 1 : 0);
         return values;
     }
 
@@ -229,7 +241,9 @@ public class MedicineDao {
         med.setDosage(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_DOSAGE)));
         med.setTime(cursor.getString(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_TIME)));
         med.setDaysMask(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_DAYS_MASK)));
-        med.setActive(cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_IS_ACTIVE)) == 1);
+        int state = cursor.getInt(cursor.getColumnIndexOrThrow(DatabaseHelper.COL_MED_IS_ACTIVE));
+        med.setActive(state == 1);
+        med.setTrackingStopped(state == TRACKING_STOPPED);
         return med;
     }
 

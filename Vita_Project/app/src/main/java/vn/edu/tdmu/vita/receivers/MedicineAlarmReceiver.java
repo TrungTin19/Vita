@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 
 import vn.edu.tdmu.vita.database.MedicineDao;
@@ -32,7 +33,9 @@ public class MedicineAlarmReceiver extends BroadcastReceiver {
         if (medicine == null || !medicine.isActive()
                 || !SessionManager.matchesUser(medicine.getUserId(), new SessionManager(context).getUserId())) return;
         String date = intent.getStringExtra(EXTRA_DOSE_DATE);
-        String time = intent.getStringExtra(EXTRA_DOSE_TIME);
+        Uri alarm = intent.getData();
+        // Giờ thực chạy có thể dịch khi đổi giờ mùa hè. URI giữ giờ cữ theo lịch.
+        String time = alarm == null ? intent.getStringExtra(EXTRA_DOSE_TIME) : alarm.getLastPathSegment();
         if (date == null) date = vn.edu.tdmu.vita.utils.DateTimeUtils.getTodayDate();
         if (time == null) time = medicine.getTime().split(",")[0];
         if (!java.util.Arrays.asList(medicine.getTime().split(",")).contains(time)) return;
@@ -65,7 +68,7 @@ public class MedicineAlarmReceiver extends BroadcastReceiver {
         intent.putExtra(EXTRA_MEDICINE_ID, medicine.getId());
         java.util.Date trigger = new java.util.Date(triggerAt);
         intent.putExtra(EXTRA_DOSE_DATE, new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US).format(trigger));
-        intent.putExtra(EXTRA_DOSE_TIME, new java.text.SimpleDateFormat("HH:mm", java.util.Locale.US).format(trigger));
+        intent.putExtra(EXTRA_DOSE_TIME, time);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                 0, intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
@@ -96,7 +99,7 @@ public class MedicineAlarmReceiver extends BroadcastReceiver {
 
     private static Intent alarmIntent(Context context, long medicineId, String time) {
         return new Intent(context, MedicineAlarmReceiver.class)
-                .setData(android.net.Uri.parse("vita://alarm/" + medicineId + "/" + time));
+                .setData(Uri.parse("vita://alarm/" + medicineId + "/" + time));
     }
 
     private static void cancelLegacy(Context context, long medicineId) {

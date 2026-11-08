@@ -1,12 +1,18 @@
 package vn.edu.tdmu.vita;
 
 import android.content.Context;
+import android.view.View;
 import androidx.test.core.app.*;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.core.util.Pair;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.datepicker.DateSelector;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import vn.edu.tdmu.vita.activities.MainActivity;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.models.User;
@@ -64,5 +70,75 @@ public class NavigationStateDeviceTest {
             screen.recreate();
             screen.onActivity(a->assertTrue(((MaterialButton)a.findViewById(R.id.btn_range_30)).isChecked()));
         } finally { users.deleteProfileWithPassword(owner,"test-password"); new SessionManager(context).clearSession(); }
+    }
+
+    @Test public void healthDateRangeStillAppliesAfterRecreation() {
+        Context context = ApplicationProvider.getApplicationContext();
+        assertTrue(context.getPackageName().endsWith(".verification"));
+        User user = new User();
+        user.setUsername("health_range_" + System.nanoTime());
+        UserDao users = new UserDao(context);
+        long owner = users.register(user, "test-password");
+        assertTrue(owner > 0);
+        SessionManager session = new SessionManager(context);
+        session.saveSession(owner, user.getUsername(), "");
+        java.util.Calendar date = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"), java.util.Locale.US);
+        date.clear();
+        date.set(2025, java.util.Calendar.OCTOBER, 21);
+        long start = date.getTimeInMillis();
+        date.add(java.util.Calendar.DAY_OF_MONTH, 1);
+        Pair<Long, Long> selection = new Pair<>(start, date.getTimeInMillis());
+
+        try (ActivityScenario<MainActivity> screen = ActivityScenario.launch(MainActivity.class)) {
+            screen.onActivity(a -> {
+                BottomNavigationView nav = a.findViewById(R.id.bottom_nav_main);
+                nav.setSelectedItemId(R.id.nav_health);
+                a.getSupportFragmentManager().executePendingTransactions();
+                a.findViewById(R.id.btn_health_filter_date).performClick();
+                selectRange(healthRangePicker(a), selection);
+            });
+
+            screen.recreate();
+            screen.onActivity(a -> {
+                MaterialDatePicker<?> picker = healthRangePicker(a);
+                assertEquals(selection, picker.getSelection());
+                View confirm = picker.requireView().findViewById(com.google.android.material.R.id.confirm_button);
+                assertTrue(confirm.isEnabled());
+                confirm.performClick();
+                MaterialButton filter = a.findViewById(R.id.btn_health_filter_date);
+                assertEquals(a.getString(R.string.health_filter_range_format, "21/10/2025", "22/10/2025"),
+                        filter.getText().toString());
+            });
+        } finally {
+            users.deleteProfileWithPassword(owner, "test-password");
+            session.clearSession();
+        }
+    }
+
+    private static MaterialDatePicker<?> healthRangePicker(MainActivity activity) {
+        FragmentManager root = activity.getSupportFragmentManager();
+        root.executePendingTransactions();
+        Fragment picker = root.findFragmentByTag("health_date_range");
+        if (picker == null) {
+            Fragment health = root.findFragmentByTag("tab:" + R.id.nav_health);
+            assertNotNull(health);
+            FragmentManager children = health.getChildFragmentManager();
+            children.executePendingTransactions();
+            picker = children.findFragmentByTag("health_date_range");
+        }
+        assertTrue(picker instanceof MaterialDatePicker);
+        return (MaterialDatePicker<?>) picker;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void selectRange(MaterialDatePicker<?> picker, Pair<Long, Long> selection) {
+        try {
+            // Đặt dữ liệu chọn để bài kiểm thử tập trung vào việc khôi phục và áp dụng bộ lọc.
+            java.lang.reflect.Method getDateSelector = MaterialDatePicker.class.getDeclaredMethod("getDateSelector");
+            getDateSelector.setAccessible(true);
+            ((DateSelector<Pair<Long, Long>>) getDateSelector.invoke(picker)).setSelection(selection);
+        } catch (ReflectiveOperationException error) {
+            throw new AssertionError(error);
+        }
     }
 }

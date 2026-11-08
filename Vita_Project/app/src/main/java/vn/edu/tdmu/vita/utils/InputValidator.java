@@ -1,7 +1,5 @@
 package vn.edu.tdmu.vita.utils;
 
-import java.util.Calendar;
-
 /**
  * Lớp tiện ích kiểm tra dữ liệu người dùng nhập khi đăng ký và cập nhật hồ sơ.
  */
@@ -49,6 +47,22 @@ public final class InputValidator {
         return password.trim().length() >= 6;
     }
 
+    public static float parseDecimal(String value) {
+        return Float.parseFloat(asciiDigits(value).replace(',', '.').replace('٫', '.'));
+    }
+
+    public static String asciiDigits(String value) {
+        StringBuilder result = new StringBuilder(value.length());
+        for (int offset = 0; offset < value.length();) {
+            int character = value.codePointAt(offset);
+            int digit = Character.digit(character, 10);
+            if (digit >= 0) result.append((char) ('0' + digit));
+            else result.appendCodePoint(character);
+            offset += Character.charCount(character);
+        }
+        return result.toString();
+    }
+
     public static boolean isValidHeight(float heightCm) {
         return heightCm >= MIN_HEIGHT_CM && heightCm <= MAX_HEIGHT_CM;
     }
@@ -58,7 +72,7 @@ public final class InputValidator {
     }
 
     public static boolean isValidBirthYear(int birthYear) {
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        int currentYear = DateTimeUtils.getCurrentYear();
         return birthYear >= MIN_BIRTH_YEAR && birthYear <= currentYear;
     }
 

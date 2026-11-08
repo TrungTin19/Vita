@@ -14,11 +14,10 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.Calendar;
-
 import vn.edu.tdmu.vita.R;
 import vn.edu.tdmu.vita.database.UserDao;
 import vn.edu.tdmu.vita.models.User;
+import vn.edu.tdmu.vita.utils.DateTimeUtils;
 import vn.edu.tdmu.vita.utils.InputValidator;
 import vn.edu.tdmu.vita.utils.SessionManager;
 
@@ -285,7 +284,7 @@ public class EditProfileActivity extends AppCompatActivity {
             hasError = true;
         } else {
             try {
-                height = Float.parseFloat(heightStr);
+                height = InputValidator.parseDecimal(heightStr);
                 if (!InputValidator.isValidHeight(height)) {
                     tilHeight.setError(getString(R.string.register_error_invalid_height,
                             InputValidator.MIN_HEIGHT_CM, InputValidator.MAX_HEIGHT_CM));
@@ -306,7 +305,7 @@ public class EditProfileActivity extends AppCompatActivity {
             hasError = true;
         } else {
             try {
-                weight = Float.parseFloat(weightStr);
+                weight = InputValidator.parseDecimal(weightStr);
                 if (!InputValidator.isValidWeight(weight)) {
                     tilWeight.setError(getString(R.string.register_error_invalid_weight,
                             InputValidator.MIN_WEIGHT_KG, InputValidator.MAX_WEIGHT_KG));
@@ -325,7 +324,7 @@ public class EditProfileActivity extends AppCompatActivity {
         if (!birthYearStr.isEmpty()) {
             try {
                 birthYear = Integer.parseInt(birthYearStr);
-                int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+                int currentYear = DateTimeUtils.getCurrentYear();
                 if (!InputValidator.isValidBirthYear(birthYear)) {
                     tilBirthYear.setError(getString(R.string.register_error_invalid_birth_year, currentYear));
                     hasError = true;

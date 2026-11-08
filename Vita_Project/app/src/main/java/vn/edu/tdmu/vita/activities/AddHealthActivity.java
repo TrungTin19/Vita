@@ -79,7 +79,7 @@ public class AddHealthActivity extends AppCompatActivity {
         }
 
         healthDao = new HealthDao(this);
-        calendar = Calendar.getInstance();
+        calendar = Calendar.getInstance(Locale.US);
 
         initViews();
         setupListeners();
@@ -322,6 +322,8 @@ public class AddHealthActivity extends AppCompatActivity {
         String weightStr = getText(etWeight);
         String sugarStr = getText(etSugar);
         String noteStr = getText(etNote);
+        tilSystolic.setError(null);
+        tilDiastolic.setError(null);
 
         // Kiểm tra dữ liệu: cần nhập ít nhất một chỉ số hoặc ghi chú
         if (systolicStr.isEmpty() && diastolicStr.isEmpty() && heartRateStr.isEmpty()
@@ -367,7 +369,11 @@ public class AddHealthActivity extends AppCompatActivity {
         }
 
         // Kiểm tra quan hệ huyết áp: tâm thu phải lớn hơn tâm trương
-        if (systolic != null && diastolic != null && !hasError) {
+        if (!hasError && (systolicStr.isEmpty() != diastolicStr.isEmpty())) {
+            TextInputLayout missing = systolicStr.isEmpty() ? tilSystolic : tilDiastolic;
+            missing.setError(getString(R.string.add_health_error_bp_pair));
+            hasError = true;
+        } else if (systolic != null && diastolic != null && !hasError) {
             if (!InputValidator.isValidBloodPressure(systolic, diastolic)) {
                 tilSystolic.setError(getString(R.string.add_health_error_bp_relation));
                 hasError = true;
@@ -391,7 +397,7 @@ public class AddHealthActivity extends AppCompatActivity {
         // Kiểm tra cân nặng
         if (!weightStr.isEmpty()) {
             try {
-                weight = Float.parseFloat(weightStr);
+                weight = InputValidator.parseDecimal(weightStr);
                 if (!InputValidator.isValidWeight(weight)) {
                     tilWeight.setError(getString(R.string.add_health_error_weight_range));
                     hasError = true;
@@ -405,7 +411,7 @@ public class AddHealthActivity extends AppCompatActivity {
         // Kiểm tra đường huyết
         if (!sugarStr.isEmpty()) {
             try {
-                bloodSugar = Float.parseFloat(sugarStr);
+                bloodSugar = InputValidator.parseDecimal(sugarStr);
                 if (!InputValidator.isValidBloodSugar(bloodSugar)) {
                     tilSugar.setError(getString(R.string.add_health_error_sugar_range));
                     hasError = true;

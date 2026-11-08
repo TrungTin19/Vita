@@ -1,10 +1,14 @@
 package vn.edu.tdmu.vita;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.*;
+import android.net.Uri;
+import android.service.notification.StatusBarNotification;
 import android.view.View;
 import android.widget.*;
 import androidx.test.core.app.*;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import java.util.*;
@@ -61,6 +65,47 @@ public class ReviewImprovementsDeviceTest {
             assertNull(android.app.PendingIntent.getBroadcast(context,0,alarm,android.app.PendingIntent.FLAG_NO_CREATE|android.app.PendingIntent.FLAG_IMMUTABLE));
         }
     }
+    @Test public void dstShiftedAlarm_keepsConfiguredTimeAndSchedulesNextDose() {
+        Medicine medicine = new Medicine(0, owner, "Test DST", "1", "02:30", 127, true);
+        medicine.setId(new MedicineDao(context).insert(medicine));
+        String date = "2026-03-08";
+        Intent alarm = new Intent(context, MedicineAlarmReceiver.class)
+                .setData(Uri.parse("vita://alarm/" + medicine.getId() + "/02:30"))
+                .putExtra(MedicineAlarmReceiver.EXTRA_MEDICINE_ID, medicine.getId())
+                .putExtra(MedicineAlarmReceiver.EXTRA_DOSE_DATE, date)
+                .putExtra(MedicineAlarmReceiver.EXTRA_DOSE_TIME, "03:30");
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(
+                () -> new MedicineAlarmReceiver().onReceive(context, alarm));
+
+        assertNotNull("Configured slot must continue to be scheduled", PendingIntent.getBroadcast(
+                context, 0, alarm, PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE));
+        int id = NotificationHelper.doseNotificationId(medicine.getId(), date, "02:30");
+        DeviceTestWait.until("Notification must identify the configured 02:30 dose", () -> notification(id) != null);
+    }
+
+    @Test public void waterReminderAction_canRecordOnlyOnce() throws PendingIntent.CanceledException {
+        int id = 9001;
+        int amount = new UserDao(context).getUserById(owner).getWaterAmount();
+        WaterDao water = new WaterDao(context);
+        String today = DateTimeUtils.getTodayDate();
+        NotificationHelper.showWaterReminder(context, id);
+        DeviceTestWait.until("Water notification must be posted", () -> notification(id) != null);
+        PendingIntent action = notification(id).getNotification().actions[0].actionIntent;
+
+        action.send();
+        DeviceTestWait.until("Water action must be recorded", () -> water.getDailyTotal(owner, today) == amount);
+        assertThrows("One notification must not record water twice", PendingIntent.CanceledException.class, action::send);
+        assertEquals(1, water.getLogsByDate(owner, today).size());
+    }
+
+    private StatusBarNotification notification(int id) {
+        for (StatusBarNotification entry : context.getSystemService(NotificationManager.class).getActiveNotifications()) {
+            if (entry.getId() == id) return entry;
+        }
+        return null;
+    }
+
     @Test public void delayedDoseAction_keepsOriginalDateAndIndependentTimes() {
         MedicineDao dao=new MedicineDao(context);
         long id=dao.insert(new Medicine(0,owner,"Test","1","07:00,12:00,19:00",127,true));
@@ -142,6 +187,66 @@ public class ReviewImprovementsDeviceTest {
         assertEquals(added.getDate(), edited.getDate());
         assertEquals(added.getMeasuredTime(), edited.getMeasuredTime());
         assertEquals(added.getMealContext(), edited.getMealContext());
+    }
+
+    @Test public void healthEditor_pastedDecimalCommaKeepsFraction() {
+        try (ActivityScenario<AddHealthActivity> activity = ActivityScenario.launch(AddHealthActivity.class)) {
+            activity.onActivity(screen -> {
+                android.widget.EditText weight = screen.findViewById(R.id.et_add_weight);
+                weight.getText().replace(0, weight.length(), "25,5");
+                screen.findViewById(R.id.btn_add_health_save).performClick();
+                assertTrue(screen.isFinishing());
+            });
+        }
+        List<HealthRecord> records = new HealthDao(context).getAllByUserId(owner, null);
+        assertEquals(1, records.size());
+        assertEquals(25.5f, records.get(0).getWeightKg(), 0f);
+    }
+
+    @Test public void healthEditor_pastedArabicDecimalKeepsFraction() {
+        try (ActivityScenario<AddHealthActivity> activity = ActivityScenario.launch(AddHealthActivity.class)) {
+            activity.onActivity(screen -> {
+                android.widget.EditText weight = screen.findViewById(R.id.et_add_weight);
+                weight.getText().replace(0, weight.length(), "25٫5");
+                screen.findViewById(R.id.btn_add_health_save).performClick();
+                assertTrue(screen.isFinishing());
+            });
+        }
+        List<HealthRecord> records = new HealthDao(context).getAllByUserId(owner, null);
+        assertEquals(1, records.size());
+        assertEquals(25.5f, records.get(0).getWeightKg(), 0f);
+    }
+
+    @Test public void healthEditor_requiresBothPressureValuesBeforeSaving() {
+        HealthDao health = new HealthDao(context);
+        int[] fields = {R.id.et_add_systolic, R.id.et_add_diastolic};
+        int[] containers = {R.id.til_add_systolic, R.id.til_add_diastolic};
+        String[] values = {"120", "80"};
+        for (int filled = 0; filled < fields.length; filled++) {
+            int entered = filled;
+            int missing = 1 - entered;
+            try (ActivityScenario<AddHealthActivity> activity = ActivityScenario.launch(AddHealthActivity.class)) {
+                activity.onActivity(screen -> {
+                    ((TextView) screen.findViewById(fields[entered])).setText(values[entered]);
+                    screen.findViewById(R.id.btn_add_health_save).performClick();
+                    assertFalse("A single pressure value must not be saved", screen.isFinishing());
+                    com.google.android.material.textfield.TextInputLayout field = screen.findViewById(containers[missing]);
+                    assertNotNull(field.getError());
+                    assertEquals(entered, health.getAllByUserId(owner, null).size());
+
+                    ((TextView) screen.findViewById(fields[missing])).setText(values[missing]);
+                    assertNull(field.getError());
+                    screen.findViewById(R.id.btn_add_health_save).performClick();
+                    assertTrue(screen.isFinishing());
+                });
+            }
+        }
+        List<HealthRecord> records = health.getAllByUserId(owner, null);
+        assertEquals(2, records.size());
+        for (HealthRecord record : records) {
+            assertEquals(Integer.valueOf(120), record.getSystolic());
+            assertEquals(Integer.valueOf(80), record.getDiastolic());
+        }
     }
 
     @Test public void healthEditor_keepsMealAndTime() {
